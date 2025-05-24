@@ -16,10 +16,10 @@ const Index = () => {
     { id: 3, name: "Carlos López", note: "Quiere más información", status: "nuevo", date: "2025-01-22" }
   ]);
   const [whatsapp, setWhatsapp] = useState("");
-  const [autoMessage, setAutoMessage] = useState("Hola, gracias por tu interés en SuperPatch. Nuestro sistema ha detectado que podrías beneficiarte de nuestros productos. ¿Te gustaría conocer una solución personalizada para tus necesidades?");
+  const [autoMessage, setAutoMessage] = useState("Hola, gracias por tu interés en SuperPatch. Nuestro sistema ha detectado que podrías beneficiarte de nuestros productos. Para resolver tus dudas específicas y ofrecerte la mejor solución personalizada, te invito a contactarme directamente por WhatsApp. ¡Estoy aquí para ayudarte!");
 
   const handleSaveConfig = async () => {
-    alert("Configuración guardada correctamente.");
+    alert("Configuración guardada correctamente. Las conexiones se mantendrán activas 24/7.");
   };
 
   const handleMarkAsSold = async (leadId) => {
@@ -38,12 +38,22 @@ const Index = () => {
       <h1 className="text-2xl font-bold text-center">PatchBot CRM - Gestión Inteligente 24/7</h1>
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-5 gap-1">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="leads">Leads Avanzados</TabsTrigger>
-          <TabsTrigger value="bots">Bots & Redes</TabsTrigger>
-          <TabsTrigger value="automation">Automatización 24/7</TabsTrigger>
-          <TabsTrigger value="settings">Ajustes</TabsTrigger>
+        <TabsList className="grid grid-cols-3 md:grid-cols-5 gap-1 h-auto">
+          <TabsTrigger value="dashboard" className="h-auto py-2 px-2 text-xs md:text-sm">
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="leads" className="h-auto py-2 px-2 text-xs md:text-sm">
+            Leads Avanzados
+          </TabsTrigger>
+          <TabsTrigger value="bots" className="h-auto py-2 px-2 text-xs md:text-sm">
+            Bots & Redes
+          </TabsTrigger>
+          <TabsTrigger value="automation" className="h-auto py-2 px-2 text-xs md:text-sm">
+            Automatización 24/7
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="h-auto py-2 px-2 text-xs md:text-sm">
+            Ajustes
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard">
@@ -100,7 +110,7 @@ const Index = () => {
               <div>
                 <h2 className="text-lg font-semibold mb-4">Configuración de Redes Sociales</h2>
                 <p className="text-sm text-gray-600 mb-4">
-                  Conecta tus perfiles y activa la gestión automática 24/7 para crecimiento y conversión
+                  Conecta tus perfiles y activa la gestión automática 24/7. Las conexiones se mantienen permanentemente hasta que decidas desconectarlas manualmente.
                 </p>
                 <SocialNetworkConfig />
               </div>
@@ -108,20 +118,20 @@ const Index = () => {
               <div className="border-t pt-6">
                 <h3 className="font-bold mb-2">Mensaje Automatizado Inteligente</h3>
                 <p className="text-sm text-gray-600 mb-3">
-                  Este mensaje se personaliza automáticamente según el análisis de necesidades de cada lead
+                  Este mensaje dirige automáticamente a los leads interesados hacia tu WhatsApp para consultas personalizadas y cierre de ventas
                 </p>
                 <Textarea 
                   value={autoMessage} 
                   onChange={e => setAutoMessage(e.target.value)} 
-                  placeholder="Mensaje base para personalización automática..." 
+                  placeholder="Mensaje que redirige a WhatsApp para consultas personalizadas..." 
                   rows={4} 
                   className="w-full"
                 />
                 <Button 
                   className="mt-2"
-                  onClick={() => alert("Mensaje base actualizado. El sistema personalizará cada conversación automáticamente.")}
+                  onClick={() => alert("Mensaje actualizado. El sistema seguirá dirigiendo leads a tu WhatsApp para consultas personalizadas.")}
                 >
-                  Actualizar Mensaje Base
+                  Actualizar Mensaje de Redirección
                 </Button>
               </div>
             </CardContent>
@@ -132,6 +142,11 @@ const Index = () => {
           <Card>
             <CardContent className="p-4">
               <h2 className="text-lg font-semibold mb-4">Sistema de Automatización 24/7</h2>
+              <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <p className="text-sm text-blue-800">
+                  <strong>📞 Conexión WhatsApp Permanente:</strong> Todas las consultas importantes se redirigen automáticamente a tu WhatsApp para atención personalizada y cierre de ventas.
+                </p>
+              </div>
               <AutomationDashboard />
             </CardContent>
           </Card>
@@ -141,7 +156,10 @@ const Index = () => {
           <Card>
             <CardContent className="p-4 space-y-4">
               <div>
-                <p className="font-bold mb-2">Configuración de WhatsApp Business</p>
+                <p className="font-bold mb-2">Configuración de WhatsApp Business (Conexión Permanente)</p>
+                <p className="text-sm text-gray-600 mb-2">
+                  Tu WhatsApp se mantiene conectado permanentemente para recibir leads calificados
+                </p>
                 <Input 
                   value={whatsapp} 
                   onChange={e => setWhatsapp(e.target.value)} 
@@ -149,24 +167,24 @@ const Index = () => {
                   className="mb-2"
                 />
                 <Button onClick={handleSaveConfig}>
-                  Guardar Configuración
+                  Guardar Configuración Permanente
                 </Button>
               </div>
               
               <div className="border-t pt-4">
-                <p className="font-bold mb-2">Estado del Sistema de IA</p>
+                <p className="font-bold mb-2">Estado del Sistema de IA (Siempre Activo)</p>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-green-600">●</span> WhatsApp: Conectado
+                    <span className="text-green-600">●</span> WhatsApp: Conectado Permanentemente
                   </div>
                   <div>
-                    <span className="text-green-600">●</span> Análisis IA: Activo
+                    <span className="text-green-600">●</span> Análisis IA: Activo 24/7
                   </div>
                   <div>
-                    <span className="text-green-600">●</span> Bot 24/7: Funcionando
+                    <span className="text-green-600">●</span> Bot 24/7: Funcionando Sin Parar
                   </div>
                   <div>
-                    <span className="text-blue-600">●</span> Personalización: Avanzada
+                    <span className="text-blue-600">●</span> Redirección a WhatsApp: Automática
                   </div>
                 </div>
               </div>

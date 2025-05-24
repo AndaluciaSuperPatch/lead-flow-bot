@@ -23,7 +23,7 @@ const SocialNetworkConfig = () => {
     { name: 'Facebook', icon: <Facebook className="w-5 h-5" />, connected: false, profile: '', autoMode24_7: false },
     { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, connected: false, profile: '', autoMode24_7: false },
     { name: 'LinkedIn', icon: <Linkedin className="w-5 h-5" />, connected: false, profile: '', autoMode24_7: false },
-    { name: 'TikTok', icon: <div className="w-5 h-5 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full"></div>, connected: false, profile: '', autoMode24_7: false }
+    { name: 'TikTok', icon: <div className="w-5 h-5 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">T</div>, connected: false, profile: '', autoMode24_7: false }
   ]);
 
   const handleProfileChange = (index: number, value: string) => {
@@ -44,11 +44,12 @@ const SocialNetworkConfig = () => {
     }
     
     updatedNetworks[index].connected = true;
+    updatedNetworks[index].autoMode24_7 = true; // Auto-activate 24/7 mode
     setNetworks(updatedNetworks);
     
     toast({
-      title: "Red Social Conectada",
-      description: `${updatedNetworks[index].name} conectado exitosamente. Bot 24/7 activándose...`,
+      title: "Red Social Conectada Permanentemente",
+      description: `${updatedNetworks[index].name} conectado y funcionando 24/7. Las consultas importantes se redirigen a tu WhatsApp.`,
     });
   };
 
@@ -61,7 +62,7 @@ const SocialNetworkConfig = () => {
     
     toast({
       title: "Red Social Desconectada",
-      description: `${updatedNetworks[index].name} desconectado. Bot 24/7 desactivado.`,
+      description: `${updatedNetworks[index].name} desconectado manualmente. Bot 24/7 desactivado.`,
     });
   };
 
@@ -71,8 +72,8 @@ const SocialNetworkConfig = () => {
     setNetworks(updatedNetworks);
     
     toast({
-      title: updatedNetworks[index].autoMode24_7 ? "Modo 24/7 Activado" : "Modo 24/7 Desactivado",
-      description: `Bot automático para ${updatedNetworks[index].name} ${updatedNetworks[index].autoMode24_7 ? 'activado' : 'desactivado'}`,
+      title: updatedNetworks[index].autoMode24_7 ? "Modo 24/7 Reactivado" : "Modo 24/7 Pausado",
+      description: `Bot automático para ${updatedNetworks[index].name} ${updatedNetworks[index].autoMode24_7 ? 'reactivado - redirigiendo leads a WhatsApp' : 'pausado temporalmente'}`,
     });
   };
 
@@ -86,12 +87,12 @@ const SocialNetworkConfig = () => {
               {network.name}
               {network.connected && (
                 <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">
-                  Conectado
+                  Conectado Permanente
                 </span>
               )}
               {network.autoMode24_7 && (
                 <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full animate-pulse">
-                  Bot 24/7 Activo
+                  Bot 24/7 → WhatsApp
                 </span>
               )}
             </CardTitle>
@@ -108,6 +109,11 @@ const SocialNetworkConfig = () => {
                 placeholder={`@tu_perfil_${network.name.toLowerCase()}`}
                 disabled={network.connected}
               />
+              {network.connected && (
+                <p className="text-xs text-green-600 mt-1">
+                  ✓ Conexión permanente activa - No se desconecta automáticamente
+                </p>
+              )}
             </div>
             
             {network.connected && (
@@ -116,14 +122,14 @@ const SocialNetworkConfig = () => {
                   checked={network.autoMode24_7}
                   onCheckedChange={() => toggleAutoMode(index)}
                 />
-                <Label>Gestión Automática 24/7 para Crecimiento y Conversión</Label>
+                <Label>Gestión 24/7 con Redirección Automática a WhatsApp</Label>
               </div>
             )}
             
             <div className="flex gap-2">
               {!network.connected ? (
                 <Button onClick={() => handleConnect(index)} className="w-full">
-                  Conectar {network.name}
+                  Conectar {network.name} Permanentemente
                 </Button>
               ) : (
                 <Button 
@@ -131,13 +137,19 @@ const SocialNetworkConfig = () => {
                   variant="destructive" 
                   className="w-full"
                 >
-                  Desconectar {network.name}
+                  Desconectar {network.name} (Solo Manual)
                 </Button>
               )}
             </div>
           </CardContent>
         </Card>
       ))}
+      
+      <div className="bg-yellow-50 p-4 rounded-lg">
+        <p className="text-sm text-yellow-800">
+          <strong>💡 Importante:</strong> Una vez conectadas, tus redes sociales permanecen activas 24/7 redirigiendo leads calificados a tu WhatsApp. Solo tú puedes desconectarlas manualmente.
+        </p>
+      </div>
     </div>
   );
 };
