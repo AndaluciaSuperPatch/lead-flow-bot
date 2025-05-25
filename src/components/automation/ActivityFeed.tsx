@@ -15,6 +15,8 @@ interface ActivityFeedProps {
 }
 
 const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
+  console.log('ActivityFeed rendering with activities:', activities);
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800 border-red-200';
@@ -23,6 +25,17 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
+
+  if (!activities || !Array.isArray(activities)) {
+    console.error('ActivityFeed: activities is not an array:', activities);
+    return (
+      <Card>
+        <CardContent>
+          <p>Error loading activities</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>

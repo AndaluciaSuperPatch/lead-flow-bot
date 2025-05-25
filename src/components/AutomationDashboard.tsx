@@ -8,8 +8,11 @@ import GrowthTargets from './automation/GrowthTargets';
 import { useAutomationStats } from '@/hooks/useAutomationStats';
 import { activities } from '@/data/automationActivities';
 
-const AutomationDashboard = () => {
+const AutomationDashboard: React.FC = () => {
   const automationStats = useAutomationStats();
+
+  console.log('AutomationDashboard rendering with stats:', automationStats);
+  console.log('Activities data:', activities);
 
   return (
     <div className="space-y-6">
