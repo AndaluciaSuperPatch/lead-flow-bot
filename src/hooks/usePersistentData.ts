@@ -14,6 +14,7 @@ export const usePersistentData = <T>(key: string, initialValue: T) => {
     } catch (error) {
       console.error(`❌ Error cargando datos para ${key}:`, error);
     }
+    console.log(`🆕 Usando valor inicial para ${key}:`, initialValue);
     return initialValue;
   });
 
@@ -26,7 +27,7 @@ export const usePersistentData = <T>(key: string, initialValue: T) => {
       
       try {
         localStorage.setItem(key, JSON.stringify(updatedData));
-        console.log(`💾 Datos guardados para ${key}:`, updatedData);
+        console.log(`💾 Datos guardados exitosamente para ${key}:`, updatedData);
       } catch (error) {
         console.error(`❌ Error guardando datos para ${key}:`, error);
       }
@@ -35,7 +36,17 @@ export const usePersistentData = <T>(key: string, initialValue: T) => {
     });
   };
 
-  // Forzar persistencia cada 10 segundos para garantizar que no se pierdan datos
+  // Guardar inmediatamente cuando cambian los datos
+  useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+      console.log(`🔄 Auto-guardado inmediato para ${key}`);
+    } catch (error) {
+      console.error(`❌ Error en auto-guardado inmediato para ${key}:`, error);
+    }
+  }, [key, data]);
+
+  // Forzar persistencia cada 5 segundos para mayor seguridad
   useEffect(() => {
     const interval = setInterval(() => {
       try {
@@ -44,7 +55,7 @@ export const usePersistentData = <T>(key: string, initialValue: T) => {
       } catch (error) {
         console.error(`❌ Error en auto-guardado para ${key}:`, error);
       }
-    }, 10000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [key, data]);

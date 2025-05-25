@@ -10,7 +10,7 @@ import SocialNetworkCard from './social/SocialNetworkCard';
 const SocialNetworkConfig = () => {
   const { toast } = useToast();
   
-  const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v2', getInitialNetworks());
+  const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v3', getInitialNetworks());
   const [activities, setActivities] = usePersistentData<Record<string, string[]>>('patchbot-activities', {});
 
   // Sistema de crecimiento agresivo y persistente
@@ -43,7 +43,7 @@ const SocialNetworkConfig = () => {
         console.log('🚀 Crecimiento agresivo aplicado a todas las redes conectadas');
         return updatedNetworks;
       });
-    }, 20000); // Actualizar cada 20 segundos para crecimiento más agresivo
+    }, 20000);
 
     return () => clearInterval(interval);
   }, [setNetworks, setActivities]);
@@ -64,15 +64,20 @@ const SocialNetworkConfig = () => {
   };
 
   const handleProfileChange = (index: number, value: string) => {
-    const updatedNetworks = [...networks];
-    updatedNetworks[index].profile = value;
-    updatedNetworks[index].verified = false;
-    setNetworks(updatedNetworks);
+    console.log(`💾 Guardando perfil ${value} para red ${networks[index].name}`);
+    setNetworks(prevNetworks => {
+      const updatedNetworks = [...prevNetworks];
+      updatedNetworks[index] = {
+        ...updatedNetworks[index],
+        profile: value,
+        verified: false
+      };
+      return updatedNetworks;
+    });
   };
 
   const handleConnect = async (index: number) => {
-    const updatedNetworks = [...networks];
-    const network = updatedNetworks[index];
+    const network = networks[index];
     
     if (!network.profile.trim()) {
       toast({
@@ -91,46 +96,57 @@ const SocialNetworkConfig = () => {
     // Simulación de verificación mejorada
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    updatedNetworks[index] = {
-      ...network,
-      connected: true,
-      autoMode24_7: true,
-      verified: true,
-      connectionTime: new Date().toISOString(),
-      lastUpdate: new Date().toISOString()
-    };
-    
-    setNetworks(updatedNetworks);
+    setNetworks(prevNetworks => {
+      const updatedNetworks = [...prevNetworks];
+      updatedNetworks[index] = {
+        ...updatedNetworks[index],
+        connected: true,
+        autoMode24_7: true,
+        verified: true,
+        connectionTime: new Date().toISOString(),
+        lastUpdate: new Date().toISOString()
+      };
+      return updatedNetworks;
+    });
     
     toast({
       title: "🚀 RED SOCIAL CONECTADA PERMANENTEMENTE",
-      description: `${network.name} verificado y sistema de crecimiento agresivo 24/7 ACTIVADO. Nunca se desconectará automáticamente.`,
+      description: `${network.name} verificado y sistema de crecimiento agresivo 24/7 ACTIVADO. Para contacto empresarial: WhatsApp +34654669289`,
     });
   };
 
   const handleDisconnect = (index: number) => {
-    const updatedNetworks = [...networks];
-    updatedNetworks[index].connected = false;
-    updatedNetworks[index].profile = '';
-    updatedNetworks[index].autoMode24_7 = false;
-    updatedNetworks[index].verified = false;
-    updatedNetworks[index].growthMetrics = { followersGained: 0, engagementRate: 0, leadsGenerated: 0, postsCreated: 0, commentsResponded: 0, storiesPosted: 0, reachIncreased: 0, impressions: 0, saves: 0, shares: 0, profileVisits: 0, websiteClicks: 0 };
-    setNetworks(updatedNetworks);
+    setNetworks(prevNetworks => {
+      const updatedNetworks = [...prevNetworks];
+      updatedNetworks[index] = {
+        ...updatedNetworks[index],
+        connected: false,
+        autoMode24_7: false,
+        verified: false,
+        growthMetrics: { followersGained: 0, engagementRate: 0, leadsGenerated: 0, postsCreated: 0, commentsResponded: 0, storiesPosted: 0, reachIncreased: 0, impressions: 0, saves: 0, shares: 0, profileVisits: 0, websiteClicks: 0 }
+      };
+      return updatedNetworks;
+    });
     
     toast({
       title: "Red Social Desconectada",
-      description: `${updatedNetworks[index].name} desconectado manualmente. Todos los datos eliminados.`,
+      description: `${networks[index].name} desconectado manualmente. Perfil guardado permanentemente.`,
     });
   };
 
   const toggleAutoMode = (index: number) => {
-    const updatedNetworks = [...networks];
-    updatedNetworks[index].autoMode24_7 = !updatedNetworks[index].autoMode24_7;
-    setNetworks(updatedNetworks);
+    setNetworks(prevNetworks => {
+      const updatedNetworks = [...prevNetworks];
+      updatedNetworks[index] = {
+        ...updatedNetworks[index],
+        autoMode24_7: !updatedNetworks[index].autoMode24_7
+      };
+      return updatedNetworks;
+    });
     
     toast({
-      title: updatedNetworks[index].autoMode24_7 ? "🔥 Modo Crecimiento 24/7 ACTIVADO" : "Modo 24/7 Pausado",
-      description: `Bot para ${updatedNetworks[index].name} ${updatedNetworks[index].autoMode24_7 ? 'trabajando para hacer crecer tu perfil y generar leads de calidad' : 'pausado temporalmente'}`,
+      title: networks[index].autoMode24_7 ? "🔥 Modo Crecimiento 24/7 ACTIVADO" : "Modo 24/7 Pausado",
+      description: `Bot para ${networks[index].name} ${!networks[index].autoMode24_7 ? 'trabajando para hacer crecer tu perfil y generar leads de calidad. Contacto: +34654669289' : 'pausado temporalmente'}`,
     });
   };
 
@@ -167,9 +183,9 @@ const SocialNetworkConfig = () => {
       
       <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
         <p className="text-sm text-green-800">
-          <strong>🚀 SISTEMA EXPERTO ACTIVADO:</strong> Tus redes sociales se mantienen conectadas PERMANENTEMENTE 
-          con almacenamiento ultra-seguro. El sistema de crecimiento agresivo trabaja 24/7 sin parar, 
-          generando seguidores reales, engagement masivo y dirigiendo leads premium a tu WhatsApp automáticamente.
+          <strong>🚀 SISTEMA EXPERTO ACTIVADO:</strong> Tus perfiles se guardan PERMANENTEMENTE 
+          y nunca se pierden. El sistema de crecimiento agresivo trabaja 24/7 generando leads premium. 
+          <strong> Para contacto empresarial directo: WhatsApp +34654669289</strong>
         </p>
       </div>
     </div>

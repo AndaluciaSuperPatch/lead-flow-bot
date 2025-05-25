@@ -14,16 +14,31 @@ interface SystemSettingsProps {
 const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }) => {
   const [autoMessage, setAutoMessage] = usePersistentData(
     'patchbot-auto-message',
-    "Hola, gracias por tu interés en SuperPatch. Nuestro sistema de IA ha detectado que podrías beneficiarte enormemente de nuestros productos innovadores. Para resolver tus dudas específicas y ofrecerte la mejor solución personalizada, te invito a contactarme directamente por WhatsApp. ¡Estoy aquí para ayudarte a alcanzar tus objetivos!"
+    "¡Hola! Gracias por tu interés en hacer negocios conmigo. He detectado que eres un empresario con potencial y me encantaría hablar contigo sobre oportunidades de crecimiento y colaboración. Para una comunicación directa y personalizada, te invito a contactarme por WhatsApp al +34654669289. ¡Estoy aquí para hacer crecer tu negocio!"
   );
 
+  React.useEffect(() => {
+    // Establecer automáticamente el WhatsApp si no está configurado
+    if (!whatsapp) {
+      setWhatsapp("+34654669289");
+    }
+  }, [whatsapp, setWhatsapp]);
+
   const handleSaveConfig = async () => {
-    alert("Configuración guardada PERMANENTEMENTE. El sistema seguirá funcionando 24/7 hasta que lo desconectes manualmente.");
+    alert("Configuración guardada PERMANENTEMENTE. Tus datos nunca se perderán y el sistema seguirá funcionando 24/7.");
   };
 
   return (
     <Card>
       <CardContent className="p-4 space-y-4">
+        <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-lg border border-green-300">
+          <h3 className="font-bold text-lg mb-2">📱 Contacto Empresarial Principal</h3>
+          <p className="text-2xl font-bold text-green-700">WhatsApp: +34654669289</p>
+          <p className="text-sm text-gray-700 mt-2">
+            Este número se muestra automáticamente a empresarios y clientes potenciales que quieren hacer negocios contigo.
+          </p>
+        </div>
+
         <div>
           <p className="font-bold mb-2">📱 WhatsApp Business (Conexión PERMANENTE)</p>
           <p className="text-sm text-gray-600 mb-2">
@@ -32,7 +47,7 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }
           <Input 
             value={whatsapp} 
             onChange={e => setWhatsapp(e.target.value)} 
-            placeholder="Número de WhatsApp Business (ej: 573001234567)" 
+            placeholder="Número de WhatsApp Business" 
             className="mb-2"
           />
           <Button onClick={handleSaveConfig} className="bg-green-600 hover:bg-green-700">
@@ -43,7 +58,7 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }
         <div className="border-t pt-4">
           <h3 className="font-bold mb-2">💬 Mensaje de Redirección Inteligente</h3>
           <p className="text-sm text-gray-600 mb-3">
-            Este mensaje dirige automáticamente a los leads premium hacia tu WhatsApp
+            Este mensaje dirige automáticamente a los leads premium hacia tu WhatsApp: +34654669289
           </p>
           <Textarea 
             value={autoMessage} 
@@ -54,7 +69,7 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }
           />
           <Button 
             className="mt-2"
-            onClick={() => alert("Mensaje actualizado. El sistema seguirá dirigiendo leads premium a tu WhatsApp.")}
+            onClick={() => alert("Mensaje actualizado. Los clientes empresariales serán dirigidos a tu WhatsApp +34654669289")}
           >
             🚀 Actualizar Mensaje de Redirección
           </Button>
@@ -64,7 +79,7 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }
           <p className="font-bold mb-2">🔥 Estado del Sistema de Crecimiento Agresivo</p>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-green-600">●</span> WhatsApp: CONECTADO PERMANENTE
+              <span className="text-green-600">●</span> WhatsApp +34654669289: ACTIVO
             </div>
             <div>
               <span className="text-green-600">●</span> Análisis IA: ACTIVO 24/7
@@ -79,7 +94,7 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }
               <span className="text-purple-600">●</span> Leads Premium: GENERACIÓN ACTIVA
             </div>
             <div>
-              <span className="text-orange-600">●</span> Verificación Enlaces: AUTOMÁTICA
+              <span className="text-orange-600">●</span> Perfiles: GUARDADOS PERMANENTEMENTE
             </div>
           </div>
         </div>
@@ -116,9 +131,9 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({ whatsapp, setWhatsapp }
 
         <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
           <p className="text-sm text-green-800">
-            <strong>🚀 SISTEMA EXPERTO ACTIVADO:</strong> Todos los datos se guardan PERMANENTEMENTE en tu navegador. 
-            Las conexiones NUNCA se pierden automáticamente. El bot trabaja 24/7 haciendo crecer tus redes exponencialmente 
-            y dirigiendo leads premium directamente a tu WhatsApp para maximizar las ventas.
+            <strong>🚀 SISTEMA EXPERTO ACTIVADO:</strong> Todos tus perfiles y datos se guardan PERMANENTEMENTE. 
+            Las conexiones NUNCA se pierden. Los clientes empresariales son dirigidos automáticamente a tu 
+            WhatsApp +34654669289 para maximizar las oportunidades de negocio y ventas.
           </p>
         </div>
       </CardContent>
