@@ -31,6 +31,14 @@ const SocialNetworkCard: React.FC<SocialNetworkCardProps> = ({
   onToggleAutoMode,
   onOpenProfile
 }) => {
+  console.log(`🔍 Rendering SocialNetworkCard for ${network.name}`, { network, activities });
+
+  // Ensure network object is valid
+  if (!network || !network.name) {
+    console.error('❌ Invalid network object:', network);
+    return null;
+  }
+
   return (
     <Card className={`transition-all ${network.connected ? 'border-green-500 bg-green-50' : ''}`}>
       <CardHeader className="pb-3">
@@ -86,7 +94,7 @@ const SocialNetworkCard: React.FC<SocialNetworkCardProps> = ({
         {network.connected && (
           <>
             <GrowthMetricsDisplay network={network} />
-            <ActivityDisplay networkName={network.name} activities={activities} />
+            <ActivityDisplay networkName={network.name} activities={activities || []} />
 
             <div className="flex items-center space-x-2">
               <Switch

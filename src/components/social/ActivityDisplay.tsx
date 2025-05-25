@@ -7,7 +7,12 @@ interface ActivityDisplayProps {
 }
 
 const ActivityDisplay: React.FC<ActivityDisplayProps> = ({ networkName, activities }) => {
-  if (!activities || activities.length === 0) return null;
+  console.log(`🔍 ActivityDisplay for ${networkName}:`, activities);
+
+  if (!activities || !Array.isArray(activities) || activities.length === 0) {
+    console.log(`📝 No activities for ${networkName}`);
+    return null;
+  }
 
   return (
     <div className="bg-gray-50 p-3 rounded-lg">
