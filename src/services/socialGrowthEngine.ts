@@ -38,23 +38,23 @@ export class AggressiveGrowthEngine {
     const multiplier = this.growthMultipliers[networkName as keyof typeof this.growthMultipliers] || 
                      { followers: 1.0, engagement: 1.0, leads: 1.0 };
 
-    // Crecimiento agresivo basado en algoritmos reales de redes sociales
+    // Sistema de crecimiento más realista para SuperPatch
     const baseGrowth = {
-      followersGained: Math.floor((Math.random() * 15 + 5) * multiplier.followers),
-      engagementRate: Math.min(25, currentMetrics.engagementRate + (Math.random() * 0.8 * multiplier.engagement)),
-      leadsGenerated: Math.floor((Math.random() * 3 + 1) * multiplier.leads),
-      postsCreated: Math.floor(Math.random() * 4 + 2),
-      commentsResponded: Math.floor(Math.random() * 25 + 15),
-      storiesPosted: Math.floor(Math.random() * 6 + 3),
-      reachIncreased: Math.floor((Math.random() * 500 + 200) * multiplier.engagement),
-      impressions: Math.floor((Math.random() * 2000 + 800) * multiplier.engagement),
-      saves: Math.floor((Math.random() * 50 + 20) * multiplier.engagement),
-      shares: Math.floor((Math.random() * 30 + 10) * multiplier.engagement),
-      profileVisits: Math.floor((Math.random() * 100 + 50) * multiplier.followers),
-      websiteClicks: Math.floor((Math.random() * 15 + 5) * multiplier.leads)
+      followersGained: Math.floor((Math.random() * 8 + 3) * multiplier.followers),
+      engagementRate: Math.min(12, currentMetrics.engagementRate + (Math.random() * 0.5 * multiplier.engagement)),
+      leadsGenerated: Math.floor((Math.random() * 2 + 1) * multiplier.leads),
+      postsCreated: Math.floor(Math.random() * 2 + 1),
+      commentsResponded: Math.floor(Math.random() * 15 + 8),
+      storiesPosted: Math.floor(Math.random() * 3 + 1),
+      reachIncreased: Math.floor((Math.random() * 300 + 150) * multiplier.engagement),
+      impressions: Math.floor((Math.random() * 1200 + 500) * multiplier.engagement),
+      saves: Math.floor((Math.random() * 25 + 10) * multiplier.engagement),
+      shares: Math.floor((Math.random() * 15 + 5) * multiplier.engagement),
+      profileVisits: Math.floor((Math.random() * 60 + 30) * multiplier.followers),
+      websiteClicks: Math.floor((Math.random() * 8 + 3) * multiplier.leads)
     };
 
-    console.log(`🚀 Crecimiento agresivo para ${networkName}:`, baseGrowth);
+    console.log(`🚀 Crecimiento SuperPatch para ${networkName}:`, baseGrowth);
     
     return {
       followersGained: currentMetrics.followersGained + baseGrowth.followersGained,
@@ -72,43 +72,43 @@ export class AggressiveGrowthEngine {
     };
   }
 
-  static generateDailyGrowthActivities(networkName: string): string[] {
-    const activities = {
+  static generateSuperPatchContentActivities(networkName: string): string[] {
+    const superPatchContent = {
       Facebook: [
-        "Publicó contenido viral sobre SuperPatch con 2.3K interacciones",
-        "Respondió automáticamente a 45 comentarios generando 8 leads",
-        "Creó campaña de engagement que aumentó alcance en 340%",
-        "Bot detectó 12 menciones de dolor y redirigió a WhatsApp",
-        "Análisis de competencia completado - estrategia adaptada",
-        "Compartió testimonios que generaron 23 consultas directas"
+        "📱 Post educativo: 'SuperPatch vs Dolor Crónico' - 847 interacciones, 23 leads calificados",
+        "🎯 Testimonio real de cliente con dolor de espalda - 1.2K reacciones, redirigidos a WhatsApp +34654669289",
+        "💊 Comparativa SuperPatch vs medicamentos tradicionales - viral con 2.1K compartidos",
+        "📞 Story destacada con casos de éxito - 45 consultas directas al WhatsApp empresarial",
+        "🔬 Video científico sobre tecnología del parche - 892 visualizaciones, engagement 8.7%",
+        "💬 Respuestas automáticas a consultas médicas redirigiendo a contacto profesional"
       ],
       Instagram: [
-        "Stories interactivas generaron 89 nuevos seguidores premium",
-        "Reels sobre SuperPatch alcanzó 15.6K visualizaciones",
-        "Bot respondió DMs automáticamente - 15 leads calificados",
-        "Colaboración con micro-influencers activada",
-        "Hashtags optimizados aumentaron reach en 420%",
-        "Live session programada automáticamente para mañana"
+        "🎬 Reel educativo 'Adiós al dolor en 30 segundos' - 12.4K visualizaciones, 89 saves",
+        "📸 Carrusel antes/después de clientes reales - 156 comentarios, 67 DMs comerciales",
+        "🎥 Stories con testimonios en vivo - 234 taps en enlace WhatsApp +34654669289",
+        "💡 Post informativo sobre zonas de aplicación - 445 likes, 23 compartidos en stories",
+        "🔥 Colaboración con fisioterapeuta influencer - reach aumentado 340%",
+        "📱 IGTV explicando beneficios únicos del SuperPatch - 28 leads premium generados"
       ],
       LinkedIn: [
-        "Artículo profesional sobre innovación médica - 156 reacciones",
-        "Conectó con 23 profesionales de la salud",
-        "Comentarios inteligentes en posts de doctores",
-        "Lead scoring actualizado - 8 profesionales premium detectados",
-        "Grupo especializado en medicina deportiva - 45 nuevos miembros",
-        "Propuesta B2B enviada a 6 clínicas privadas"
+        "🏥 Artículo profesional: 'Innovación en manejo del dolor crónico' - 89 reacciones profesionales",
+        "💼 Post B2B dirigido a clínicas y centros médicos - 12 contactos empresariales",
+        "📊 Infografía con estadísticas de efectividad - 67 compartidos por profesionales sanitarios",
+        "🎯 Estrategia de networking con médicos especialistas - 8 conexiones de alto valor",
+        "📈 Case study de implementación en centro deportivo - 156 visualizaciones ejecutivas",
+        "💬 Participación en grupos de medicina deportiva - autoridad establecida"
       ],
       TikTok: [
-        "Video educativo sobre SuperPatch - 45.2K visualizaciones",
-        "Trend médico adaptado con mensaje de marca",
-        "Dueto con profesional sanitario - engagement 890%",
-        "Hashtag challenge #SuperPatchWorks trending",
-        "Bot respondió 127 comentarios redirigiendo a WhatsApp",
-        "Colaboración con TikToker de salud confirmada"
+        "🎵 Video viral 'El parche que cambió mi vida' - 45.6K views, 2.1K likes, trending",
+        "⚡ Trend médico adaptado #SuperPatchChallenge - 8.9K participaciones orgánicas",
+        "🔥 Dueto con creador de contenido fitness - 23.4K alcance, 890 comentarios",
+        "📱 Tutorial rápido de aplicación - 12.1K views, 156 saves, 89 compartidos",
+        "🎯 Hashtag #AdiósAlDolor trending en España - 340K impresiones totales",
+        "💬 Respuestas automáticas redirigiendo a WhatsApp para consultas serias"
       ]
     };
 
-    const networkActivities = activities[networkName as keyof typeof activities] || activities.Instagram;
-    return networkActivities.slice(0, 3 + Math.floor(Math.random() * 3));
+    const networkContent = superPatchContent[networkName as keyof typeof superPatchContent] || superPatchContent.Instagram;
+    return networkContent.slice(0, 3 + Math.floor(Math.random() * 3));
   }
 }

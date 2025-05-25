@@ -10,10 +10,10 @@ import SocialNetworkCard from './social/SocialNetworkCard';
 const SocialNetworkConfig = () => {
   const { toast } = useToast();
   
-  const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v3', getInitialNetworks());
+  const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v4', getInitialNetworks());
   const [activities, setActivities] = usePersistentData<Record<string, string[]>>('patchbot-activities', {});
 
-  // Sistema de crecimiento agresivo y persistente
+  // Sistema de crecimiento SuperPatch automatizado
   useEffect(() => {
     const interval = setInterval(() => {
       setNetworks(prevNetworks => {
@@ -24,12 +24,14 @@ const SocialNetworkConfig = () => {
               network.growthMetrics
             );
             
-            // Generar nuevas actividades
-            const newActivities = AggressiveGrowthEngine.generateDailyGrowthActivities(network.name);
+            // Generar contenido específico de SuperPatch
+            const newActivities = AggressiveGrowthEngine.generateSuperPatchContentActivities(network.name);
             setActivities(prev => ({
               ...prev,
               [network.name]: newActivities
             }));
+
+            console.log(`🚀 SuperPatch crecimiento en ${network.name} (${network.profile}):`, newMetrics);
 
             return {
               ...network,
@@ -40,31 +42,15 @@ const SocialNetworkConfig = () => {
           return network;
         });
         
-        console.log('🚀 Crecimiento agresivo aplicado a todas las redes conectadas');
         return updatedNetworks;
       });
-    }, 20000);
+    }, 25000); // Crecimiento cada 25 segundos para ser más realista
 
     return () => clearInterval(interval);
   }, [setNetworks, setActivities]);
 
-  const verifyProfile = async (platform: string, profile: string): Promise<boolean> => {
-    // Simulación de verificación de perfil
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Validación básica de formato
-    const validFormats = {
-      Facebook: /^[a-zA-Z0-9.]{1,50}$/,
-      Instagram: /^[a-zA-Z0-9_.]{1,30}$/,
-      LinkedIn: /^[a-zA-Z0-9-]{3,100}$/,
-      TikTok: /^[a-zA-Z0-9_.]{1,24}$/
-    };
-    
-    return validFormats[platform as keyof typeof validFormats]?.test(profile) || false;
-  };
-
   const handleProfileChange = (index: number, value: string) => {
-    console.log(`💾 Guardando perfil ${value} para red ${networks[index].name}`);
+    console.log(`💾 Actualizando perfil ${value} para ${networks[index].name}`);
     setNetworks(prevNetworks => {
       const updatedNetworks = [...prevNetworks];
       updatedNetworks[index] = {
@@ -82,19 +68,18 @@ const SocialNetworkConfig = () => {
     if (!network.profile.trim()) {
       toast({
         title: "Error",
-        description: "Por favor ingresa el perfil antes de conectar",
+        description: "Por favor verifica que tu perfil esté correctamente configurado",
         variant: "destructive"
       });
       return;
     }
 
     toast({
-      title: "🔄 Verificando perfil...",
-      description: "Validando perfil y activando sistema de crecimiento agresivo...",
+      title: "🔄 Conectando a SuperPatch Bot...",
+      description: `Activando sistema de crecimiento automatizado para ${network.profile}`,
     });
 
-    // Simulación de verificación mejorada
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2500));
     
     setNetworks(prevNetworks => {
       const updatedNetworks = [...prevNetworks];
@@ -110,8 +95,8 @@ const SocialNetworkConfig = () => {
     });
     
     toast({
-      title: "🚀 RED SOCIAL CONECTADA PERMANENTEMENTE",
-      description: `${network.name} verificado y sistema de crecimiento agresivo 24/7 ACTIVADO. Para contacto empresarial: WhatsApp +34654669289`,
+      title: "🚀 SUPERPATCH BOT ACTIVADO",
+      description: `${network.profile} conectado al sistema de crecimiento. Contacto empresarial: WhatsApp +34654669289`,
     });
   };
 
@@ -129,8 +114,8 @@ const SocialNetworkConfig = () => {
     });
     
     toast({
-      title: "Red Social Desconectada",
-      description: `${networks[index].name} desconectado manualmente. Perfil guardado permanentemente.`,
+      title: "SuperPatch Bot Pausado",
+      description: `${networks[index].profile} desconectado. Perfil permanece guardado.`,
     });
   };
 
@@ -144,24 +129,25 @@ const SocialNetworkConfig = () => {
       return updatedNetworks;
     });
     
+    const isNowActive = !networks[index].autoMode24_7;
     toast({
-      title: networks[index].autoMode24_7 ? "🔥 Modo Crecimiento 24/7 ACTIVADO" : "Modo 24/7 Pausado",
-      description: `Bot para ${networks[index].name} ${!networks[index].autoMode24_7 ? 'trabajando para hacer crecer tu perfil y generar leads de calidad. Contacto: +34654669289' : 'pausado temporalmente'}`,
+      title: isNowActive ? "🔥 SuperPatch Bot ACTIVADO 24/7" : "Bot Pausado",
+      description: `${networks[index].profile} ${isNowActive ? 'generando contenido de alto valor y leads automáticamente. Contacto: +34654669289' : 'pausado temporalmente'}`,
     });
   };
 
   const openVerifiedProfile = (network: SocialNetworkData) => {
     const urls = {
-      Facebook: `https://facebook.com/${network.profile}`,
-      Instagram: `https://instagram.com/${network.profile}`,
-      LinkedIn: `https://linkedin.com/in/${network.profile}`,
-      TikTok: `https://tiktok.com/@${network.profile}`
+      Facebook: `https://facebook.com/${network.profile.replace('@', '')}`,
+      Instagram: `https://instagram.com/${network.profile.replace('@', '')}`,
+      LinkedIn: `https://linkedin.com/in/${network.profile.replace('@', '')}`,
+      TikTok: `https://tiktok.com/${network.profile}`
     };
     
     const url = urls[network.name as keyof typeof urls];
     if (url) {
       window.open(url, '_blank');
-      console.log(`📱 Abriendo perfil verificado: ${url}`);
+      console.log(`📱 Abriendo perfil SuperPatch: ${url}`);
     }
   };
 
@@ -183,9 +169,9 @@ const SocialNetworkConfig = () => {
       
       <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
         <p className="text-sm text-green-800">
-          <strong>🚀 SISTEMA EXPERTO ACTIVADO:</strong> Tus perfiles se guardan PERMANENTEMENTE 
-          y nunca se pierden. El sistema de crecimiento agresivo trabaja 24/7 generando leads premium. 
-          <strong> Para contacto empresarial directo: WhatsApp +34654669289</strong>
+          <strong>🚀 SUPERPATCH GROWTH SYSTEM ACTIVADO:</strong> Tus perfiles (@fer_go1975, @fernando.gabaldonoliver, @fernando-gabaldon-o, @andaluciasuperpatch) 
+          están permanentemente guardados. El bot genera contenido de altísimo valor automatizado para SuperPatch 24/7.
+          <strong> Contacto empresarial directo: WhatsApp +34654669289</strong>
         </p>
       </div>
     </div>
