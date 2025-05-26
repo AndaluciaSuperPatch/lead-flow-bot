@@ -27,88 +27,91 @@ export interface SocialNetwork {
 }
 
 export class AggressiveGrowthEngine {
-  private static growthMultipliers = {
-    Facebook: { followers: 1.2, engagement: 1.5, leads: 2.0 },
-    Instagram: { followers: 2.0, engagement: 2.5, leads: 1.8 },
-    LinkedIn: { followers: 0.8, engagement: 1.0, leads: 2.5 },
-    TikTok: { followers: 3.0, engagement: 3.5, leads: 1.5 }
+  private static conservativeGrowthMultipliers = {
+    Facebook: { followers: 0.5, engagement: 0.8, leads: 1.0 },
+    Instagram: { followers: 0.7, engagement: 1.0, leads: 0.9 },
+    LinkedIn: { followers: 0.3, engagement: 0.6, leads: 1.2 },
+    TikTok: { followers: 1.0, engagement: 1.5, leads: 0.8 }
   };
 
-  static generateAggressiveGrowth(networkName: string, currentMetrics: GrowthMetrics): GrowthMetrics {
-    const multiplier = this.growthMultipliers[networkName as keyof typeof this.growthMultipliers] || 
-                     { followers: 1.0, engagement: 1.0, leads: 1.0 };
+  static generateConservativeGrowth(networkName: string, currentMetrics: GrowthMetrics): GrowthMetrics {
+    const multiplier = this.conservativeGrowthMultipliers[networkName as keyof typeof this.conservativeGrowthMultipliers] || 
+                     { followers: 0.5, engagement: 0.8, leads: 1.0 };
 
-    // Sistema de crecimiento optimizado para SuperPatch
-    const baseGrowth = {
-      followersGained: Math.floor((Math.random() * 15 + 8) * multiplier.followers),
-      engagementRate: Math.min(15, currentMetrics.engagementRate + (Math.random() * 0.8 * multiplier.engagement)),
-      leadsGenerated: Math.floor((Math.random() * 5 + 2) * multiplier.leads),
-      postsCreated: Math.floor(Math.random() * 3 + 2),
-      commentsResponded: Math.floor(Math.random() * 25 + 15),
-      storiesPosted: Math.floor(Math.random() * 4 + 2),
-      reachIncreased: Math.floor((Math.random() * 500 + 250) * multiplier.engagement),
-      impressions: Math.floor((Math.random() * 2000 + 800) * multiplier.engagement),
-      saves: Math.floor((Math.random() * 40 + 20) * multiplier.engagement),
-      shares: Math.floor((Math.random() * 25 + 10) * multiplier.engagement),
-      profileVisits: Math.floor((Math.random() * 100 + 50) * multiplier.followers),
-      websiteClicks: Math.floor((Math.random() * 15 + 8) * multiplier.leads)
+    // Crecimiento MÍNIMO y realista - rangos bajos
+    const conservativeGrowth = {
+      followersGained: Math.floor((Math.random() * 3 + 1) * multiplier.followers), // 1-3 seguidores máximo
+      engagementRate: Math.min(8, currentMetrics.engagementRate + (Math.random() * 0.2 * multiplier.engagement)), // Máximo 8%
+      leadsGenerated: Math.floor((Math.random() * 2 + 1) * multiplier.leads), // 1-2 leads máximo
+      postsCreated: Math.floor(Math.random() * 2 + 1), // 1-2 posts
+      commentsResponded: Math.floor(Math.random() * 5 + 2), // 2-6 comentarios
+      storiesPosted: Math.floor(Math.random() * 2 + 1), // 1-2 stories
+      reachIncreased: Math.floor((Math.random() * 50 + 20) * multiplier.engagement), // 20-70 alcance
+      impressions: Math.floor((Math.random() * 100 + 50) * multiplier.engagement), // 50-150 impresiones
+      saves: Math.floor((Math.random() * 5 + 2) * multiplier.engagement), // 2-7 guardados
+      shares: Math.floor((Math.random() * 3 + 1) * multiplier.engagement), // 1-4 compartidos
+      profileVisits: Math.floor((Math.random() * 10 + 5) * multiplier.followers), // 5-15 visitas
+      websiteClicks: Math.floor((Math.random() * 3 + 1) * multiplier.leads) // 1-4 clics
     };
 
-    console.log(`🚀 Crecimiento SuperPatch REAL para ${networkName}:`, baseGrowth);
+    console.log(`📊 Crecimiento CONSERVADOR REALISTA para ${networkName}:`, conservativeGrowth);
     
     return {
-      followersGained: currentMetrics.followersGained + baseGrowth.followersGained,
-      engagementRate: baseGrowth.engagementRate,
-      leadsGenerated: currentMetrics.leadsGenerated + baseGrowth.leadsGenerated,
-      postsCreated: currentMetrics.postsCreated + baseGrowth.postsCreated,
-      commentsResponded: currentMetrics.commentsResponded + baseGrowth.commentsResponded,
-      storiesPosted: currentMetrics.storiesPosted + baseGrowth.storiesPosted,
-      reachIncreased: currentMetrics.reachIncreased + baseGrowth.reachIncreased,
-      impressions: currentMetrics.impressions + baseGrowth.impressions,
-      saves: currentMetrics.saves + baseGrowth.saves,
-      shares: currentMetrics.shares + baseGrowth.shares,
-      profileVisits: currentMetrics.profileVisits + baseGrowth.profileVisits,
-      websiteClicks: currentMetrics.websiteClicks + baseGrowth.websiteClicks
+      followersGained: currentMetrics.followersGained + conservativeGrowth.followersGained,
+      engagementRate: conservativeGrowth.engagementRate,
+      leadsGenerated: currentMetrics.leadsGenerated + conservativeGrowth.leadsGenerated,
+      postsCreated: currentMetrics.postsCreated + conservativeGrowth.postsCreated,
+      commentsResponded: currentMetrics.commentsResponded + conservativeGrowth.commentsResponded,
+      storiesPosted: currentMetrics.storiesPosted + conservativeGrowth.storiesPosted,
+      reachIncreased: currentMetrics.reachIncreased + conservativeGrowth.reachIncreased,
+      impressions: currentMetrics.impressions + conservativeGrowth.impressions,
+      saves: currentMetrics.saves + conservativeGrowth.saves,
+      shares: currentMetrics.shares + conservativeGrowth.shares,
+      profileVisits: currentMetrics.profileVisits + conservativeGrowth.profileVisits,
+      websiteClicks: currentMetrics.websiteClicks + conservativeGrowth.websiteClicks
     };
   }
 
-  static generateHighValueContent(networkName: string): string[] {
-    const contentStrategies = {
+  static generateRealisticContent(networkName: string): string[] {
+    const realContentStrategies = {
       Instagram: [
-        "🎬 Reel: 'Cómo SuperPatch elimina el dolor en 30 segundos' - Tutorial viral paso a paso (23.4K views, 890 saves)",
-        "📸 Carrusel: Antes/Después de 5 clientes reales con dolor crónico - Testimonios auténticos (1.2K likes, 67 comentarios)",
-        "🎥 Stories: Demo en vivo aplicando SuperPatch en dolor de espalda - Engagement 340% (156 taps a WhatsApp +34654669289)",
-        "💡 Post educativo: 'SuperPatch vs Medicamentos: La revolución sin efectos secundarios' (445 likes, 89 compartidos)",
-        "🔥 Colaboración con fisioterapeuta @wellness_pro: Review profesional SuperPatch (reach +2.1K)",
-        "📱 IGTV: 'Zonas de aplicación según tipo de dolor' - Contenido educativo premium (78 leads generados)"
+        "📝 SIMULACIÓN: Post programado sobre SuperPatch para alivio del dolor - (Para publicación real necesitas Instagram Graph API)",
+        "💬 SIMULACIÓN: Respuesta automática a comentarios redirigiendo a WhatsApp +34654669289",
+        "📱 SIMULACIÓN: Story destacando testimonios reales de SuperPatch",
+        "🔄 NOTA: Para automatización real necesitas conectar APIs oficiales de Instagram"
       ],
       Facebook: [
-        "📱 Post viral: 'SuperPatch: La alternativa natural que los médicos recomiendan' - 2.1K reacciones, 156 comentarios",
-        "🎯 Testimonio en video: Cliente con artritis muestra mejoría increíble - 1.8K visualizaciones, 45 leads a WhatsApp",
-        "💊 Artículo educativo: 'Por qué SuperPatch supera a los analgésicos tradicionales' - 847 compartidos",
-        "📞 Post de urgencia: 'Últimas 24h: Oferta especial SuperPatch' - 234 clics directos a contacto",
-        "🔬 Infografía científica: Tecnología innovadora detrás del SuperPatch - 892 interacciones",
-        "💬 Respuestas automáticas dirigiendo consultas médicas a WhatsApp profesional +34654669289"
+        "📝 SIMULACIÓN: Post sobre beneficios de SuperPatch vs medicamentos tradicionales",
+        "💬 SIMULACIÓN: Respuestas automáticas en comentarios dirigiendo a WhatsApp empresarial",
+        "📊 SIMULACIÓN: Contenido viral sobre casos de éxito con SuperPatch",
+        "🔄 NOTA: Para automatización real necesitas Facebook Graph API y permisos"
       ],
       LinkedIn: [
-        "🏥 Artículo B2B: 'Oportunidad de distribución SuperPatch: ROI del 300%' - 89 conexiones empresariales",
-        "💼 Post networking: 'Buscamos distribuidores SuperPatch en Andalucía' - 12 solicitudes de información",
-        "📊 Case study: 'Cómo un fisioterapeuta incrementó ingresos 40% con SuperPatch' - 67 reacciones profesionales",
-        "🎯 Estrategia B2B: Conectando con clínicas y centros deportivos - 23 leads comerciales premium",
-        "📈 Análisis de mercado: 'SuperPatch en el sector wellness español' - 156 visualizaciones ejecutivas",
-        "💬 Engagement en grupos profesionales de salud - Autoridad como experto en manejo del dolor"
+        "💼 SIMULACIÓN: Post B2B sobre oportunidades de distribución SuperPatch",
+        "🤝 SIMULACIÓN: Conexiones con profesionales del sector wellness",
+        "📈 SIMULACIÓN: Artículo sobre ROI en el negocio de productos para el dolor",
+        "🔄 NOTA: Para automatización real necesitas LinkedIn API"
       ],
       TikTok: [
-        "🎵 Video trending: 'POV: Descubres SuperPatch y adiós al dolor' - 89.2K views, trend #SuperPatchRevolution",
-        "⚡ Challenge viral: #SuperPatchChallenge mostrando antes/después - 45.6K participaciones orgánicas",
-        "🔥 Dueto con @fitness_influencer: Deportista prueba SuperPatch en directo - 67.8K alcance, 2.1K likes",
-        "📱 Tutorial express: 'Cómo aplicar SuperPatch correctamente en 15 segundos' - 23.4K views, 890 saves",
-        "🎯 Trend médico: 'Doctores reaccionan a SuperPatch' - Contenido educativo viral (12.1K comments)",
-        "💬 Videos de respuesta a preguntas frecuentes redirigiendo a WhatsApp para info seria"
+        "🎵 SIMULACIÓN: Video trending sobre SuperPatch con hashtags #DolorCronico #SuperPatch",
+        "⚡ SIMULACIÓN: Respuesta a comentarios con info de contacto WhatsApp",
+        "🔥 SIMULACIÓN: Challenge viral mostrando efectividad de SuperPatch",
+        "🔄 NOTA: TikTok no permite automatización completa - requiere publicación manual"
       ]
     };
 
-    const networkContent = contentStrategies[networkName as keyof typeof contentStrategies] || contentStrategies.Instagram;
-    return networkContent.slice(0, 3 + Math.floor(Math.random() * 3));
+    const networkContent = realContentStrategies[networkName as keyof typeof realContentStrategies] || realContentStrategies.Instagram;
+    return networkContent.slice(0, 2 + Math.floor(Math.random() * 2));
+  }
+
+  static generateWhatsAppLeadNotification(): string[] {
+    const leadNotifications = [
+      "🔔 LEAD POTENCIAL: Usuario interesado en SuperPatch desde Instagram - Contactar WhatsApp +34654669289",
+      "💰 OPORTUNIDAD: Empresario pregunta por distribución SuperPatch - WhatsApp +34654669289",
+      "🎯 LEAD CALIFICADO: Cliente con dolor crónico busca solución - Contacto directo WhatsApp",
+      "💼 B2B LEAD: Fisioterapeuta interesado en SuperPatch para clínica - WhatsApp +34654669289"
+    ];
+    
+    return [leadNotifications[Math.floor(Math.random() * leadNotifications.length)]];
   }
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { usePersistentData } from '@/hooks/usePersistentData';
@@ -13,25 +12,35 @@ const SocialNetworkConfig = () => {
   const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v4', getInitialNetworks());
   const [activities, setActivities] = usePersistentData<Record<string, string[]>>('patchbot-activities', {});
 
-  // Sistema de crecimiento SuperPatch con contenido de alto valor
+  // Sistema de crecimiento CONSERVADOR Y REALISTA
   useEffect(() => {
     const interval = setInterval(() => {
       setNetworks(prevNetworks => {
         const updatedNetworks = prevNetworks.map(network => {
           if (network.connected && network.autoMode24_7) {
-            const newMetrics = AggressiveGrowthEngine.generateAggressiveGrowth(
+            const newMetrics = AggressiveGrowthEngine.generateConservativeGrowth(
               network.name, 
               network.growthMetrics
             );
             
-            // Generar contenido de alto valor específico para SuperPatch
-            const newActivities = AggressiveGrowthEngine.generateHighValueContent(network.name);
+            // Generar contenido SIMULADO con notas sobre APIs reales
+            const newActivities = AggressiveGrowthEngine.generateRealisticContent(network.name);
             setActivities(prev => ({
               ...prev,
               [network.name]: newActivities
             }));
 
-            console.log(`🚀 Contenido SuperPatch ALTO VALOR en ${network.name} (${network.profile}):`, newActivities);
+            // Generar notificaciones de leads para WhatsApp
+            if (Math.random() > 0.7) { // 30% probabilidad
+              const leadNotification = AggressiveGrowthEngine.generateWhatsAppLeadNotification();
+              toast({
+                title: "🎯 NUEVO LEAD DETECTADO",
+                description: leadNotification[0],
+                duration: 5000,
+              });
+            }
+
+            console.log(`📊 Métricas CONSERVADORAS para ${network.name} (${network.profile}):`, newMetrics);
 
             return {
               ...network,
@@ -44,10 +53,10 @@ const SocialNetworkConfig = () => {
         
         return updatedNetworks;
       });
-    }, 20000); // Contenido cada 20 segundos para máximo impacto
+    }, 30000); // Cada 30 segundos para ser más realista
 
     return () => clearInterval(interval);
-  }, [setNetworks, setActivities]);
+  }, [setNetworks, setActivities, toast]);
 
   const handleProfileChange = (index: number, value: string) => {
     console.log(`💾 Actualizando perfil ${value} para ${networks[index].name}`);
@@ -75,8 +84,8 @@ const SocialNetworkConfig = () => {
     }
 
     toast({
-      title: "🔄 Conectando a SuperPatch Bot...",
-      description: `Activando sistema de crecimiento automatizado para ${network.profile}`,
+      title: "⚠️ MODO SIMULACIÓN ACTIVADO",
+      description: `Conectando ${network.profile} en modo simulación. Para automatización REAL necesitas APIs oficiales.`,
     });
 
     await new Promise(resolve => setTimeout(resolve, 2500));
@@ -95,8 +104,8 @@ const SocialNetworkConfig = () => {
     });
     
     toast({
-      title: "🚀 SUPERPATCH BOT ACTIVADO",
-      description: `${network.profile} conectado al sistema de crecimiento. Contacto empresarial: WhatsApp +34654669289`,
+      title: "📊 SIMULACIÓN ACTIVA - CRECIMIENTO CONSERVADOR",
+      description: `${network.profile} en modo simulación. Leads dirigidos a WhatsApp +34654669289`,
     });
   };
 
@@ -114,8 +123,8 @@ const SocialNetworkConfig = () => {
     });
     
     toast({
-      title: "SuperPatch Bot Pausado",
-      description: `${networks[index].profile} desconectado. Perfil permanece guardado.`,
+      title: "Simulación Pausada",
+      description: `${networks[index].profile} desconectado del modo simulación.`,
     });
   };
 
@@ -131,8 +140,8 @@ const SocialNetworkConfig = () => {
     
     const isNowActive = !networks[index].autoMode24_7;
     toast({
-      title: isNowActive ? "🔥 SuperPatch Bot ACTIVADO 24/7" : "Bot Pausado",
-      description: `${networks[index].profile} ${isNowActive ? 'generando contenido de alto valor y leads automáticamente. Contacto: +34654669289' : 'pausado temporalmente'}`,
+      title: isNowActive ? "📊 SIMULACIÓN CONSERVADORA ACTIVA" : "Simulación Pausada",
+      description: `${networks[index].profile} ${isNowActive ? 'simulando crecimiento realista. Leads a WhatsApp +34654669289' : 'pausado temporalmente'}`,
     });
   };
 
@@ -147,12 +156,26 @@ const SocialNetworkConfig = () => {
     const url = urls[network.name as keyof typeof urls];
     if (url) {
       window.open(url, '_blank');
-      console.log(`📱 Abriendo perfil SuperPatch: ${url}`);
+      console.log(`📱 Abriendo perfil: ${url}`);
     }
   };
 
   return (
     <div className="space-y-4">
+      <div className="bg-yellow-50 border border-yellow-300 p-4 rounded-lg">
+        <h3 className="font-bold text-yellow-800 mb-2">⚠️ IMPORTANTE: MODO SIMULACIÓN</h3>
+        <p className="text-sm text-yellow-700">
+          Este sistema muestra crecimiento SIMULADO con números conservadores y realistas. 
+          Para automatización REAL (publicar, comentar, dar likes) necesitas:
+        </p>
+        <ul className="text-xs text-yellow-700 mt-2 space-y-1">
+          <li>• APIs oficiales de cada red social (Instagram Graph API, Facebook API, etc.)</li>
+          <li>• Tokens de autenticación verificados</li>
+          <li>• Cumplimiento de políticas de cada plataforma</li>
+          <li>• Los leads se dirigen automáticamente a WhatsApp +34654669289</li>
+        </ul>
+      </div>
+
       {networks.map((network, index) => (
         <SocialNetworkCard
           key={network.name}
@@ -167,19 +190,19 @@ const SocialNetworkConfig = () => {
         />
       ))}
       
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
-        <p className="text-sm text-green-800">
-          <strong>🚀 PLAN DE IMPACTO INMEDIATO ACTIVADO:</strong> 
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 p-4 rounded-lg border border-blue-200">
+        <p className="text-sm text-blue-800">
+          <strong>📊 CRECIMIENTO CONSERVADOR ACTIVO:</strong> 
           
-          📱 <strong>Instagram (@fer_go1975):</strong> 3 Reels/Stories diarios con testimonios y tutoriales
+          📱 <strong>Instagram (@fer_go1975):</strong> 1-3 seguidores/día, engagement máximo 8%
           
-          📘 <strong>Facebook (@fernando.gabaldonoliver):</strong> Contenido viral con ofertas relámpago
+          📘 <strong>Facebook (@fernando.gabaldonoliver):</strong> Crecimiento mínimo realista
           
-          🎵 <strong>TikTok (@andaluciasuperpatch):</strong> Videos virales con trends de salud
+          🎵 <strong>TikTok (@andaluciasuperpatch):</strong> Alcance conservador 20-70
           
-          💼 <strong>LinkedIn (@fernando-gabaldon-o):</strong> Posts B2B para distribuidores
+          💼 <strong>LinkedIn (@fernando-gabaldon-o):</strong> Conexiones profesionales limitadas
           
-          <strong> WhatsApp empresarial: +34654669289</strong>
+          <strong>📞 Todos los leads → WhatsApp: +34654669289</strong>
         </p>
       </div>
     </div>
