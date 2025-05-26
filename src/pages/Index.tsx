@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -9,6 +8,7 @@ import AutomationDashboard from "@/components/AutomationDashboard";
 import SystemSettings from "@/components/settings/SystemSettings";
 import CRMSuperEfficient from "@/components/CRMSuperEfficient";
 import { usePersistentData } from "@/hooks/usePersistentData";
+import IntegratedSocialPublisher from "@/components/IntegratedSocialPublisher";
 
 const Index = () => {
   const [leads, setLeads] = usePersistentData('patchbot-leads', []);
@@ -19,7 +19,7 @@ const Index = () => {
       <h1 className="text-2xl font-bold text-center">PatchBot CRM - Sistema de Crecimiento Agresivo 24/7</h1>
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-3 md:grid-cols-5 gap-1 h-auto">
+        <TabsList className="grid grid-cols-3 md:grid-cols-6 gap-1 h-auto">
           <TabsTrigger value="dashboard" className="h-auto py-2 px-2 text-xs md:text-sm">
             📊 Dashboard
           </TabsTrigger>
@@ -28,6 +28,9 @@ const Index = () => {
           </TabsTrigger>
           <TabsTrigger value="bots" className="h-auto py-2 px-2 text-xs md:text-sm">
             🚀 Redes & Bots
+          </TabsTrigger>
+          <TabsTrigger value="publisher" className="h-auto py-2 px-2 text-xs md:text-sm">
+            📱 Publicador
           </TabsTrigger>
           <TabsTrigger value="automation" className="h-auto py-2 px-2 text-xs md:text-sm">
             ⚡ Automatización
@@ -61,6 +64,18 @@ const Index = () => {
                 </p>
                 <SocialNetworkConfig />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="publisher">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-lg font-semibold mb-4">📱 Publicador Integral de Redes Sociales</h2>
+              <p className="text-sm text-gray-600 mb-4">
+                Publica simultáneamente en todas tus redes con hashtags optimizados y horarios estratégicos.
+              </p>
+              <IntegratedSocialPublisher />
             </CardContent>
           </Card>
         </TabsContent>
