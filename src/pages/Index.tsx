@@ -7,6 +7,7 @@ import SocialNetworkConfig from "@/components/SocialNetworkConfig";
 import AdvancedLeadManagement from "@/components/AdvancedLeadManagement";
 import AutomationDashboard from "@/components/AutomationDashboard";
 import SystemSettings from "@/components/settings/SystemSettings";
+import CRMSuperEfficient from "@/components/CRMSuperEfficient";
 import { usePersistentData } from "@/hooks/usePersistentData";
 
 const Index = () => {

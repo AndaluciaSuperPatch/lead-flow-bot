@@ -13,7 +13,7 @@ const SocialNetworkConfig = () => {
   const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v4', getInitialNetworks());
   const [activities, setActivities] = usePersistentData<Record<string, string[]>>('patchbot-activities', {});
 
-  // Sistema de crecimiento SuperPatch automatizado
+  // Sistema de crecimiento SuperPatch con contenido de alto valor
   useEffect(() => {
     const interval = setInterval(() => {
       setNetworks(prevNetworks => {
@@ -24,14 +24,14 @@ const SocialNetworkConfig = () => {
               network.growthMetrics
             );
             
-            // Generar contenido específico de SuperPatch
-            const newActivities = AggressiveGrowthEngine.generateSuperPatchContentActivities(network.name);
+            // Generar contenido de alto valor específico para SuperPatch
+            const newActivities = AggressiveGrowthEngine.generateHighValueContent(network.name);
             setActivities(prev => ({
               ...prev,
               [network.name]: newActivities
             }));
 
-            console.log(`🚀 SuperPatch crecimiento en ${network.name} (${network.profile}):`, newMetrics);
+            console.log(`🚀 Contenido SuperPatch ALTO VALOR en ${network.name} (${network.profile}):`, newActivities);
 
             return {
               ...network,
@@ -44,7 +44,7 @@ const SocialNetworkConfig = () => {
         
         return updatedNetworks;
       });
-    }, 25000); // Crecimiento cada 25 segundos para ser más realista
+    }, 20000); // Contenido cada 20 segundos para máximo impacto
 
     return () => clearInterval(interval);
   }, [setNetworks, setActivities]);
@@ -169,9 +169,17 @@ const SocialNetworkConfig = () => {
       
       <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
         <p className="text-sm text-green-800">
-          <strong>🚀 SUPERPATCH GROWTH SYSTEM ACTIVADO:</strong> Tus perfiles (@fer_go1975, @fernando.gabaldonoliver, @fernando-gabaldon-o, @andaluciasuperpatch) 
-          están permanentemente guardados. El bot genera contenido de altísimo valor automatizado para SuperPatch 24/7.
-          <strong> Contacto empresarial directo: WhatsApp +34654669289</strong>
+          <strong>🚀 PLAN DE IMPACTO INMEDIATO ACTIVADO:</strong> 
+          
+          📱 <strong>Instagram (@fer_go1975):</strong> 3 Reels/Stories diarios con testimonios y tutoriales
+          
+          📘 <strong>Facebook (@fernando.gabaldonoliver):</strong> Contenido viral con ofertas relámpago
+          
+          🎵 <strong>TikTok (@andaluciasuperpatch):</strong> Videos virales con trends de salud
+          
+          💼 <strong>LinkedIn (@fernando-gabaldon-o):</strong> Posts B2B para distribuidores
+          
+          <strong> WhatsApp empresarial: +34654669289</strong>
         </p>
       </div>
     </div>
