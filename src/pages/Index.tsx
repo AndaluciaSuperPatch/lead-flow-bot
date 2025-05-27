@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -13,6 +12,7 @@ import IntegratedSocialPublisher from "@/components/IntegratedSocialPublisher";
 import PublicationMonitor from "@/components/automation/PublicationMonitor";
 import AdvancedContentManager from "@/components/automation/AdvancedContentManager";
 import CoreSystemStatus from "@/components/core/CoreSystemStatus";
+import ApiTokenTester from "@/components/ApiTokenTester";
 
 const Index = () => {
   const [leads, setLeads] = usePersistentData('patchbot-leads', []);
@@ -24,6 +24,9 @@ const Index = () => {
 
       {/* Estado del Sistema Core */}
       <CoreSystemStatus />
+
+      {/* Probador de API Token */}
+      <ApiTokenTester />
 
       <Tabs defaultValue="dashboard" className="w-full">
         <TabsList className="grid grid-cols-3 md:grid-cols-7 gap-1 h-auto">
