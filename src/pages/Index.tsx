@@ -9,6 +9,8 @@ import SystemSettings from "@/components/settings/SystemSettings";
 import CRMSuperEfficient from "@/components/CRMSuperEfficient";
 import { usePersistentData } from "@/hooks/usePersistentData";
 import IntegratedSocialPublisher from "@/components/IntegratedSocialPublisher";
+import PublicationMonitor from "@/components/automation/PublicationMonitor";
+import AdvancedContentManager from "@/components/automation/AdvancedContentManager";
 
 const Index = () => {
   const [leads, setLeads] = usePersistentData('patchbot-leads', []);
@@ -19,7 +21,7 @@ const Index = () => {
       <h1 className="text-2xl font-bold text-center">PatchBot CRM - Sistema de Crecimiento Agresivo 24/7</h1>
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-3 md:grid-cols-6 gap-1 h-auto">
+        <TabsList className="grid grid-cols-3 md:grid-cols-7 gap-1 h-auto">
           <TabsTrigger value="dashboard" className="h-auto py-2 px-2 text-xs md:text-sm">
             📊 Dashboard
           </TabsTrigger>
@@ -31,6 +33,12 @@ const Index = () => {
           </TabsTrigger>
           <TabsTrigger value="publisher" className="h-auto py-2 px-2 text-xs md:text-sm">
             📱 Publicador
+          </TabsTrigger>
+          <TabsTrigger value="advanced" className="h-auto py-2 px-2 text-xs md:text-sm">
+            🎯 Gestor Avanzado
+          </TabsTrigger>
+          <TabsTrigger value="monitor" className="h-auto py-2 px-2 text-xs md:text-sm">
+            📈 Monitor
           </TabsTrigger>
           <TabsTrigger value="automation" className="h-auto py-2 px-2 text-xs md:text-sm">
             ⚡ Automatización
@@ -76,6 +84,30 @@ const Index = () => {
                 Publica simultáneamente en todas tus redes con hashtags optimizados y horarios estratégicos.
               </p>
               <IntegratedSocialPublisher />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="advanced">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-lg font-semibold mb-4">🎯 Gestor Avanzado de Contenido</h2>
+              <p className="text-sm text-gray-600 mb-4">
+                Crea, valida y programa contenido optimizado con IA y análisis en tiempo real.
+              </p>
+              <AdvancedContentManager />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="monitor">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-lg font-semibold mb-4">📈 Monitor de Publicaciones en Tiempo Real</h2>
+              <p className="text-sm text-gray-600 mb-4">
+                Supervisa y controla todas las publicaciones automáticas y programadas.
+              </p>
+              <PublicationMonitor />
             </CardContent>
           </Card>
         </TabsContent>
