@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -11,6 +12,7 @@ import { usePersistentData } from "@/hooks/usePersistentData";
 import IntegratedSocialPublisher from "@/components/IntegratedSocialPublisher";
 import PublicationMonitor from "@/components/automation/PublicationMonitor";
 import AdvancedContentManager from "@/components/automation/AdvancedContentManager";
+import CoreSystemStatus from "@/components/core/CoreSystemStatus";
 
 const Index = () => {
   const [leads, setLeads] = usePersistentData('patchbot-leads', []);
@@ -19,6 +21,9 @@ const Index = () => {
   return (
     <div className="p-4 grid gap-4 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold text-center">PatchBot CRM - Sistema de Crecimiento Agresivo 24/7</h1>
+
+      {/* Estado del Sistema Core */}
+      <CoreSystemStatus />
 
       <Tabs defaultValue="dashboard" className="w-full">
         <TabsList className="grid grid-cols-3 md:grid-cols-7 gap-1 h-auto">
