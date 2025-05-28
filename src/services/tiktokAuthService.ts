@@ -50,7 +50,7 @@ export class TikTokAuthService {
       formData.append('client_secret', this.config.clientSecret);
       formData.append('grant_type', 'client_credentials');
 
-      const response = await fetch(this.API_URL, {
+      const response = await fetch(TikTokAuthService.API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
