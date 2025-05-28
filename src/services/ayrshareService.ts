@@ -1,4 +1,4 @@
-import { tiktokAuth } from './tiktokAuthService';
+import { socialAuthCoordinator } from './socialAuthCoordinator';
 
 export interface AyrsharePostRequest {
   post: string;
@@ -26,13 +26,32 @@ export class AyrshareService {
   static async publishPost(request: AyrsharePostRequest): Promise<AyrshareResponse> {
     console.log('🚀 PUBLICANDO CON AYRSHARE:', request);
 
-    // Verificar si hay token de TikTok disponible para publicaciones en TikTok
-    if (request.platforms.includes('tiktok')) {
-      const tiktokToken = tiktokAuth.getAccessToken();
+    // Verificar tokens disponibles para cada plataforma
+    const connectedPlatforms = socialAuthCoordinator.getConnectedPlatforms();
+    console.log('🔗 Plataformas conectadas:', connectedPlatforms);
+
+    // Enriquecer la request con tokens específicos si están disponibles
+    const enrichedRequest = { ...request };
+    
+    if (request.platforms.includes('tiktok') && connectedPlatforms.includes('tiktok')) {
+      const tiktokToken = socialAuthCoordinator.getPlatformToken('tiktok');
       if (tiktokToken) {
         console.log('✅ Token de TikTok disponible para publicación');
-      } else {
-        console.log('⚠️ Token de TikTok no disponible, usando configuración estándar');
+        // Ayrshare manejará automáticamente el token si está configurado
+      }
+    }
+
+    if (request.platforms.includes('facebook') && connectedPlatforms.includes('facebook')) {
+      const facebookToken = socialAuthCoordinator.getPlatformToken('facebook');
+      if (facebookToken) {
+        console.log('✅ Token de Facebook/Instagram disponible para publicación');
+      }
+    }
+
+    if (request.platforms.includes('linkedin') && connectedPlatforms.includes('linkedin')) {
+      const linkedinToken = socialAuthCoordinator.getPlatformToken('linkedin');
+      if (linkedinToken) {
+        console.log('✅ Token de LinkedIn disponible para publicación');
       }
     }
 
@@ -43,7 +62,7 @@ export class AyrshareService {
           'Authorization': `Bearer ${this.API_TOKEN}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(enrichedRequest),
       });
 
       if (!response.ok) {

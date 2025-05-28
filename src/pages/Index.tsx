@@ -14,6 +14,7 @@ import AdvancedContentManager from "@/components/automation/AdvancedContentManag
 import CoreSystemStatus from "@/components/core/CoreSystemStatus";
 import ApiTokenTester from "@/components/ApiTokenTester";
 import TikTokAuthManager from "@/components/TikTokAuthManager";
+import UnifiedSocialAuthManager from "@/components/social/UnifiedSocialAuthManager";
 
 const Index = () => {
   const [leads, setLeads] = usePersistentData('patchbot-leads', []);
@@ -30,7 +31,7 @@ const Index = () => {
       <ApiTokenTester />
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid grid-cols-3 md:grid-cols-8 gap-1 h-auto">
+        <TabsList className="grid grid-cols-3 md:grid-cols-9 gap-1 h-auto">
           <TabsTrigger value="dashboard" className="h-auto py-2 px-2 text-xs md:text-sm">
             📊 Dashboard
           </TabsTrigger>
@@ -55,8 +56,8 @@ const Index = () => {
           <TabsTrigger value="settings" className="h-auto py-2 px-2 text-xs md:text-sm">
             ⚙️ Configuración
           </TabsTrigger>
-          <TabsTrigger value="tiktok" className="h-auto py-2 px-2 text-xs md:text-sm">
-            🎵 TikTok API
+          <TabsTrigger value="social-auth" className="h-auto py-2 px-2 text-xs md:text-sm">
+            🌐 Auth Social
           </TabsTrigger>
         </TabsList>
 
@@ -139,14 +140,14 @@ const Index = () => {
             setWhatsapp={setWhatsapp}
           />
         </TabsContent>
-        <TabsContent value="tiktok">
+        <TabsContent value="social-auth">
           <Card>
             <CardContent className="p-4">
-              <h2 className="text-lg font-semibold mb-4">🎵 Gestión de API TikTok</h2>
+              <h2 className="text-lg font-semibold mb-4">🌐 Gestión Unificada de Autenticación Social</h2>
               <p className="text-sm text-gray-600 mb-4">
-                Configura y mantén la conexión con TikTok API con renovación automática cada 2 horas.
+                Sistema completo de autenticación OAuth 2.0 para todas las plataformas sociales con renovación automática y manejo robusto de errores.
               </p>
-              <TikTokAuthManager />
+              <UnifiedSocialAuthManager />
             </CardContent>
           </Card>
         </TabsContent>
