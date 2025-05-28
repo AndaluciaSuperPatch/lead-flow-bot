@@ -1,3 +1,4 @@
+import { tiktokAuth } from './tiktokAuthService';
 
 export interface AyrsharePostRequest {
   post: string;
@@ -24,6 +25,16 @@ export class AyrshareService {
 
   static async publishPost(request: AyrsharePostRequest): Promise<AyrshareResponse> {
     console.log('🚀 PUBLICANDO CON AYRSHARE:', request);
+
+    // Verificar si hay token de TikTok disponible para publicaciones en TikTok
+    if (request.platforms.includes('tiktok')) {
+      const tiktokToken = tiktokAuth.getAccessToken();
+      if (tiktokToken) {
+        console.log('✅ Token de TikTok disponible para publicación');
+      } else {
+        console.log('⚠️ Token de TikTok no disponible, usando configuración estándar');
+      }
+    }
 
     try {
       const response = await fetch(`${this.API_BASE}/post`, {
