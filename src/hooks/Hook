@@ -1,0 +1,23 @@
+import { useState, useEffect } from "react";
+
+// Hook para persistencia robusta en localStorage
+export function usePersistentData(key, defaultValue) {
+  const [data, setData] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(data));
+    } catch {
+      // Manejar errores de almacenamiento lleno, etc.
+    }
+  }, [key, data]);
+
+  return [data, setData];
+}
