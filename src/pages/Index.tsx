@@ -1,4 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+// ...otros imports
+
+const Index = () => {
+  useEffect(() => {
+    const redirect = sessionStorage.redirect;
+    if (redirect && redirect !== window.location.pathname) {
+      window.history.replaceState(null, null, redirect);
+      sessionStorage.removeItem('redirect');
+    }
+  }, []);
+
+  // ...el resto del componente
+};import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import DashboardOverview from "@/components/dashboard/DashboardOverview";
@@ -157,3 +170,66 @@ const Index = () => {
 };
 
 export default Index;
+import React, { useState } from "react";
+
+// IDs únicos para accesibilidad
+const tabIds = [
+  { value: "dashboard", label: "Dashboard" },
+  { value: "leads", label: "Leads Premium" },
+  { value: "bots", label: "Redes & Bots" },
+  // ...agrega los demás tabs aquí
+];
+
+const AccessibleTabs = () => {
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  return (
+    <div>
+      <div role="tablist" aria-label="Secciones PatchBot" className="tablist">
+        {tabIds.map(tab => (
+          <button
+            key={tab.value}
+            id={`tab-${tab.value}`}
+            role="tab"
+            aria-selected={activeTab === tab.value}
+            aria-controls={`panel-${tab.value}`}
+            tabIndex={activeTab === tab.value ? 0 : -1}
+            className={`tab-btn ${activeTab === tab.value ? "active" : ""}`}
+            onClick={() => setActiveTab(tab.value)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      {tabIds.map(tab => (
+        <div
+          key={tab.value}
+          role="tabpanel"
+          id={`panel-${tab.value}`}
+          aria-labelledby={`tab-${tab.value}`}
+          hidden={activeTab !== tab.value}
+          tabIndex={0}
+        >
+          {activeTab === tab.value && (
+            <div>
+              {/* Aquí va el contenido de cada tab */}
+              {tab.value === "dashboard" && <DashboardOverview />}
+              {tab.value === "leads" && <AdvancedLeadManagement />}
+              {tab.value === "bots" && <SocialNetworkConfig />}
+              {/* ...agrega los demás contenidos */}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default AccessibleTabs;
+<img
+  src="/ruta/a/tu-imagen.webp"
+  alt="Descripción clara de la imagen"
+  loading="lazy"
+  width="400"
+  height="300"
+/>
