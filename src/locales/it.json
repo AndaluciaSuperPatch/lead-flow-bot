@@ -1,0 +1,23 @@
+{
+  "welcome": "Benvenuto su PatchBot CRM",
+  "dashboard": "Dashboard",
+  "leads": "Lead",
+  "bots": "Bot e Social Network",
+  "logout": "Disconnetti",
+  "settings": "Impostazioni",
+  "language": "Lingua",
+  "save": "Salva",
+  "cancel": "Annulla",
+  "name": "Nome",
+  "email": "Email",
+  "phone": "Telefono",
+  "actions": "Azioni",
+  "add": "Aggiungi",
+  "edit": "Modifica",
+  "delete": "Elimina",
+  "search": "Cerca",
+  "no_results": "Nessun risultato trovato",
+  "confirm_delete": "Sei sicuro di voler eliminare questo elemento?",
+  "yes": "Sì",
+  "no": "No"
+}

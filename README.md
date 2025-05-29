@@ -71,3 +71,30 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# PatchBot CRM
+
+![Logo PatchBot](https://tu-url-de-logo.com/logo.webp)
+
+> CRM inteligente con integración de bots y gestión de leads para redes sociales.
+
+## 🚀 Características
+
+- Gestión integrada de leads
+- Automatización con bots y redes sociales
+- Soporte multilingüe (en, fr, it, de, es)
+- Panel de control intuitivo
+- Seguridad y privacidad de datos
+
+## 📸 Capturas de Pantalla
+
+<!-- Cambia las URLs por las de tus imágenes WebP si ya las tienes -->
+![Panel de control](https://tu-url-de-imagen.com/dashboard.webp)
+![Gestión de leads](https://tu-url-de-imagen.com/leads.webp)
+
+## 🛠️ Instalación
+
+```bash
+git clone https://github.com/AndaluciaSuperPatch/lead-flow-bot.git
+cd lead-flow-bot
+npm install
+npm start

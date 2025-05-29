@@ -20,3 +20,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
 }));
+export default defineConfig({
+  base: '/lead-flow-bot/',
+  // ... resto de config
+})
