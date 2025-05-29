@@ -226,10 +226,3 @@ const AccessibleTabs = () => {
 };
 
 export default AccessibleTabs;
-<img
-  src="/ruta/a/tu-imagen.webp"
-  alt="Descripción clara de la imagen"
-  loading="lazy"
-  width="400"
-  height="300"
-/>
