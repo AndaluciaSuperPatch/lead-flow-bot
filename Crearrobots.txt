@@ -1,4 +1,0 @@
-User-agent: *
-  Disallow:
-
-  Sitemap: https://andaluciasuperpatch.github.io/lead-flow-bot/sitemap.xml
