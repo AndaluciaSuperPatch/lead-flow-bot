@@ -1,4 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+// ...otros imports
+
+const Index = () => {
+  useEffect(() => {
+    const redirect = sessionStorage.redirect;
+    if (redirect && redirect !== window.location.pathname) {
+      window.history.replaceState(null, null, redirect);
+      sessionStorage.removeItem('redirect');
+    }
+  }, []);
+
+  // ...el resto del componente
+};import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import DashboardOverview from "@/components/dashboard/DashboardOverview";
