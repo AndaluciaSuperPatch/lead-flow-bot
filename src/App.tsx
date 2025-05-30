@@ -25,4 +25,3 @@ const App = () => (
 );
 
 export default App;
-import FloatingButtons from './components/FloatingButtons';
