@@ -16,24 +16,42 @@
     </script>
     <!-- End Meta Pixel Code -->
 
+    <!-- TikTok Pixel Code -->
+    <script>
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject = t;
+        var ttq = w[t] = w[t] || [];
+        ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"];
+        ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } };
+        for (var i = 0; i < ttq.methods.length; i++) { ttq.setAndDefer(ttq, ttq.methods[i]) }
+        ttq.instance = function (t) { var e = ttq._i[t] || []; for (var n = 0; n < ttq.methods.length; n++) { ttq.setAndDefer(e, ttq.methods[n]) } return e };
+        ttq.load = function (e, n) {
+          var i = "https://analytics.tiktok.com/i18n/pixel/events.js";
+          ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = i; ttq._t = ttq._t || {}; ttq._t[e] = +new Date;
+          ttq._o = ttq._o || {}; ttq._o[e] = n || {};
+          var o = document.createElement("script"); o.type = "text/javascript"; o.async = !0; o.src = i;
+          var a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(o, a)
+        };
+        ttq.load('awku9rcpn81ls7p0', { "app_id": "awku9rcpn81ls7p0", "secret": "Gh2K2qXvXcNzrPPTlTchtOeMvyNvdaxl" });
+        ttq.page();
+      }(window, document, 'ttq');
+    </script>
+    <!-- End TikTok Pixel Code -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lead Flow Bot | Multiplica tus Leads Premium y Ventas</title>
     <meta name="description" content="Automatiza la generación de engagement, leads premium y ventas con Lead Flow Bot. Bots inteligentes que trabajan para ti 24/7." />
     <meta name="author" content="Lovable | AndaluciaSuperPatch" />
-
-    <!-- SEO Mejorado -->
     <meta name="robots" content="index, follow" />
     <meta name="keywords" content="leads, ventas, bots, automatización, marketing digital, engagement, lead generation, premium leads, IA, chatbot, embudo de ventas" />
 
-    <!-- Open Graph Mejorado -->
     <meta property="og:title" content="Lead Flow Bot | Multiplica tus Leads y Ventas" />
     <meta property="og:description" content="Ejércitos de bots IA que generan engagement, leads premium y ventas automáticas. ¡Activa tu embudo digital ahora!" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://andaluciasuperpatch.github.io/lead-flow-bot/" />
     <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-    <!-- Twitter Mejorado -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:title" content="Lead Flow Bot | Multiplica tus Leads y Ventas" />
@@ -41,10 +59,8 @@
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     <meta name="twitter:creator" content="@lovable_dev" />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://lovable.dev/favicon.png" />
 
-    <!-- Lead Magnet, CTA y estructura para bots -->
     <style>
       body {
         font-family: 'Segoe UI', Arial, sans-serif;
@@ -90,7 +106,6 @@
     </noscript>
     <!-- End Meta Pixel noscript -->
 
-    <!-- Llamada a la acción poderosa para engagement y leads -->
     <div class="cta-lead">
       🚀 <strong>¿Listo para multiplicar tus leads premium y ventas?</strong><br>
       Descubre cómo nuestros <b>ejércitos de bots inteligentes</b> pueden trabajar para ti 24/7.<br>
@@ -102,12 +117,18 @@
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Script para captar leads directo desde el botón (puedes conectar con tu bot, WhatsApp o formulario) -->
+    <!-- Botón WhatsApp y tracking multiplataforma -->
     <script>
       document.getElementById("lead-btn").onclick = function() {
-        // Redirige a WhatsApp, formulario, o activa tu bot
-        window.open("https://wa.me/34666666666?text=Quiero%20mi%20demo%20de%20Lead%20Flow%20Bot", "_blank");
+        // Redirige a WhatsApp
+        window.open("https://wa.me/34654669289?text=Quiero%20mi%20demo%20de%20Lead%20Flow%20Bot", "_blank");
+        // Tracking para Meta y TikTok
+        if(window.fbq) fbq('track', 'Lead');
+        if(window.ttq) ttq.track('SubmitForm');
       };
     </script>
+
+    <!-- Aquí puedes insertar el script de tu widget de bot profesional (opcional) -->
+    <!-- Ejemplo: <script src="https://widget.manychat.com/XXXXXXXXXX.js" async="async"></script> -->
   </body>
 </html>
