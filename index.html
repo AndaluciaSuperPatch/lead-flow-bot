@@ -117,18 +117,30 @@
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Botón WhatsApp y tracking multiplataforma -->
+    <!-- Botón multi-CTA real: abre tu Google Form para leads -->
     <script>
       document.getElementById("lead-btn").onclick = function() {
-        // Redirige a WhatsApp
-        window.open("https://wa.me/34654669289?text=Quiero%20mi%20demo%20de%20Lead%20Flow%20Bot", "_blank");
-        // Tracking para Meta y TikTok
+        // Abre Google Form real de registro de leads
+        window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGUJmqmoKrTV-PZQ89IKpmYhKAGjiX5N6iTzdiG9JLtwZ_Nw/viewform?usp=header", "_blank");
+        // Tracking multiplataforma real
         if(window.fbq) fbq('track', 'Lead');
         if(window.ttq) ttq.track('SubmitForm');
       };
     </script>
 
-    <!-- Aquí puedes insertar el script de tu widget de bot profesional (opcional) -->
-    <!-- Ejemplo: <script src="https://widget.manychat.com/XXXXXXXXXX.js" async="async"></script> -->
+    <!-- Ejemplo: Widget profesional de chatbot (opcional, para web) -->
+    <!-- <script src="https://widget.manychat.com/XXXXXXXXXX.js" async="async"></script> -->
+
+    <!-- (Opcional) Incrusta el formulario Google si quieres verlo en web: -->
+    <!--
+    <iframe 
+      src="https://docs.google.com/forms/d/e/1FAIpQLSeGUJmqmoKrTV-PZQ89IKpmYhKAGjiX5N6iTzdiG9JLtwZ_Nw/viewform?embedded=true"
+      width="100%" height="900" frameborder="0" marginheight="0" marginwidth="0"
+      style="background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05);"
+      allowfullscreen
+    >
+      Cargando…
+    </iframe>
+    -->
   </body>
 </html>
