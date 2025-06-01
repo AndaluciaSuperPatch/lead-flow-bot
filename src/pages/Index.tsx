@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -7,7 +8,6 @@ import AdvancedLeadManagement from "@/components/AdvancedLeadManagement";
 import AutomationDashboard from "@/components/AutomationDashboard";
 import SystemSettings from "@/components/settings/SystemSettings";
 import CRMSuperEfficient from "@/components/CRMSuperEfficient";
-import { usePersistentData } from "@/hooks/usePersistentData";
 import IntegratedSocialPublisher from "@/components/IntegratedSocialPublisher";
 import PublicationMonitor from "@/components/automation/PublicationMonitor";
 import AdvancedContentManager from "@/components/automation/AdvancedContentManager";
@@ -15,10 +15,10 @@ import CoreSystemStatus from "@/components/core/CoreSystemStatus";
 import ApiTokenTester from "@/components/ApiTokenTester";
 import TikTokAuthManager from "@/components/TikTokAuthManager";
 import UnifiedSocialAuthManager from "@/components/social/UnifiedSocialAuthManager";
+import { useGlobalStore } from "@/stores/globalStore";
 
 const Index = () => {
-  const [leads, setLeads] = usePersistentData('patchbot-leads', []);
-  const [whatsapp, setWhatsapp] = usePersistentData('patchbot-whatsapp', "");
+  const { leads, whatsapp, setLeads, setWhatsapp } = useGlobalStore();
 
   return (
     <div className="p-4 grid gap-4 max-w-6xl mx-auto">

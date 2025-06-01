@@ -1,75 +1,61 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { usePersistentData } from '@/hooks/usePersistentData';
-import { AggressiveGrowthEngine } from '@/services/socialGrowthEngine';
+import { useGlobalStore, useNetworks, useActivities, useNetworkActions } from '@/stores/globalStore';
 import { SocialNetworkData } from '@/types/socialNetwork';
-import { getInitialNetworks } from './social/NetworkInitialData';
 import SocialNetworkCard from './social/SocialNetworkCard';
 
 const SocialNetworkConfig = () => {
   const { toast } = useToast();
   
-  const [networks, setNetworks] = usePersistentData<SocialNetworkData[]>('patchbot-social-networks-v5', getInitialNetworks());
-  const [activities, setActivities] = usePersistentData<Record<string, string[]>>('patchbot-activities', {});
+  const networks = useNetworks();
+  const activities = useActivities();
+  const { updateNetwork, updateActivities } = useNetworkActions();
+  const { generateRealGrowthWithLimits, generateRealContent, generateRealLeadNotification } = useGlobalStore();
 
   // Sistema de crecimiento REAL con límites de seguridad
   useEffect(() => {
     const interval = setInterval(() => {
-      setNetworks(prevNetworks => {
-        const updatedNetworks = prevNetworks.map(network => {
-          if (network.connected && network.autoMode24_7) {
-            // Crecimiento REAL pero conservador para evitar baneos
-            const newMetrics = AggressiveGrowthEngine.generateRealGrowthWithLimits(
-              network.name, 
-              network.growthMetrics
-            );
-            
-            // Contenido REAL con APIs
-            const newActivities = AggressiveGrowthEngine.generateRealContent(network.name);
-            setActivities(prev => ({
-              ...prev,
-              [network.name]: newActivities
-            }));
+      networks.forEach((network, index) => {
+        if (network.connected && network.autoMode24_7) {
+          // Crecimiento REAL pero conservador para evitar baneos
+          const newMetrics = generateRealGrowthWithLimits(
+            network.name, 
+            network.growthMetrics
+          );
+          
+          // Contenido REAL con APIs
+          const newActivities = generateRealContent(network.name);
+          updateActivities(network.name, newActivities);
 
-            // Generar leads REALES dirigidos al formulario
-            if (Math.random() > 0.8) { // 20% probabilidad
-              const leadNotification = AggressiveGrowthEngine.generateRealLeadNotification();
-              toast({
-                title: "🎯 LEAD REAL DETECTADO",
-                description: `${leadNotification} - Formulario: https://forms.gle/2r2g5DzLtAYL8ShH6`,
-                duration: 8000,
-              });
-            }
-
-            console.log(`📊 Métricas REALES para ${network.name} (${network.profile}):`, newMetrics);
-
-            return {
-              ...network,
-              growthMetrics: newMetrics,
-              lastUpdate: new Date().toISOString()
-            };
+          // Generar leads REALES dirigidos al formulario
+          if (Math.random() > 0.8) { // 20% probabilidad
+            const leadNotification = generateRealLeadNotification();
+            toast({
+              title: "🎯 LEAD REAL DETECTADO",
+              description: `${leadNotification} - Formulario: https://forms.gle/2r2g5DzLtAYL8ShH6`,
+              duration: 8000,
+            });
           }
-          return network;
-        });
-        
-        return updatedNetworks;
+
+          console.log(`📊 Métricas REALES para ${network.name} (${network.profile}):`, newMetrics);
+
+          updateNetwork(index, {
+            growthMetrics: newMetrics,
+            lastUpdate: new Date().toISOString()
+          });
+        }
       });
     }, 45000); // Cada 45 segundos para ser más realista y seguro
 
     return () => clearInterval(interval);
-  }, [setNetworks, setActivities, toast]);
+  }, [networks, updateNetwork, updateActivities, generateRealGrowthWithLimits, generateRealContent, generateRealLeadNotification, toast]);
 
   const handleProfileChange = (index: number, value: string) => {
     console.log(`💾 Actualizando perfil ${value} para ${networks[index].name}`);
-    setNetworks(prevNetworks => {
-      const updatedNetworks = [...prevNetworks];
-      updatedNetworks[index] = {
-        ...updatedNetworks[index],
-        profile: value,
-        verified: false
-      };
-      return updatedNetworks;
+    updateNetwork(index, {
+      profile: value,
+      verified: false
     });
   };
 
@@ -92,17 +78,12 @@ const SocialNetworkConfig = () => {
 
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    setNetworks(prevNetworks => {
-      const updatedNetworks = [...prevNetworks];
-      updatedNetworks[index] = {
-        ...updatedNetworks[index],
-        connected: true,
-        autoMode24_7: true,
-        verified: true,
-        connectionTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString()
-      };
-      return updatedNetworks;
+    updateNetwork(index, {
+      connected: true,
+      autoMode24_7: true,
+      verified: true,
+      connectionTime: new Date().toISOString(),
+      lastUpdate: new Date().toISOString()
     });
     
     toast({
@@ -112,16 +93,11 @@ const SocialNetworkConfig = () => {
   };
 
   const handleDisconnect = (index: number) => {
-    setNetworks(prevNetworks => {
-      const updatedNetworks = [...prevNetworks];
-      updatedNetworks[index] = {
-        ...updatedNetworks[index],
-        connected: false,
-        autoMode24_7: false,
-        verified: false,
-        growthMetrics: { followersGained: 0, engagementRate: 0, leadsGenerated: 0, postsCreated: 0, commentsResponded: 0, storiesPosted: 0, reachIncreased: 0, impressions: 0, saves: 0, shares: 0, profileVisits: 0, websiteClicks: 0 }
-      };
-      return updatedNetworks;
+    updateNetwork(index, {
+      connected: false,
+      autoMode24_7: false,
+      verified: false,
+      growthMetrics: { followersGained: 0, engagementRate: 0, leadsGenerated: 0, postsCreated: 0, commentsResponded: 0, storiesPosted: 0, reachIncreased: 0, impressions: 0, saves: 0, shares: 0, profileVisits: 0, websiteClicks: 0 }
     });
     
     toast({
@@ -131,16 +107,12 @@ const SocialNetworkConfig = () => {
   };
 
   const toggleAutoMode = (index: number) => {
-    setNetworks(prevNetworks => {
-      const updatedNetworks = [...prevNetworks];
-      updatedNetworks[index] = {
-        ...updatedNetworks[index],
-        autoMode24_7: !updatedNetworks[index].autoMode24_7
-      };
-      return updatedNetworks;
+    const currentAutoMode = networks[index].autoMode24_7;
+    updateNetwork(index, {
+      autoMode24_7: !currentAutoMode
     });
     
-    const isNowActive = !networks[index].autoMode24_7;
+    const isNowActive = !currentAutoMode;
     toast({
       title: isNowActive ? "🔥 AUTOMATIZACIÓN REAL ACTIVA" : "Automatización Pausada",
       description: `${networks[index].profile} ${isNowActive ? 'funcionando con APIs reales y límites de seguridad' : 'pausado temporalmente'}`,
