@@ -1,4 +1,3 @@
-
 export interface FacebookAuthResponse {
   access_token: string;
   token_type: string;
@@ -33,16 +32,22 @@ export class FacebookAuthService {
   private refreshInterval: NodeJS.Timeout | null = null;
 
   constructor() {
-    console.log('📘 Facebook Auth Service inicializado');
+    console.log('📘 Facebook Auth Service inicializado con URI actualizada');
   }
 
   async initialize(config: FacebookAuthConfig): Promise<string> {
-    this.config = config;
+    // Actualizar URI automáticamente a la correcta
+    const updatedConfig = {
+      ...config,
+      redirectUri: 'https://id-preview--044dd533-cd69-4338-bfbd-ef9d83be351c.lovable.app/auth/facebook/callback'
+    };
+    
+    this.config = updatedConfig;
     
     try {
-      console.log('🔐 Iniciando autenticación con Facebook...');
+      console.log('🔐 Iniciando autenticación REAL con Facebook...');
+      console.log('🔗 URI de callback actualizada:', updatedConfig.redirectUri);
       
-      // Generar URL de autorización
       const authUrl = this.generateAuthUrl();
       console.log('🔗 URL de autorización generada:', authUrl);
       
@@ -79,16 +84,15 @@ export class FacebookAuthService {
     }
 
     try {
-      console.log('🔄 Procesando callback de Facebook...');
+      console.log('🔄 Procesando callback REAL de Facebook...');
       
       const tokenResponse = await this.exchangeCodeForToken(code);
       
       this.accessToken = tokenResponse.access_token;
       this.tokenExpiry = Date.now() + ((tokenResponse.expires_in || 3600) * 1000);
       
-      console.log('✅ Token de Facebook obtenido exitosamente');
+      console.log('✅ Token REAL de Facebook obtenido exitosamente');
       
-      // Configurar renovación automática si el token expira
       if (tokenResponse.expires_in) {
         this.startAutoRefresh(tokenResponse.expires_in);
       }
@@ -127,7 +131,6 @@ export class FacebookAuthService {
       clearInterval(this.refreshInterval);
     }
 
-    // Renovar 5 minutos antes del vencimiento
     const refreshTime = (expiresIn - 300) * 1000;
     
     this.refreshInterval = setInterval(async () => {
@@ -163,7 +166,7 @@ export class FacebookAuthService {
     const data: FacebookAuthResponse = await response.json();
     
     this.accessToken = data.access_token;
-    this.tokenExpiry = Date.now() + ((data.expires_in || 5184000) * 1000); // 60 días por defecto
+    this.tokenExpiry = Date.now() + ((data.expires_in || 5184000) * 1000);
     
     console.log('✅ Token de larga duración obtenido');
   }
@@ -199,7 +202,6 @@ export class FacebookAuthService {
 
     const data = await response.json();
     
-    // Filtrar solo cuentas con Instagram conectado
     const instagramAccounts = [];
     for (const account of data.data) {
       try {

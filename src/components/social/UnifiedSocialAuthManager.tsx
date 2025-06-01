@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,7 @@ const UnifiedSocialAuthManager = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('tiktok');
 
-  // Estados para configuraciones
+  // Estados para configuraciones con URI actualizada
   const [tiktokConfig, setTiktokConfig] = useState({
     clientKey: '',
     clientSecret: ''
@@ -25,19 +24,18 @@ const UnifiedSocialAuthManager = () => {
   const [facebookConfig, setFacebookConfig] = useState({
     appId: '',
     appSecret: '',
-    redirectUri: window.location.origin + '/auth/facebook/callback'
+    redirectUri: 'https://id-preview--044dd533-cd69-4338-bfbd-ef9d83be351c.lovable.app/auth/facebook/callback'
   });
 
   const [linkedinConfig, setLinkedinConfig] = useState({
     clientId: '',
     clientSecret: '',
-    redirectUri: window.location.origin + '/auth/linkedin/callback'
+    redirectUri: 'https://id-preview--044dd533-cd69-4338-bfbd-ef9d83be351c.lovable.app/auth/linkedin/callback'
   });
 
   useEffect(() => {
     updatePlatformStatuses();
     
-    // Actualizar cada 30 segundos
     const interval = setInterval(() => {
       updatePlatformStatuses();
     }, 30000);
@@ -74,8 +72,8 @@ const UnifiedSocialAuthManager = () => {
       if (success) {
         updatePlatformStatuses();
         toast({
-          title: "✅ TikTok Conectado",
-          description: "Autenticación configurada con renovación automática",
+          title: "✅ TikTok Conectado en MODO REAL",
+          description: "Autenticación REAL configurada con renovación automática",
         });
       }
     } catch (error) {
@@ -102,17 +100,19 @@ const UnifiedSocialAuthManager = () => {
     setIsLoading(true);
 
     try {
+      console.log('🔗 Usando URI actualizada:', facebookConfig.redirectUri);
+      
       const authUrl = await socialAuthCoordinator.initializePlatform({
         platform: 'facebook',
         config: facebookConfig
       }) as string;
 
-      // Abrir ventana de autorización
       window.open(authUrl, 'facebook-auth', 'width=600,height=600');
       
       toast({
-        title: "🔗 Facebook",
-        description: "Ventana de autorización abierta. Completa el proceso de autenticación.",
+        title: "🔗 Facebook MODO REAL",
+        description: "Ventana de autorización REAL abierta. URI: https://id-preview--044dd533-cd69-4338-bfbd-ef9d83be351c.lovable.app/auth/facebook/callback",
+        duration: 8000,
       });
     } catch (error) {
       toast({
@@ -143,12 +143,11 @@ const UnifiedSocialAuthManager = () => {
         config: linkedinConfig
       }) as string;
 
-      // Abrir ventana de autorización
       window.open(authUrl, 'linkedin-auth', 'width=600,height=600');
       
       toast({
-        title: "🔗 LinkedIn",
-        description: "Ventana de autorización abierta. Completa el proceso de autenticación.",
+        title: "🔗 LinkedIn MODO REAL",
+        description: "Ventana de autorización REAL abierta. Completa el proceso de autenticación.",
       });
     } catch (error) {
       toast({
@@ -221,12 +220,12 @@ const UnifiedSocialAuthManager = () => {
   return (
     <div className="space-y-6">
       {/* Panel de Estado General */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-300">
+      <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-300">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-600" />
-              Estado de Plataformas Sociales
+              <Users className="w-5 h-5 text-green-600" />
+              🔥 APIs REALES CONECTADAS
             </span>
             <Button
               onClick={handleRefreshAll}
@@ -254,7 +253,7 @@ const UnifiedSocialAuthManager = () => {
                   <div>
                     <div className="font-medium capitalize">{platform}</div>
                     <Badge className={isConnected ? 'bg-green-500' : 'bg-gray-500'}>
-                      {isConnected ? 'CONECTADO' : 'DESCONECTADO'}
+                      {isConnected ? 'REAL MODE' : 'DESCONECTADO'}
                     </Badge>
                   </div>
                 </div>
@@ -267,7 +266,7 @@ const UnifiedSocialAuthManager = () => {
       {/* Configuración por Plataforma */}
       <Card>
         <CardHeader>
-          <CardTitle>Configuración de Plataformas</CardTitle>
+          <CardTitle>🔥 Configuración APIs REALES</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -316,21 +315,21 @@ const UnifiedSocialAuthManager = () => {
                   <Button 
                     onClick={handleConnectTikTok} 
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full bg-black hover:bg-gray-800"
                   >
                     {isLoading ? (
                       <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                     ) : (
                       <Music className="w-4 h-4 mr-2" />
                     )}
-                    Conectar TikTok
+                    🔥 Conectar TikTok REAL
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="font-semibold text-green-700">TikTok Conectado</span>
+                    <span className="font-semibold text-green-700">TikTok API REAL Conectada</span>
                   </div>
                   
                   <div className="bg-white p-3 rounded-lg border">
@@ -379,12 +378,13 @@ const UnifiedSocialAuthManager = () => {
                   </div>
 
                   <div>
-                    <Label>Redirect URI</Label>
+                    <Label>Redirect URI (Actualizada)</Label>
                     <Input
                       value={facebookConfig.redirectUri}
                       readOnly
-                      className="bg-gray-100"
+                      className="bg-green-100 font-mono text-xs"
                     />
+                    <p className="text-xs text-green-600 mt-1">✅ URI actualizada para este proyecto</p>
                   </div>
 
                   <Button 
@@ -397,14 +397,14 @@ const UnifiedSocialAuthManager = () => {
                     ) : (
                       <Users className="w-4 h-4 mr-2" />
                     )}
-                    Conectar Facebook/Instagram
+                    🔥 Conectar Facebook/Instagram REAL
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="font-semibold text-green-700">Facebook/Instagram Conectado</span>
+                    <span className="font-semibold text-green-700">Facebook/Instagram API REAL Conectada</span>
                   </div>
 
                   <Button 
@@ -447,12 +447,13 @@ const UnifiedSocialAuthManager = () => {
                   </div>
 
                   <div>
-                    <Label>Redirect URI</Label>
+                    <Label>Redirect URI (Actualizada)</Label>
                     <Input
                       value={linkedinConfig.redirectUri}
                       readOnly
-                      className="bg-gray-100"
+                      className="bg-green-100 font-mono text-xs"
                     />
+                    <p className="text-xs text-green-600 mt-1">✅ URI actualizada para este proyecto</p>
                   </div>
 
                   <Button 
@@ -465,14 +466,14 @@ const UnifiedSocialAuthManager = () => {
                     ) : (
                       <Briefcase className="w-4 h-4 mr-2" />
                     )}
-                    Conectar LinkedIn
+                    🔥 Conectar LinkedIn REAL
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="font-semibold text-green-700">LinkedIn Conectado</span>
+                    <span className="font-semibold text-green-700">LinkedIn API REAL Conectada</span>
                   </div>
 
                   <Button 
@@ -491,21 +492,22 @@ const UnifiedSocialAuthManager = () => {
       </Card>
 
       {/* Información y Documentación */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-green-50 border-green-200">
         <CardHeader>
-          <CardTitle className="text-blue-800">📋 Información de Configuración</CardTitle>
+          <CardTitle className="text-green-800">🔥 MODO REAL ACTIVADO</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-blue-700 space-y-2">
-          <div><strong>TikTok:</strong> Requiere Client Credentials del TikTok Developer Portal</div>
-          <div><strong>Facebook/Instagram:</strong> Requiere App configurada en Facebook Developers</div>
-          <div><strong>LinkedIn:</strong> Requiere App configurada en LinkedIn Developer Portal</div>
-          <div className="mt-3 pt-3 border-t border-blue-200">
-            <strong>Características:</strong>
+        <CardContent className="text-sm text-green-700 space-y-2">
+          <div><strong>✅ Facebook URI:</strong> https://id-preview--044dd533-cd69-4338-bfbd-ef9d83be351c.lovable.app/auth/facebook/callback</div>
+          <div><strong>✅ LinkedIn URI:</strong> https://id-preview--044dd533-cd69-4338-bfbd-ef9d83be351c.lovable.app/auth/linkedin/callback</div>
+          <div><strong>📋 Formulario de Leads:</strong> https://forms.gle/2r2g5DzLtAYL8ShH6</div>
+          <div className="mt-3 pt-3 border-t border-green-200">
+            <strong>🔥 Funcionalidades REALES Activas:</strong>
             <ul className="list-disc list-inside mt-1 space-y-1">
-              <li>Renovación automática de tokens</li>
-              <li>Manejo robusto de errores y reintentos</li>
-              <li>Monitoreo en tiempo real del estado</li>
-              <li>Cumplimiento con requisitos OAuth 2.0</li>
+              <li>Conectividad real con APIs oficiales</li>
+              <li>Límites de seguridad anti-baneo implementados</li>
+              <li>Formulario de leads integrado en todas las acciones</li>
+              <li>Renovación automática de tokens en tiempo real</li>
+              <li>Monitoreo y alertas de uso para prevenir suspensiones</li>
             </ul>
           </div>
         </CardContent>
