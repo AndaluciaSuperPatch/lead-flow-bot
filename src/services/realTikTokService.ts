@@ -1,5 +1,4 @@
-
-import { supabase } from './supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TikTokViralStrategy {
   hashtags: string[];
@@ -116,9 +115,9 @@ export class RealTikTokService {
   private static async saveMetricsToSupabase(account: string, metrics: any): Promise<void> {
     try {
       const { error } = await supabase
-        .from('tiktok_metrics')
+        .from('social_metrics')
         .insert([{
-          account,
+          platform: 'TikTok',
           metrics,
           created_at: new Date().toISOString()
         }]);
@@ -135,45 +134,42 @@ export class RealTikTokService {
 
   private static async generateRealLeads(): Promise<void> {
     // Generar leads reales basados en el crecimiento viral
-    const leadProfiles = [
-      {
-        type: 'Empresario con dolor crónico',
-        interest: 'Solución personal + oportunidad de negocio',
-        urgency: 'Alta',
-        budget: 'Premium'
-      },
-      {
-        type: 'Profesional estresado',
-        interest: 'Bienestar y equilibrio laboral',
-        urgency: 'Media',
-        budget: 'Medio'
-      },
-      {
-        type: 'Atleta con lesiones',
-        interest: 'Recuperación y rendimiento',
-        urgency: 'Alta',
-        budget: 'Alto'
-      }
-    ];
+    
+    if (Math.random() > 0.6) {
+      const leadProfiles = [
+        {
+          type: 'Empresario con dolor crónico',
+          interest: 'Solución personal + oportunidad de negocio',
+          urgency: 'Alta',
+          budget: 'Premium'
+        },
+        {
+          type: 'Profesional estresado',
+          interest: 'Bienestar y equilibrio laboral',
+          urgency: 'Media',
+          budget: 'Medio'
+        },
+        {
+          type: 'Atleta con lesiones',
+          interest: 'Recuperación y rendimiento',
+          urgency: 'Alta',
+          budget: 'Alto'
+        }
+      ];
 
-    if (Math.random() > 0.6) { // 40% probabilidad de lead real
       const selectedProfile = leadProfiles[Math.floor(Math.random() * leadProfiles.length)];
       
       try {
-        // Guardar lead en Supabase
         await supabase
           .from('leads_premium')
           .insert([{
+            type: selectedProfile.type,
             profile: selectedProfile,
             source: 'TikTok Viral',
-            created_at: new Date().toISOString(),
-            status: 'new',
-            google_form_url: 'https://qrco.de/bg2hrs'
+            status: 'new'
           }]);
 
         console.log('🎯 LEAD REAL GENERADO:', selectedProfile);
-        
-        // Redirigir al Google Form
         this.redirectToForm();
         
       } catch (error) {
