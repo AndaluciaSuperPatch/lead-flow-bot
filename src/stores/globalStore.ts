@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { SocialNetworkData } from '@/types/socialNetwork';
 import { getInitialNetworks } from '@/components/social/NetworkInitialData';
 import { RealTikTokService } from '@/services/realTikTokService';
-import { saveRealLead, saveRealMetrics } from '@/services/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AutomationStats {
   postsCreated: number;
@@ -178,8 +178,13 @@ export const useGlobalStore = create<GlobalState>()(
               websiteClicks: currentMetrics.websiteClicks + Math.floor(viralResults.growthResults.newFollowers * 0.3)
             };
             
-            // Guardar métricas reales en Supabase
-            await saveRealMetrics(networkName, realGrowth);
+            // Guardar métricas reales en Supabase usando integración nativa
+            await supabase
+              .from('social_metrics')
+              .insert([{
+                platform: networkName,
+                metrics: realGrowth
+              }]);
             
             return realGrowth;
           }
@@ -225,7 +230,12 @@ export const useGlobalStore = create<GlobalState>()(
           };
           
           // Guardar métricas reales en Supabase
-          await saveRealMetrics(networkName, realGrowth);
+          await supabase
+            .from('social_metrics')
+            .insert([{
+              platform: networkName,
+              metrics: realGrowth
+            }]);
           
           return realGrowth;
         } catch (error) {
@@ -275,7 +285,7 @@ export const useGlobalStore = create<GlobalState>()(
         }
       },
       
-      generateRealLeadNotification: async () => {
+      generateRealLeadNotification: () => {
         try {
           const leadTypes = [
             "🔥 CEO interesado en distribución exclusiva - Budget: €50K+",
@@ -287,16 +297,28 @@ export const useGlobalStore = create<GlobalState>()(
           
           const selectedLead = leadTypes[Math.floor(Math.random() * leadTypes.length)];
           
-          // Guardar lead real en Supabase
-          const leadData = {
-            type: selectedLead,
-            source: 'AI_Bot_Real',
-            form_url: 'https://qrco.de/bg2hrs',
-            status: 'hot',
-            created_at: new Date().toISOString()
+          // Guardar lead real en Supabase usando integración nativa
+          const saveLeadAsync = async () => {
+            try {
+              const leadData = {
+                type: selectedLead,
+                source: 'AI_Bot_Real',
+                form_url: 'https://qrco.de/bg2hrs',
+                status: 'hot'
+              };
+              
+              await supabase
+                .from('leads_premium')
+                .insert([leadData]);
+              
+              console.log('✅ Lead guardado en Supabase:', leadData);
+            } catch (error) {
+              console.error('❌ Error guardando lead:', error);
+            }
           };
           
-          await saveRealLead(leadData);
+          // Ejecutar guardado sin bloquear
+          saveLeadAsync();
           
           // Mostrar notificación inmediata
           setTimeout(() => {
