@@ -13,6 +13,7 @@ export interface AuthConfig {
 
 class SocialAuthCoordinator {
   private platformStatuses: Map<string, PlatformStatus> = new Map();
+  private platformTokens: Map<string, string> = new Map();
 
   async initializePlatform(authConfig: AuthConfig): Promise<boolean | string> {
     const { platform, config } = authConfig;
@@ -45,6 +46,9 @@ class SocialAuthCoordinator {
       isConnected: true
     });
     
+    // Guardar token real
+    this.platformTokens.set('tiktok', config.clientKey);
+    
     console.log('✅ TikTok configurado con ID:', config.clientKey);
     return true;
   }
@@ -59,6 +63,9 @@ class SocialAuthCoordinator {
       lastSync: new Date().toISOString(),
       isConnected: true
     });
+    
+    // Guardar token real
+    this.platformTokens.set('facebook', config.accessToken);
     
     console.log('🔗 Facebook URL generada con App ID:', config.appId);
     return authUrl;
@@ -75,12 +82,16 @@ class SocialAuthCoordinator {
       isConnected: true
     });
     
+    // Guardar token real
+    this.platformTokens.set('linkedin', config.clientSecret);
+    
     console.log('💼 LinkedIn URL generada con Client ID:', config.clientId);
     return authUrl;
   }
 
   async disconnectPlatform(platform: string): Promise<void> {
     this.platformStatuses.delete(platform);
+    this.platformTokens.delete(platform);
     console.log(`🛑 ${platform} desconectado`);
   }
 
@@ -94,6 +105,28 @@ class SocialAuthCoordinator {
 
   getAllPlatformStatuses(): PlatformStatus[] {
     return Array.from(this.platformStatuses.values());
+  }
+
+  // Métodos añadidos para corregir errores
+  getConnectedPlatforms(): string[] {
+    return Array.from(this.platformStatuses.keys()).filter(platform => 
+      this.platformStatuses.get(platform)?.isConnected
+    );
+  }
+
+  getPlatformToken(platform: string): string | undefined {
+    return this.platformTokens.get(platform);
+  }
+
+  // Método para verificar si una plataforma está conectada
+  isPlatformConnected(platform: string): boolean {
+    const status = this.platformStatuses.get(platform);
+    return status?.isConnected || false;
+  }
+
+  // Método para obtener estado de plataforma específica
+  getPlatformStatus(platform: string): PlatformStatus | undefined {
+    return this.platformStatuses.get(platform);
   }
 }
 
