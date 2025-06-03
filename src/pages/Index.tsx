@@ -6,6 +6,7 @@ import SuperBotArmy from "@/components/SuperBotArmy";
 import AutoImprovementDashboard from "@/components/AutoImprovementDashboard";
 import CRMSuperEfficient from "@/components/CRMSuperEfficient";
 import UnifiedSocialAuthManager from "@/components/social/UnifiedSocialAuthManager";
+import UnifiedMetricsDashboard from "@/components/UnifiedMetricsDashboard";
 import { useState } from "react";
 
 const Index = () => {
@@ -16,22 +17,27 @@ const Index = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            🚀 SuperPatch Bot CRM - Sistema Inteligente
+            🚀 SuperPatch Bot CRM - Sistema Inteligente Autónomo
           </h1>
           <p className="text-xl text-gray-600">
-            Automatización completa con IA y auto-mejora continua
+            IA Avanzada • Auto-mejora • Análisis Predictivo • Conversiones Automáticas
           </p>
         </div>
 
-        <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="dashboard">📊 Dashboard</TabsTrigger>
-            <TabsTrigger value="realtime">⚡ Tiempo Real</TabsTrigger>
-            <TabsTrigger value="bots">🤖 Bot Army</TabsTrigger>
-            <TabsTrigger value="ai-improvement">🧠 Auto-Mejora</TabsTrigger>
-            <TabsTrigger value="crm">👥 CRM</TabsTrigger>
-            <TabsTrigger value="auth">🔗 Conexiones</TabsTrigger>
+        <Tabs defaultValue="unified" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 gap-1">
+            <TabsTrigger value="unified" className="text-xs">📈 Métricas</TabsTrigger>
+            <TabsTrigger value="dashboard" className="text-xs">📊 Dashboard</TabsTrigger>
+            <TabsTrigger value="realtime" className="text-xs">⚡ Tiempo Real</TabsTrigger>
+            <TabsTrigger value="bots" className="text-xs">🤖 Bot Army</TabsTrigger>
+            <TabsTrigger value="ai-improvement" className="text-xs">🧠 Auto-Mejora</TabsTrigger>
+            <TabsTrigger value="crm" className="text-xs">👥 CRM</TabsTrigger>
+            <TabsTrigger value="auth" className="text-xs">🔗 Conexiones</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="unified">
+            <UnifiedMetricsDashboard />
+          </TabsContent>
 
           <TabsContent value="dashboard">
             <DashboardOverview leads={leads} />

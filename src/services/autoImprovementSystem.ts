@@ -36,7 +36,6 @@ export class AutoImprovementSystem {
   }
 
   private startMonitoring(): void {
-    // Monitorear errores automáticamente
     window.addEventListener('error', (event) => {
       this.recordError({
         type: 'javascript',
@@ -47,16 +46,14 @@ export class AutoImprovementSystem {
       });
     });
 
-    // Monitorear rendimiento
     setInterval(() => {
       this.analyzePerformance();
-    }, 30000); // Cada 30 segundos
+    }, 30000);
 
     console.log('🧠 Sistema de auto-mejora activado');
   }
 
   private initializeLearning(): void {
-    // Patrones de aprendizaje inicial
     this.learningPatterns.set('lead_conversion', {
       bestTimes: ['09:00', '12:00', '18:00', '21:00'],
       bestContent: ['testimonios', 'casos_exito', 'ofertas_limitadas'],
@@ -67,7 +64,7 @@ export class AutoImprovementSystem {
     this.learningPatterns.set('engagement_optimization', {
       bestHashtags: ['#superpatch', '#bienestar', '#salud', '#entrepreneur'],
       bestFormats: ['video', 'carousel', 'stories'],
-      optimalFrequency: 3, // posts por día
+      optimalFrequency: 3,
       engagementRate: 0.087
     });
 
@@ -78,10 +75,7 @@ export class AutoImprovementSystem {
     this.errors.push(error);
     console.error('🔍 Error registrado:', error);
     
-    // Auto-resolver errores conocidos
     this.attemptAutoResolution(error);
-    
-    // Guardar en Supabase para análisis
     this.saveErrorToDatabase(error);
   }
 
@@ -89,17 +83,14 @@ export class AutoImprovementSystem {
     const knownSolutions = {
       'API_RATE_LIMIT': () => {
         console.log('🔄 Aplicando delay automático por rate limit');
-        // Implementar delay exponencial
         return 'Delay automático aplicado';
       },
       'TOKEN_EXPIRED': () => {
         console.log('🔑 Renovando tokens automáticamente');
-        // Renovar tokens
         return 'Tokens renovados automáticamente';
       },
       'NETWORK_ERROR': () => {
         console.log('🌐 Reintentando conexión automáticamente');
-        // Reintentar con backoff
         return 'Reconexión automática activada';
       }
     };
@@ -121,7 +112,6 @@ export class AutoImprovementSystem {
   }
 
   private analyzePerformance(): void {
-    // Analizar métricas de rendimiento
     const currentMetrics = this.collectCurrentMetrics();
     
     currentMetrics.forEach(metric => {
@@ -130,9 +120,14 @@ export class AutoImprovementSystem {
       this.optimizeBasedOnMetrics(metric);
     });
 
-    // Mantener solo las últimas 1000 métricas
     if (this.metrics.length > 1000) {
       this.metrics = this.metrics.slice(-1000);
+    }
+  }
+
+  private optimizeBasedOnMetrics(metric: PerformanceMetric): void {
+    if (metric.trend === 'declining' && metric.value < 0.8) {
+      this.triggerOptimization(metric);
     }
   }
 
@@ -169,14 +164,13 @@ export class AutoImprovementSystem {
   private detectTrends(metric: PerformanceMetric): void {
     const recentMetrics = this.metrics
       .filter(m => m.metric === metric.metric)
-      .slice(-10); // Últimas 10 mediciones
+      .slice(-10);
 
     if (recentMetrics.length >= 3) {
       const values = recentMetrics.map(m => m.value);
       const trend = this.calculateTrend(values);
       metric.trend = trend;
 
-      // Alertas automáticas
       if (trend === 'declining' && metric.value < 0.8) {
         this.triggerOptimization(metric);
       }
@@ -266,37 +260,33 @@ export class AutoImprovementSystem {
   }
 
   private async boostContentStrategy(): Promise<void> {
-    // Aumentar contenido de alto rendimiento
     const highPerformingContent = this.learningPatterns.get('lead_conversion');
     console.log('📈 Aumentando contenido de alto rendimiento:', highPerformingContent?.bestContent);
   }
 
   private async optimizePostingSchedule(): Promise<void> {
-    // Optimizar horarios basado en datos
     const optimalTimes = this.learningPatterns.get('engagement_optimization');
     console.log('⏰ Optimizando horarios de publicación:', optimalTimes?.bestTimes);
   }
 
   private async throttleBotActivity(): Promise<void> {
-    // Reducir actividad de bots
     console.log('🤖 Reduciendo actividad de bots para evitar límites');
   }
 
-  // Métodos de cálculo de métricas
   private calculateCurrentConversionRate(): number {
-    return Math.random() * 0.2 + 0.08; // Simulado
+    return Math.random() * 0.2 + 0.08;
   }
 
   private calculateCurrentEngagementRate(): number {
-    return Math.random() * 0.15 + 0.05; // Simulado
+    return Math.random() * 0.15 + 0.05;
   }
 
   private calculateBotSuccessRate(): number {
-    return Math.random() * 0.1 + 0.90; // Simulado
+    return Math.random() * 0.1 + 0.90;
   }
 
   private calculateAverageResponseTime(): number {
-    return Math.random() * 500 + 200; // Simulado en ms
+    return Math.random() * 500 + 200;
   }
 
   private async saveErrorToDatabase(error: SystemError): Promise<void> {
@@ -308,7 +298,7 @@ export class AutoImprovementSystem {
           metrics: {
             error_type: error.type,
             error_message: error.message,
-            timestamp: error.timestamp,
+            timestamp: error.timestamp.toISOString(),
             context: error.context,
             resolved: error.resolved,
             solution: error.solution
@@ -319,10 +309,9 @@ export class AutoImprovementSystem {
     }
   }
 
-  // Métodos públicos para obtener insights
   getSystemHealth(): any {
     const recentErrors = this.errors.filter(e => 
-      new Date().getTime() - e.timestamp.getTime() < 3600000 // Última hora
+      new Date().getTime() - e.timestamp.getTime() < 3600000
     );
 
     const resolvedErrors = recentErrors.filter(e => e.resolved);
@@ -366,5 +355,4 @@ export class AutoImprovementSystem {
   }
 }
 
-// Instancia global del sistema
 export const autoImprovementSystem = new AutoImprovementSystem();
