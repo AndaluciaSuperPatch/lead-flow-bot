@@ -98,14 +98,36 @@ const SuperBotArmy = () => {
       successRate: totals.successRate / bots.length
     });
 
-    // Guardar métricas en Supabase
-    supabase
-      .from('social_metrics')
-      .insert([{
-        platform: 'Bot_Army_Metrics',
-        metrics: { bots, totals }
-      }]);
+    // Guardar métricas en Supabase (corregido)
+    const saveMetrics = async () => {
+      try {
+        const { error } = await supabase
+          .from('social_metrics')
+          .insert({
+            platform: 'Bot_Army_Metrics',
+            metrics: {
+              bots: bots.map(bot => ({
+                platform: bot.platform,
+                status: bot.status,
+                actionsToday: bot.actionsToday,
+                successRate: bot.successRate,
+                leadsGenerated: bot.leadsGenerated,
+                engagement: bot.engagement,
+                lastAction: bot.lastAction
+              })),
+              totals
+            }
+          });
 
+        if (!error) {
+          console.log('✅ Métricas guardadas en tiempo real');
+        }
+      } catch (error) {
+        console.error('Error guardando métricas:', error);
+      }
+    };
+
+    saveMetrics();
   }, [bots]);
 
   const generateRandomAction = (platform: string): string => {
