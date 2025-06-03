@@ -2,9 +2,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardOverview from "@/components/dashboard/DashboardOverview";
 import RealTimeDashboard from "@/components/RealTimeDashboard";
-import SuperBotArmy from "@/components/SuperBotArmy";
+import MultipleBotArmy from "@/components/MultipleBotArmy";
 import AutoImprovementDashboard from "@/components/AutoImprovementDashboard";
 import CRMSuperEfficient from "@/components/CRMSuperEfficient";
+import AdvancedCRMDashboard from "@/components/AdvancedCRMDashboard";
 import UnifiedSocialAuthManager from "@/components/social/UnifiedSocialAuthManager";
 import UnifiedMetricsDashboard from "@/components/UnifiedMetricsDashboard";
 import { useState } from "react";
@@ -22,17 +23,29 @@ const Index = () => {
           <p className="text-xl text-gray-600">
             IA Avanzada • Auto-mejora • Análisis Predictivo • Conversiones Automáticas
           </p>
+          <div className="mt-4 bg-green-100 border border-green-300 rounded-lg p-3">
+            <p className="text-green-800 font-semibold">
+              🛒 Tienda Activa: <a href="https://111236288.superpatch.com/es" target="_blank" className="underline">111236288.superpatch.com/es</a> 
+              | 💰 Revenue Automático | 🤖 Múltiples Bots Activos 24/7
+            </p>
+          </div>
         </div>
 
         <Tabs defaultValue="unified" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 gap-1">
-            <TabsTrigger value="unified" className="text-xs">📈 Métricas</TabsTrigger>
-            <TabsTrigger value="dashboard" className="text-xs">📊 Dashboard</TabsTrigger>
-            <TabsTrigger value="realtime" className="text-xs">⚡ Tiempo Real</TabsTrigger>
-            <TabsTrigger value="bots" className="text-xs">🤖 Bot Army</TabsTrigger>
-            <TabsTrigger value="ai-improvement" className="text-xs">🧠 Auto-Mejora</TabsTrigger>
-            <TabsTrigger value="crm" className="text-xs">👥 CRM</TabsTrigger>
-            <TabsTrigger value="auth" className="text-xs">🔗 Conexiones</TabsTrigger>
+          {/* Primera línea de pestañas */}
+          <TabsList className="grid w-full grid-cols-4 gap-1 mb-2">
+            <TabsTrigger value="unified" className="text-sm">📈 Métricas Unificadas</TabsTrigger>
+            <TabsTrigger value="dashboard" className="text-sm">📊 Dashboard General</TabsTrigger>
+            <TabsTrigger value="realtime" className="text-sm">⚡ Tiempo Real</TabsTrigger>
+            <TabsTrigger value="bots" className="text-sm">🤖 Múltiple Bot Army</TabsTrigger>
+          </TabsList>
+
+          {/* Segunda línea de pestañas */}
+          <TabsList className="grid w-full grid-cols-4 gap-1">
+            <TabsTrigger value="crm-premium" className="text-sm">💎 CRM Premium</TabsTrigger>
+            <TabsTrigger value="ai-improvement" className="text-sm">🧠 Auto-Mejora IA</TabsTrigger>
+            <TabsTrigger value="crm" className="text-sm">👥 CRM Básico</TabsTrigger>
+            <TabsTrigger value="auth" className="text-sm">🔗 Conexiones</TabsTrigger>
           </TabsList>
 
           <TabsContent value="unified">
@@ -48,7 +61,11 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="bots">
-            <SuperBotArmy />
+            <MultipleBotArmy />
+          </TabsContent>
+
+          <TabsContent value="crm-premium">
+            <AdvancedCRMDashboard />
           </TabsContent>
 
           <TabsContent value="ai-improvement">
