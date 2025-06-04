@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,18 +22,19 @@ const IntelligentSystemDashboard = () => {
   const loadSystemData = async () => {
     try {
       const systemIntelligence = intelligentAutoImprovementSystem.getSystemIntelligence();
-      const leadData = ayrshareLeadManager.getLeads();
+      const leadData = await ayrshareLeadManager.getLeads(); // Await the Promise here
       const stats = ayrshareLeadManager.getLeadStats();
       
       setSystemStats(systemIntelligence);
-      setLeads(leadData.slice(0, 10)); // Top 10 leads
+      setLeads(Array.isArray(leadData) ? leadData.slice(0, 10) : []); // Check if it's an array and slice
       setLeadStats(stats);
     } catch (error) {
       console.error('Error cargando datos del sistema:', error);
+      setLeads([]); // Set empty array on error
     }
   };
 
-  const triggerIntelligentAnalysis = async () => {
+  async function triggerIntelligentAnalysis() {
     setIsAnalyzing(true);
     try {
       // Simular análisis inteligente
@@ -59,17 +59,17 @@ const IntelligentSystemDashboard = () => {
     }
   };
 
-  const getStatusColor = (value: number, thresholds: { good: number; warning: number }) => {
+  function getStatusColor(value: number, thresholds: { good: number; warning: number }) {
     if (value >= thresholds.good) return 'text-green-600';
     if (value >= thresholds.warning) return 'text-yellow-600';
     return 'text-red-600';
-  };
+  }
 
-  const getStatusBadge = (value: number, thresholds: { good: number; warning: number }) => {
+  function getStatusBadge(value: number, thresholds: { good: number; warning: number }) {
     if (value >= thresholds.good) return 'bg-green-500';
     if (value >= thresholds.warning) return 'bg-yellow-500';
     return 'bg-red-500';
-  };
+  }
 
   return (
     <div className="space-y-6">
