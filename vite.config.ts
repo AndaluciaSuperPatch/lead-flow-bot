@@ -23,7 +23,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  css: {
-    exclude: ['**/*.html'] // Excluye archivos HTML del pipeline de CSS
-  }
 }));
