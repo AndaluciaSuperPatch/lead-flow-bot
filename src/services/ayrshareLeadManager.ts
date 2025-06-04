@@ -1,6 +1,6 @@
 
-import { AyrshareService } from './ayrshareService';
 import { supabase } from '@/integrations/supabase/client';
+import { realApiConnections } from './realApiConnections';
 
 interface AyrshareLeadData {
   id: string;
@@ -38,7 +38,6 @@ interface AyrshareLeadData {
 export class AyrshareLeadManager {
   private static instance: AyrshareLeadManager;
   private leads: AyrshareLeadData[] = [];
-  private analyticsCache: Map<string, any> = new Map();
 
   static getInstance(): AyrshareLeadManager {
     if (!AyrshareLeadManager.instance) {
@@ -48,221 +47,140 @@ export class AyrshareLeadManager {
   }
 
   constructor() {
-    this.initializeLeadCapture();
-    this.startAnalyticsSync();
+    this.initializeRealLeadCapture();
   }
 
-  private async initializeLeadCapture(): Promise<void> {
-    console.log('🎯 Inicializando Ayrshare Lead Manager...');
+  private async initializeRealLeadCapture(): Promise<void> {
+    console.log('🎯 Inicializando captura REAL de leads desde APIs...');
     
-    // Configurar captura automática de leads desde Ayrshare
+    // Verificar conexiones reales con APIs
+    const connections = await realApiConnections.verifyAllConnections();
+    const connectedPlatforms = connections.filter(c => c.connected);
+    
+    if (connectedPlatforms.length === 0) {
+      console.error('❌ NO HAY PLATAFORMAS CONECTADAS - NO SE PUEDEN CAPTURAR LEADS REALES');
+      this.showAPIConnectionError();
+      return;
+    }
+
+    console.log(`✅ ${connectedPlatforms.length} plataformas conectadas:`, connectedPlatforms.map(c => c.platform));
+    
+    // Capturar leads reales solo de plataformas conectadas
     setInterval(() => {
-      this.captureLeadsFromAyrshare();
-    }, 60000); // Cada minuto
+      this.captureRealLeadsFromConnectedPlatforms(connectedPlatforms);
+    }, 300000); // Cada 5 minutos para no saturar las APIs
 
-    // Cargar leads existentes
-    await this.loadExistingLeads();
-
-    console.log('✅ Ayrshare Lead Manager ACTIVO');
+    // Cargar leads reales existentes
+    await this.loadRealLeadsFromDatabase();
   }
 
-  private async loadExistingLeads(): Promise<void> {
+  private showAPIConnectionError(): void {
+    const errorNotification = document.createElement('div');
+    errorNotification.innerHTML = `
+      <div style="position: fixed; top: 20px; left: 20px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 20px; border-radius: 12px; z-index: 10000; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+        <h3 style="margin: 0 0 10px 0; font-size: 18px;">❌ ERROR: APIs NO CONECTADAS</h3>
+        <p style="margin: 0 0 15px 0; font-size: 14px;">No se pueden capturar leads reales. Las APIs de redes sociales no están configuradas.</p>
+        <p style="margin: 0 0 15px 0; font-size: 12px;">Plataformas requeridas: Instagram, Facebook, TikTok, LinkedIn</p>
+        <button onclick="this.parentElement.parentElement.remove();" style="background: white; color: #ef4444; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+          CERRAR
+        </button>
+      </div>
+    `;
+    document.body.appendChild(errorNotification);
+  }
+
+  private async loadRealLeadsFromDatabase(): Promise<void> {
     try {
-      // Usar localStorage temporalmente hasta configurar tablas correctas
-      const storedLeads = localStorage.getItem('ayrshare-leads');
-      if (storedLeads) {
-        this.leads = JSON.parse(storedLeads);
-        console.log(`📊 ${this.leads.length} leads cargados desde cache local`);
+      const { data, error } = await supabase
+        .from('leads_premium')
+        .select('*')
+        .eq('source', 'real_api')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) {
+        console.error('Error cargando leads reales:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        console.log(`📊 ${data.length} leads REALES cargados desde base de datos`);
+        // Convertir a formato interno si es necesario
       } else {
-        // Generar datos de demostración
-        this.generateDemoLeads();
+        console.log('📊 No hay leads reales en la base de datos');
       }
     } catch (error) {
-      console.error('Error cargando leads de Ayrshare:', error);
-      this.generateDemoLeads();
+      console.error('Error accediendo a base de datos:', error);
     }
   }
 
-  private generateDemoLeads(): void {
-    // Generar leads de demostración para mostrar funcionalidad
-    const demoLeads: AyrshareLeadData[] = [
-      {
-        id: 'demo_1',
-        platform: 'instagram',
-        engagement: { likes: 245, comments: 18, shares: 12, views: 1200 },
-        profile: {
-          username: 'entrepreneur_success',
-          fullName: 'María Rodríguez',
-          followers: 8500,
-          verified: true,
-          bio: 'CEO & Founder at TechStart | Emprendedora digital | Coach de negocios'
-        },
-        interaction: {
-          type: 'comment',
-          timestamp: new Date(),
-          content: 'Muy interesante este contenido!'
-        },
-        leadScore: 92,
-        conversionProbability: 85,
-        businessPotential: 'premium',
-        demographics: {
-          estimatedAge: 32,
-          interests: ['business', 'entrepreneurship', 'technology'],
-          activityLevel: 'high',
-          engagementQuality: 88
-        }
-      },
-      {
-        id: 'demo_2',
-        platform: 'linkedin',
-        engagement: { likes: 156, comments: 24, shares: 8, views: 890 },
-        profile: {
-          username: 'carlos_business',
-          fullName: 'Carlos Mendoza',
-          followers: 12400,
-          verified: false,
-          bio: 'Director Comercial | Business Development | Consultor estratégico'
-        },
-        interaction: {
-          type: 'share',
-          timestamp: new Date(),
-          content: ''
-        },
-        leadScore: 87,
-        conversionProbability: 78,
-        businessPotential: 'high',
-        demographics: {
-          estimatedAge: 38,
-          interests: ['business', 'sales', 'consulting'],
-          activityLevel: 'high',
-          engagementQuality: 82
-        }
-      },
-      {
-        id: 'demo_3',
-        platform: 'facebook',
-        engagement: { likes: 89, comments: 12, shares: 5, views: 450 },
-        profile: {
-          username: 'ana_coaching',
-          fullName: 'Ana López',
-          followers: 3200,
-          verified: false,
-          bio: 'Life Coach | Formadora empresarial | Mentora de equipos'
-        },
-        interaction: {
-          type: 'like',
-          timestamp: new Date(),
-          content: ''
-        },
-        leadScore: 76,
-        conversionProbability: 65,
-        businessPotential: 'high',
-        demographics: {
-          estimatedAge: 29,
-          interests: ['coaching', 'business', 'wellness'],
-          activityLevel: 'medium',
-          engagementQuality: 74
-        }
-      }
-    ];
-
-    this.leads = demoLeads;
-    this.saveLeadsToCache();
-  }
-
-  private async captureLeadsFromAyrshare(): Promise<void> {
-    try {
-      console.log('🔍 Capturando leads desde Ayrshare Analytics...');
-
-      // Simular captura de nuevos leads con datos realistas
-      const newLeads = this.generateRealisticLeads();
-      
-      newLeads.forEach(lead => {
-        const existingIndex = this.leads.findIndex(l => 
-          l.profile.username === lead.profile.username && l.platform === lead.platform
-        );
+  private async captureRealLeadsFromConnectedPlatforms(connectedPlatforms: any[]): Promise<void> {
+    for (const platform of connectedPlatforms) {
+      try {
+        console.log(`🔍 Capturando leads REALES de ${platform.platform}...`);
         
-        if (existingIndex === -1) {
-          this.leads.push(lead);
-          if (lead.leadScore >= 80) {
-            this.notifyHighQualityLead(lead);
+        const realData = await realApiConnections.syncRealData(platform.platform);
+        
+        if (realData && realData.leads) {
+          for (const lead of realData.leads) {
+            await this.saveRealLead(lead);
           }
+          console.log(`✅ ${realData.leads.length} leads reales capturados de ${platform.platform}`);
         }
-      });
-
-      this.saveLeadsToCache();
-      
-    } catch (error) {
-      console.error('Error capturando leads de Ayrshare:', error);
+      } catch (error) {
+        console.error(`❌ Error capturando leads de ${platform.platform}:`, error);
+      }
     }
   }
 
-  private generateRealisticLeads(): AyrshareLeadData[] {
-    // Generar leads realistas ocasionalmente
-    if (Math.random() > 0.7) { // 30% de probabilidad cada minuto
-      const platforms = ['instagram', 'facebook', 'linkedin', 'tiktok'];
-      const platform = platforms[Math.floor(Math.random() * platforms.length)];
-      
-      return [{
-        id: `generated_${Date.now()}`,
-        platform,
-        engagement: {
-          likes: Math.floor(Math.random() * 500) + 50,
-          comments: Math.floor(Math.random() * 50) + 5,
-          shares: Math.floor(Math.random() * 20) + 2,
-          views: Math.floor(Math.random() * 2000) + 200
-        },
-        profile: {
-          username: `user_${Math.floor(Math.random() * 10000)}`,
-          fullName: 'Nuevo Lead',
-          followers: Math.floor(Math.random() * 15000) + 500,
-          verified: Math.random() > 0.8,
-          bio: 'Emprendedor digital interesado en nuevas oportunidades de negocio'
-        },
-        interaction: {
-          type: ['like', 'comment', 'share'][Math.floor(Math.random() * 3)] as any,
-          timestamp: new Date(),
-          content: 'Interesante propuesta'
-        },
-        leadScore: Math.floor(Math.random() * 40) + 60,
-        conversionProbability: Math.floor(Math.random() * 50) + 40,
-        businessPotential: ['medium', 'high'][Math.floor(Math.random() * 2)] as any,
-        demographics: {
-          estimatedAge: Math.floor(Math.random() * 20) + 25,
-          interests: ['business', 'entrepreneurship', 'digital marketing'],
-          activityLevel: 'medium' as any,
-          engagementQuality: Math.floor(Math.random() * 30) + 60
-        }
-      }];
-    }
-    return [];
-  }
-
-  private saveLeadsToCache(): void {
+  private async saveRealLead(leadData: any): Promise<void> {
     try {
-      localStorage.setItem('ayrshare-leads', JSON.stringify(this.leads));
+      const { data, error } = await supabase
+        .from('leads_premium')
+        .insert([{
+          type: `Lead real de ${leadData.platform}: ${leadData.comment || leadData.type}`,
+          source: 'real_api',
+          profile: {
+            platform: leadData.platform,
+            username: leadData.username,
+            comment: leadData.comment,
+            timestamp: leadData.timestamp,
+            type: leadData.type
+          },
+          status: 'hot',
+          form_url: null
+        }]);
+
+      if (error) {
+        console.error('Error guardando lead real:', error);
+        return;
+      }
+
+      console.log('✅ Lead real guardado:', leadData.username);
+      
+      // Mostrar notificación de lead real
+      this.showRealLeadNotification(leadData);
     } catch (error) {
-      console.error('Error guardando leads en cache:', error);
+      console.error('Error en saveRealLead:', error);
     }
   }
 
-  private notifyHighQualityLead(lead: AyrshareLeadData): void {
+  private showRealLeadNotification(lead: any): void {
     const notification = document.createElement('div');
     notification.innerHTML = `
-      <div style="position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 20px; border-radius: 12px; z-index: 10000; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 2px solid #fff;">
+      <div style="position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px; z-index: 10000; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 2px solid #fff;">
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
           <div style="width: 16px; height: 16px; background: #ffd700; border-radius: 50%; animation: pulse 1.5s infinite;"></div>
-          <h3 style="margin: 0; font-size: 18px; font-weight: bold;">🎯 LEAD PREMIUM DETECTADO!</h3>
+          <h3 style="margin: 0; font-size: 18px; font-weight: bold;">🎯 LEAD REAL DETECTADO!</h3>
         </div>
         <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-          <p style="margin: 0; font-size: 14px;"><strong>Usuario:</strong> @${lead.profile.username}</p>
+          <p style="margin: 0; font-size: 14px;"><strong>Usuario:</strong> @${lead.username}</p>
           <p style="margin: 0; font-size: 14px;"><strong>Plataforma:</strong> ${lead.platform.toUpperCase()}</p>
-          <p style="margin: 0; font-size: 14px;"><strong>Puntuación:</strong> ${lead.leadScore}/100</p>
-          <p style="margin: 0; font-size: 14px;"><strong>Conversión:</strong> ${lead.conversionProbability}%</p>
-          <p style="margin: 0; font-size: 14px;"><strong>Seguidores:</strong> ${lead.profile.followers.toLocaleString()}</p>
+          <p style="margin: 0; font-size: 14px;"><strong>Comentario:</strong> "${lead.comment}"</p>
+          <p style="margin: 0; font-size: 14px;"><strong>Fuente:</strong> API REAL</p>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button onclick="window.open('https://${lead.platform}.com/${lead.profile.username}', '_blank');" style="background: white; color: #6366f1; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; font-size: 12px;">
+          <button onclick="window.open('https://${lead.platform}.com/${lead.username}', '_blank');" style="background: white; color: #10b981; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; font-size: 12px;">
             👀 VER PERFIL
           </button>
           <button onclick="this.parentElement.parentElement.parentElement.remove();" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">
@@ -278,64 +196,48 @@ export class AyrshareLeadManager {
       if (notification.parentElement) {
         notification.remove();
       }
-    }, 20000);
+    }, 15000);
   }
 
-  private startAnalyticsSync(): void {
-    setInterval(() => {
-      this.syncAnalyticsData();
-    }, 300000);
-  }
-
-  private async syncAnalyticsData(): Promise<void> {
+  // Métodos públicos que ahora solo devuelven datos reales
+  async getLeads(): Promise<any[]> {
     try {
-      console.log('📊 Sincronizando analytics simulados...');
-      // Simular sincronización exitosa
-      this.analyticsCache.set('latest', {
-        data: { synced: true, timestamp: Date.now() },
-        timestamp: Date.now()
-      });
+      const { data, error } = await supabase
+        .from('leads_premium')
+        .select('*')
+        .eq('source', 'real_api')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error obteniendo leads reales:', error);
+        return [];
+      }
+
+      return data || [];
     } catch (error) {
-      console.error('Error sincronizando analytics:', error);
+      console.error('Error en getLeads:', error);
+      return [];
     }
   }
 
-  // Métodos públicos para el dashboard
-  getLeads(): AyrshareLeadData[] {
-    return this.leads.sort((a, b) => b.leadScore - a.leadScore);
-  }
-
-  getLeadsByPlatform(platform: string): AyrshareLeadData[] {
-    return this.leads.filter(lead => lead.platform === platform);
-  }
-
-  getHighQualityLeads(): AyrshareLeadData[] {
-    return this.leads.filter(lead => lead.leadScore >= 70);
-  }
-
-  getPremiumLeads(): AyrshareLeadData[] {
-    return this.leads.filter(lead => lead.businessPotential === 'premium');
-  }
-
-  getLeadStats(): any {
+  async getLeadStats(): Promise<any> {
+    const leads = await this.getLeads();
     const platforms = ['instagram', 'facebook', 'linkedin', 'tiktok'];
     const platformStats: any = {};
     
     platforms.forEach(platform => {
-      const platformLeads = this.getLeadsByPlatform(platform);
+      const platformLeads = leads.filter(l => l.profile?.platform === platform);
       platformStats[platform] = {
         count: platformLeads.length,
-        averageScore: platformLeads.reduce((acc, lead) => acc + lead.leadScore, 0) / platformLeads.length || 0
+        realLeads: true
       };
     });
 
     return {
-      total: this.leads.length,
-      premium: this.leads.filter(l => l.businessPotential === 'premium').length,
-      high: this.leads.filter(l => l.businessPotential === 'high').length,
-      averageScore: this.leads.reduce((acc, lead) => acc + lead.leadScore, 0) / this.leads.length || 0,
-      conversionRate: this.leads.reduce((acc, lead) => acc + lead.conversionProbability, 0) / this.leads.length || 0,
-      platforms: platformStats
+      total: leads.length,
+      realDataOnly: true,
+      platforms: platformStats,
+      message: leads.length === 0 ? 'No hay leads reales - verificar conexiones API' : 'Mostrando solo datos reales'
     };
   }
 }
