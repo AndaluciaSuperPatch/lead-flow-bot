@@ -8,6 +8,7 @@ import CRMSuperEfficient from "@/components/CRMSuperEfficient";
 import AdvancedCRMDashboard from "@/components/AdvancedCRMDashboard";
 import UnifiedSocialAuthManager from "@/components/social/UnifiedSocialAuthManager";
 import UnifiedMetricsDashboard from "@/components/UnifiedMetricsDashboard";
+import RealSalesTracker from "@/components/RealSalesTracker";
 import { useState } from "react";
 
 const Index = () => {
@@ -33,27 +34,29 @@ const Index = () => {
 
         <Tabs defaultValue="unified" className="space-y-6">
           {/* Primera línea de pestañas */}
-          <TabsList className="grid w-full grid-cols-4 gap-1 mb-2">
-            <TabsTrigger value="unified" className="text-sm">📈 Métricas Unificadas</TabsTrigger>
-            <TabsTrigger value="dashboard" className="text-sm">📊 Dashboard General</TabsTrigger>
-            <TabsTrigger value="realtime" className="text-sm">⚡ Tiempo Real</TabsTrigger>
-            <TabsTrigger value="bots" className="text-sm">🤖 Múltiple Bot Army</TabsTrigger>
-          </TabsList>
+          <div className="grid grid-cols-2 gap-4">
+            <TabsList className="grid w-full grid-cols-4 gap-1">
+              <TabsTrigger value="unified" className="text-xs px-2">📈 Métricas</TabsTrigger>
+              <TabsTrigger value="sales" className="text-xs px-2">💰 Ventas</TabsTrigger>
+              <TabsTrigger value="realtime" className="text-xs px-2">⚡ Tiempo Real</TabsTrigger>
+              <TabsTrigger value="bots" className="text-xs px-2">🤖 Bot Army</TabsTrigger>
+            </TabsList>
 
-          {/* Segunda línea de pestañas */}
-          <TabsList className="grid w-full grid-cols-4 gap-1">
-            <TabsTrigger value="crm-premium" className="text-sm">💎 CRM Premium</TabsTrigger>
-            <TabsTrigger value="ai-improvement" className="text-sm">🧠 Auto-Mejora IA</TabsTrigger>
-            <TabsTrigger value="crm" className="text-sm">👥 CRM Básico</TabsTrigger>
-            <TabsTrigger value="auth" className="text-sm">🔗 Conexiones</TabsTrigger>
-          </TabsList>
+            {/* Segunda línea de pestañas */}
+            <TabsList className="grid w-full grid-cols-4 gap-1">
+              <TabsTrigger value="crm-premium" className="text-xs px-2">💎 CRM Premium</TabsTrigger>
+              <TabsTrigger value="ai-improvement" className="text-xs px-2">🧠 Auto-Mejora</TabsTrigger>
+              <TabsTrigger value="dashboard" className="text-xs px-2">📊 Dashboard</TabsTrigger>
+              <TabsTrigger value="auth" className="text-xs px-2">🔗 Conexiones</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="unified">
             <UnifiedMetricsDashboard />
           </TabsContent>
 
-          <TabsContent value="dashboard">
-            <DashboardOverview leads={leads} />
+          <TabsContent value="sales">
+            <RealSalesTracker />
           </TabsContent>
 
           <TabsContent value="realtime">
@@ -72,8 +75,8 @@ const Index = () => {
             <AutoImprovementDashboard />
           </TabsContent>
 
-          <TabsContent value="crm">
-            <CRMSuperEfficient />
+          <TabsContent value="dashboard">
+            <DashboardOverview leads={leads} />
           </TabsContent>
 
           <TabsContent value="auth">
