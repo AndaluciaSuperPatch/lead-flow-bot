@@ -105,7 +105,7 @@ export class AyrshareLeadManager {
       const platforms = ['instagram', 'facebook', 'linkedin', 'tiktok'];
       
       for (const platform of platforms) {
-        await this.processPlat formAnalytics(platform);
+        await this.processPlatformAnalytics(platform);
       }
     } catch (error) {
       console.error('Error capturando leads de Ayrshare:', error);
