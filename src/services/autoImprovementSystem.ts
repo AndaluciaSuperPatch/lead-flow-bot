@@ -81,7 +81,7 @@ export class AutoImprovementSystem {
     console.log('🛒 Sistema de tracking de tienda inicializado');
   }
 
-  private async trackStorePerformance(): void {
+  private async trackStorePerformance(): Promise<void> {
     // Simular tracking de la tienda SuperPatch
     const storeMetrics = {
       visits: Math.floor(Math.random() * 50) + 20,

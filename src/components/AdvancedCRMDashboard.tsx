@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,6 +18,14 @@ interface PremiumLead {
   potential_value?: number;
   last_contact?: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
+}
+
+interface ProfileData {
+  nombre?: string;
+  email?: string;
+  telefono?: string;
+  last_contact?: string;
+  [key: string]: any;
 }
 
 const AdvancedCRMDashboard = () => {
@@ -60,12 +67,16 @@ const AdvancedCRMDashboard = () => {
         return;
       }
 
-      const processedLeads = (data || []).map(lead => ({
-        ...lead,
-        potential_value: calculatePotentialValue(lead),
-        priority: calculatePriority(lead),
-        last_contact: lead.profile?.last_contact || null
-      }));
+      const processedLeads = (data || []).map(lead => {
+        const profileData = lead.profile as ProfileData || {};
+        
+        return {
+          ...lead,
+          potential_value: calculatePotentialValue(lead),
+          priority: calculatePriority(lead),
+          last_contact: profileData.last_contact || null
+        };
+      });
 
       setLeads(processedLeads);
       calculateMetrics(processedLeads);
@@ -119,11 +130,12 @@ const AdvancedCRMDashboard = () => {
     let filtered = leads;
 
     if (searchTerm) {
-      filtered = filtered.filter(lead => 
-        lead.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (lead.profile?.nombre && lead.profile.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
+      filtered = filtered.filter(lead => {
+        const profileData = lead.profile as ProfileData || {};
+        return lead.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               lead.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               (profileData.nombre && profileData.nombre.toLowerCase().includes(searchTerm.toLowerCase()));
+      });
     }
 
     if (filterStatus !== 'all') {
@@ -141,6 +153,8 @@ const AdvancedCRMDashboard = () => {
 
   const sendDirectMessage = (lead: PremiumLead) => {
     const segment = detectSegment(lead.type);
+    const profileData = lead.profile as ProfileData || {};
+    
     const message = `Hola! He visto tu interés en soluciones para ${segment}. 
 
 SuperPatch es perfecto para ti porque:
@@ -154,7 +168,7 @@ SuperPatch es perfecto para ti porque:
 
 ¿Te gustaría que hablemos de cómo SuperPatch puede transformar tu ${segment}?`;
 
-    const whatsappUrl = `https://wa.me/${lead.profile?.telefono?.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${profileData.telefono?.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
@@ -346,66 +360,70 @@ SuperPatch es perfecto para ti porque:
             </CardContent>
           </Card>
         ) : (
-          filteredLeads.map((lead) => (
-            <Card key={lead.id} className="border-l-4 border-l-blue-500">
-              <CardHeader>
-                <div className="flex justify-between items-start flex-wrap gap-2">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="w-5 h-5" />
-                      {lead.type}
-                      <Badge className={`${getPriorityColor(lead.priority)} text-white`}>
-                        {lead.priority.toUpperCase()}
-                      </Badge>
-                      <Badge className={`${getStatusColor(lead.status)} text-white`}>
-                        {lead.status.toUpperCase()}
-                      </Badge>
-                    </CardTitle>
-                    <div className="text-sm text-gray-600 space-y-1 mt-2">
-                      <p><strong>Fuente:</strong> {lead.source}</p>
-                      <p><strong>Creado:</strong> {new Date(lead.created_at).toLocaleString()}</p>
-                      {lead.profile?.nombre && <p><strong>Nombre:</strong> {lead.profile.nombre}</p>}
-                      {lead.profile?.email && <p><strong>Email:</strong> {lead.profile.email}</p>}
-                      {lead.profile?.telefono && <p><strong>Teléfono:</strong> {lead.profile.telefono}</p>}
+          filteredLeads.map((lead) => {
+            const profileData = lead.profile as ProfileData || {};
+            
+            return (
+              <Card key={lead.id} className="border-l-4 border-l-blue-500">
+                <CardHeader>
+                  <div className="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <User className="w-5 h-5" />
+                        {lead.type}
+                        <Badge className={`${getPriorityColor(lead.priority)} text-white`}>
+                          {lead.priority.toUpperCase()}
+                        </Badge>
+                        <Badge className={`${getStatusColor(lead.status)} text-white`}>
+                          {lead.status.toUpperCase()}
+                        </Badge>
+                      </CardTitle>
+                      <div className="text-sm text-gray-600 space-y-1 mt-2">
+                        <p><strong>Fuente:</strong> {lead.source}</p>
+                        <p><strong>Creado:</strong> {new Date(lead.created_at).toLocaleString()}</p>
+                        {profileData.nombre && <p><strong>Nombre:</strong> {profileData.nombre}</p>}
+                        {profileData.email && <p><strong>Email:</strong> {profileData.email}</p>}
+                        {profileData.telefono && <p><strong>Teléfono:</strong> {profileData.telefono}</p>}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600">€{lead.potential_value}</div>
+                      <div className="text-sm text-gray-500">Valor Potencial</div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-green-600">€{lead.potential_value}</div>
-                    <div className="text-sm text-gray-500">Valor Potencial</div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex gap-2 flex-wrap">
+                    <Button size="sm" onClick={() => sendDirectMessage(lead)} className="bg-green-600">
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      WhatsApp Directo
+                    </Button>
+                    {profileData.telefono && (
+                      <Button size="sm" variant="outline" onClick={() => window.open(`tel:${profileData.telefono}`)}>
+                        <Phone className="w-4 h-4 mr-1" />
+                        Llamar
+                      </Button>
+                    )}
+                    {profileData.email && (
+                      <Button size="sm" variant="outline" onClick={() => window.open(`mailto:${profileData.email}`)}>
+                        <Mail className="w-4 h-4 mr-1" />
+                        Email
+                      </Button>
+                    )}
+                    <Button size="sm" onClick={() => window.open(storeUrl, '_blank')} className="bg-blue-600">
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      Enviar a Tienda
+                    </Button>
+                    {lead.status !== 'converted' && (
+                      <Button size="sm" onClick={() => markAsConverted(lead.id)} className="bg-purple-600">
+                        ✅ Marcar Vendido
+                      </Button>
+                    )}
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2 flex-wrap">
-                  <Button size="sm" onClick={() => sendDirectMessage(lead)} className="bg-green-600">
-                    <MessageCircle className="w-4 h-4 mr-1" />
-                    WhatsApp Directo
-                  </Button>
-                  {lead.profile?.telefono && (
-                    <Button size="sm" variant="outline" onClick={() => window.open(`tel:${lead.profile.telefono}`)}>
-                      <Phone className="w-4 h-4 mr-1" />
-                      Llamar
-                    </Button>
-                  )}
-                  {lead.profile?.email && (
-                    <Button size="sm" variant="outline" onClick={() => window.open(`mailto:${lead.profile.email}`)}>
-                      <Mail className="w-4 h-4 mr-1" />
-                      Email
-                    </Button>
-                  )}
-                  <Button size="sm" onClick={() => window.open(storeUrl, '_blank')} className="bg-blue-600">
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    Enviar a Tienda
-                  </Button>
-                  {lead.status !== 'converted' && (
-                    <Button size="sm" onClick={() => markAsConverted(lead.id)} className="bg-purple-600">
-                      ✅ Marcar Vendido
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </div>
     </div>
