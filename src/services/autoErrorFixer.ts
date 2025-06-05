@@ -25,7 +25,6 @@ export class AutoErrorFixer {
   }
 
   private startErrorMonitoring(): void {
-    // Monitoreo cada 30 segundos
     setInterval(() => {
       this.diagnoseSystem();
     }, 30000);
@@ -34,7 +33,6 @@ export class AutoErrorFixer {
   }
 
   private setupGlobalErrorHandlers(): void {
-    // Capturar errores globales
     window.addEventListener('error', (event) => {
       this.handleError({
         type: 'network',
@@ -43,7 +41,6 @@ export class AutoErrorFixer {
       });
     });
 
-    // Capturar promesas rechazadas
     window.addEventListener('unhandledrejection', (event) => {
       this.handleError({
         type: 'api',
@@ -57,15 +54,9 @@ export class AutoErrorFixer {
     if (this.fixing) return;
 
     try {
-      // Verificar APIs
       await this.checkAPIHealth();
-      
-      // Verificar OAuth tokens
       await this.checkOAuthTokens();
-      
-      // Verificar conectividad de red
       await this.checkNetworkConnectivity();
-
     } catch (error) {
       console.error('Error en diagnóstico del sistema:', error);
     }
@@ -76,10 +67,15 @@ export class AutoErrorFixer {
     
     for (const platform of platforms) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
         const response = await fetch(`/api/${platform}/health`, { 
           method: 'GET',
-          timeout: 5000 
+          signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           this.handleError({
@@ -90,7 +86,6 @@ export class AutoErrorFixer {
           });
         }
       } catch (error) {
-        // API no disponible, intentar auto-reparación
         await this.autoFixAPI(platform);
       }
     }
@@ -117,10 +112,15 @@ export class AutoErrorFixer {
 
   private async checkNetworkConnectivity(): Promise<void> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
       const response = await fetch('https://api.github.com', { 
         method: 'HEAD',
-        timeout: 3000 
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         this.handleError({
@@ -142,12 +142,10 @@ export class AutoErrorFixer {
     this.errors.push(error);
     console.log(`🚨 ERROR DETECTADO: ${error.type} - ${error.message}`);
     
-    // Limitar historial de errores
     if (this.errors.length > 100) {
       this.errors = this.errors.slice(-50);
     }
 
-    // Intentar auto-reparación inmediata
     this.attemptAutoFix(error);
   }
 
@@ -195,11 +193,8 @@ export class AutoErrorFixer {
 
   private async autoFixOAuth(platform: string): Promise<void> {
     const { oauthManager } = await import('./oauthManager');
-    
-    // Reintentar conexión OAuth
     await oauthManager.autoConnectAll();
     
-    // Verificar si se solucionó
     const token = await oauthManager.getValidToken(platform);
     if (!token) {
       throw new Error(`No se pudo renovar token de ${platform}`);
@@ -207,18 +202,15 @@ export class AutoErrorFixer {
   }
 
   private async autoFixAPI(platform: string): Promise<void> {
-    // Reinicializar conexión API
     const { realApiConnections } = await import('./realApiConnections');
     await realApiConnections.verifyAllConnections();
   }
 
   private async autoFixNetwork(): Promise<void> {
-    // Implementar lógica de reconexión de red
     await new Promise(resolve => setTimeout(resolve, 2000));
   }
 
   private async autoFixDatabase(): Promise<void> {
-    // Verificar conexión a Supabase
     const { supabase } = await import('@/integrations/supabase/client');
     const { data, error } = await supabase.from('leads_premium').select('id').limit(1);
     
@@ -246,7 +238,7 @@ export class AutoErrorFixer {
 
   getSystemHealth(): any {
     const recentErrors = this.errors.filter(e => 
-      Date.now() - e.timestamp.getTime() < 300000 // Últimos 5 minutos
+      Date.now() - e.timestamp.getTime() < 300000
     );
 
     return {
@@ -254,7 +246,7 @@ export class AutoErrorFixer {
       recentErrors: recentErrors.length,
       totalErrors: this.errors.length,
       autoFixing: this.fixing,
-      uptime: '99.9%' // Simulated
+      uptime: '99.9%'
     };
   }
 
