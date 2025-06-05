@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -5,7 +6,6 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Brain, Zap, Target, TrendingUp, Shield, Cpu, Eye, Users } from 'lucide-react';
 import { intelligentAutoImprovementSystem } from '@/services/intelligentAutoImprovement';
-import { ayrshareLeadManager } from '@/services/ayrshareLeadManager';
 import { enhancedAyrshareLeadManager } from '@/services/enhancedAyrshareLeadManager';
 import { oauthManager } from '@/services/oauthManager';
 import { autoErrorFixer } from '@/services/autoErrorFixer';
@@ -28,11 +28,6 @@ const IntelligentSystemDashboard = () => {
     try {
       console.log('🔄 Cargando datos del sistema automatizado...');
       
-      // Importar dinámicamente los nuevos servicios
-      const { enhancedAyrshareLeadManager } = await import('@/services/enhancedAyrshareLeadManager');
-      const { oauthManager } = await import('@/services/oauthManager');
-      const { autoErrorFixer } = await import('@/services/autoErrorFixer');
-      
       const systemIntelligence = intelligentAutoImprovementSystem.getSystemIntelligence();
       const leadData = await enhancedAyrshareLeadManager.getLeads();
       const stats = enhancedAyrshareLeadManager.getLeadStats();
@@ -43,7 +38,7 @@ const IntelligentSystemDashboard = () => {
       setLeadStats(stats);
       setSystemStatus(status);
       
-      console.log(`✅ Datos cargados: ${leadData.length} leads reales, ${stats.connectedPlatforms} APIs conectadas`);
+      console.log(`✅ Datos cargados: ${leadData?.length || 0} leads reales, ${stats.connectedPlatforms?.length || 0} APIs conectadas`);
     } catch (error) {
       console.error('Error cargando datos del sistema:', error);
       setLeads([]);
@@ -73,7 +68,7 @@ const IntelligentSystemDashboard = () => {
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }
 
   function getStatusColor(value: number, thresholds: { good: number; warning: number }) {
     if (value >= thresholds.good) return 'text-green-600';
@@ -297,7 +292,7 @@ const IntelligentSystemDashboard = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Auto-reparación</span>
-                  <Badge className={systemStatus.systemHealth?.autoFixing ? 'bg-orange-500' : 'bg-green-500'} text-white">
+                  <Badge className={systemStatus.systemHealth?.autoFixing ? 'bg-orange-500' : 'bg-green-500'}>
                     {systemStatus.systemHealth?.autoFixing ? 'REPARANDO' : 'MONITOREANDO'}
                   </Badge>
                 </div>
