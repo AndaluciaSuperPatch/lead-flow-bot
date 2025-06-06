@@ -11,6 +11,24 @@ import {
   CheckCircle, Activity, Zap, Crown, Star, Trophy 
 } from 'lucide-react';
 
+interface LeadProfile {
+  platform?: string;
+  username?: string;
+  comment?: string;
+  timestamp?: string;
+  score?: number;
+  postId?: string;
+}
+
+interface Lead {
+  id: string;
+  type: string;
+  source: string;
+  status: string;
+  created_at: string;
+  profile: LeadProfile | null;
+}
+
 const CompleteCRMDashboard = () => {
   const { toast } = useToast();
   const [realMetrics, setRealMetrics] = useState({
@@ -22,7 +40,7 @@ const CompleteCRMDashboard = () => {
     realDataOnly: true
   });
   const [systemStatus, setSystemStatus] = useState<any>({});
-  const [realLeads, setRealLeads] = useState([]);
+  const [realLeads, setRealLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -255,8 +273,8 @@ const CompleteCRMDashboard = () => {
                 </p>
               </div>
             ) : (
-              realLeads.slice(0, 10).map((lead, index) => (
-                <div key={index} className="border-2 border-green-200 rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50">
+              realLeads.slice(0, 10).map((lead) => (
+                <div key={lead.id} className="border-2 border-green-200 rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <Badge className="bg-green-600 text-white font-bold">
