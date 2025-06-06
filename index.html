@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <!-- Meta Pixel Code (Facebook/Instagram Ads) -->
     <script>
       !function(f,b,e,v,n,t,s)
@@ -176,9 +176,9 @@
         border-bottom-left-radius: 5px;
       }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
     <!-- Meta Pixel noscript -->
     <noscript>
       <img height="1" width="1" style="display:none"
@@ -196,6 +196,7 @@
         <p>✅ Ayrshare Lead Engine</p>
         <p>✅ Auto-reparación Activada</p>
         <p>✅ Optimización Continua</p>
+        <p>✅ Chatbot Inteligente</p>
       </div>
     </div>
 
@@ -205,7 +206,15 @@
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Sistema de inicialización IA y chatbot integrado -->
+    <!-- Chatbot IA integrado directamente en el HTML -->
+    <div id="chat-container">
+      <div id="chat-header">Asistente IA SuperPatch</div>
+      <div id="chat-messages"></div>
+      <input id="user-input" type="text" placeholder="¿Qué necesitas mejorar hoy?">
+    </div>
+    <button id="chat-toggle">💬</button>
+
+    <!-- Sistema de inicialización IA y chatbot -->
     <script>
       // Simular inicialización del sistema IA
       setTimeout(() => {
@@ -227,23 +236,13 @@
       console.log('🧠 Sistema IA Superinteligente Iniciado');
       console.log('🔒 Acceso Interno - Solo Gestión');
       console.log('🚀 Ayrshare Lead Engine Activo');
+      console.log('🤖 Chatbot Inteligente Activado');
 
       // Función para inicializar el chatbot
       function initChatbot() {
-        const chatWidget = document.createElement('div');
-        chatWidget.innerHTML = `
-          <div id="chat-container">
-            <div id="chat-header">Asistente IA SuperPatch</div>
-            <div id="chat-messages"></div>
-            <input id="user-input" type="text" placeholder="¿Qué necesitas mejorar hoy?">
-          </div>
-          <button id="chat-toggle">💬</button>
-        `;
-        document.body.appendChild(chatWidget);
-
         const keywords = {
-          ventas: ['dolor', 'sueño', 'descanso', 'paz', 'equilibrio', 'enfoque', 'concentración', 'fuerza', 'energía'],
-          emprender: ['emprender', 'negocio', 'startup', 'emprendedor', 'inversión', 'franquicia']
+          ventas: ['dolor', 'sueño', 'descanso', 'paz', 'equilibrio', 'enfoque', 'concentración', 'fuerza', 'energía', 'ansiedad', 'estrés'],
+          emprender: ['emprender', 'negocio', 'startup', 'emprendedor', 'inversión', 'franquicia', 'oportunidad', 'empresa', 'proyecto']
         };
 
         const toggleBtn = document.getElementById('chat-toggle');
@@ -306,7 +305,12 @@
             addMessage(responses[Math.floor(Math.random() * responses.length)], 'bot');
           }
         }
+
+        // Mensaje de bienvenida automático después de 5 segundos
+        setTimeout(() => {
+          addMessage("¡Hola! Soy el asistente IA de SuperPatch. ¿Puedo ayudarte con bienestar físico/mental o con oportunidades de negocio?", 'bot');
+        }, 5000);
       }
     </script>
-  </body>
+</body>
 </html>
