@@ -103,6 +103,78 @@
         font-size: 0.9rem;
         opacity: 0.9;
       }
+
+      /* Estilos para el chatbot */
+      #chat-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        z-index: 10001;
+        display: none;
+      }
+
+      #chat-header {
+        padding: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px 10px 0 0;
+        font-weight: bold;
+        cursor: move;
+      }
+
+      #chat-messages {
+        height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #f9f9f9;
+      }
+
+      #user-input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-top: 1px solid #ddd;
+        border-radius: 0 0 10px 10px;
+      }
+
+      #chat-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 10000;
+      }
+
+      .chat-message {
+        padding: 8px 12px;
+        margin: 8px 0;
+        border-radius: 18px;
+        max-width: 80%;
+        word-break: break-word;
+      }
+
+      .user-message {
+        background: #e0e0ff;
+        margin-left: auto;
+        border-bottom-right-radius: 5px;
+      }
+
+      .bot-message {
+        background: #f1f1f1;
+        margin-right: auto;
+        border-bottom-left-radius: 5px;
+      }
     </style>
   </head>
 
@@ -133,7 +205,7 @@
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Sistema de inicialización IA -->
+    <!-- Sistema de inicialización IA y chatbot integrado -->
     <script>
       // Simular inicialización del sistema IA
       setTimeout(() => {
@@ -143,6 +215,8 @@
         
         setTimeout(() => {
           loadingScreen.style.display = 'none';
+          // Inicializar el chatbot después de ocultar loading
+          initChatbot();
         }, 1000);
       }, 3000);
 
@@ -153,9 +227,86 @@
       console.log('🧠 Sistema IA Superinteligente Iniciado');
       console.log('🔒 Acceso Interno - Solo Gestión');
       console.log('🚀 Ayrshare Lead Engine Activo');
-    </script>
 
-    <!-- Chatbot IA -->
-    <script src="chatbot.js"></script>
+      // Función para inicializar el chatbot
+      function initChatbot() {
+        const chatWidget = document.createElement('div');
+        chatWidget.innerHTML = `
+          <div id="chat-container">
+            <div id="chat-header">Asistente IA SuperPatch</div>
+            <div id="chat-messages"></div>
+            <input id="user-input" type="text" placeholder="¿Qué necesitas mejorar hoy?">
+          </div>
+          <button id="chat-toggle">💬</button>
+        `;
+        document.body.appendChild(chatWidget);
+
+        const keywords = {
+          ventas: ['dolor', 'sueño', 'descanso', 'paz', 'equilibrio', 'enfoque', 'concentración', 'fuerza', 'energía'],
+          emprender: ['emprender', 'negocio', 'startup', 'emprendedor', 'inversión', 'franquicia']
+        };
+
+        const toggleBtn = document.getElementById('chat-toggle');
+        const chatContainer = document.getElementById('chat-container');
+
+        toggleBtn.addEventListener('click', () => {
+          chatContainer.style.display = chatContainer.style.display === 'block' ? 'none' : 'block';
+          document.getElementById('user-input').focus();
+        });
+
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            const userMessage = e.target.value.trim();
+            if (userMessage) {
+              addMessage(userMessage, 'user');
+              processQuery(userMessage);
+              e.target.value = '';
+            }
+          }
+        });
+
+        function addMessage(text, sender) {
+          const messagesDiv = document.getElementById('chat-messages');
+          const messageDiv = document.createElement('div');
+          messageDiv.textContent = text;
+          messageDiv.classList.add('chat-message');
+          messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+          
+          messagesDiv.appendChild(messageDiv);
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function processQuery(query) {
+          const lowerQuery = query.toLowerCase();
+          let detected = false;
+
+          // Detectar palabras clave
+          if (keywords.ventas.some(keyword => lowerQuery.includes(keyword))) {
+            addMessage("¡Entendido! Nuestros parches de bienestar pueden ayudarte. Te redirigimos a la tienda...", 'bot');
+            setTimeout(() => {
+              window.location.href = "https://111236288.superpatch.com/es";
+            }, 2500);
+            detected = true;
+          }
+
+          if (keywords.emprender.some(keyword => lowerQuery.includes(keyword))) {
+            addMessage("¡Excelente decisión! Contacta a nuestro equipo de emprendimiento directamente por WhatsApp.", 'bot');
+            setTimeout(() => {
+              window.open("https://wa.me/34654669289", "_blank");
+            }, 2500);
+            detected = true;
+          }
+
+          if (!detected) {
+            const responses = [
+              "¿Buscas mejorar tu bienestar o iniciar un negocio?",
+              "Cuéntame qué necesitas: ¿bienestar físico/mental o oportunidades de negocio?",
+              "Puedo ayudarte con: dolor, sueño, enfoque o emprendimiento. ¿En qué área necesitas ayuda?"
+            ];
+            addMessage(responses[Math.floor(Math.random() * responses.length)], 'bot');
+          }
+        }
+      }
+    </script>
   </body>
 </html>
