@@ -400,3 +400,346 @@
             margin: 10px 0;
         }
         
+        .stat-label {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(102, 126, 234, 0.3);
+            color: #94a3b8;
+        }
+        
+        .ai-pulse {
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #667eea;
+            animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+            margin: 20px auto;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de carga del sistema IA -->
+    <div class="loading-screen" id="ai-loading">
+        <div class="ai-pulse"></div>
+        <h2>🧠 SISTEMA IA SUPERINTELIGENTE</h2>
+        <p>Inicializando módulos avanzados...</p>
+        <div class="system-status">
+            <p>✅ ChatGPT Integration</p>
+            <p>✅ Sistema de Captación Proactiva</p>
+            <p>✅ Motor de Búsqueda Autónomo</p>
+            <p>✅ Análisis de Intención en Tiempo Real</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🧠</div>
+                <div class="logo-text">SuperPatch IA</div>
+            </div>
+            <nav>
+                <button class="btn btn-secondary">Panel de Control</button>
+            </nav>
+        </header>
+        
+        <div class="main-content">
+            <div class="hero-text">
+                <h1>Sistema Autónomo de <span class="highlight">Captación Proactiva</span> con IA</h1>
+                <p class="subtitle">Nuestros ejércitos de bots inteligentes buscan automáticamente en Internet personas con problemas específicos (dolor, falta de sueño, estrés) o interés en emprender, y los convierten en leads calificados.</p>
+                
+                <div class="cta-buttons">
+                    <button class="btn btn-primary">Ver Demostración</button>
+                    <button class="btn btn-secondary">Solicitar Acceso</button>
+                </div>
+                
+                <div class="system-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="leads-count">0</div>
+                        <div class="stat-label">Leads Captados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="opportunities-count">0</div>
+                        <div class="stat-label">Oportunidades Detectadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="conversion-count">0%</div>
+                        <div class="stat-label">Tasa de Conversión</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <div class="ai-core">
+                    <div class="ai-inner">
+                        <div class="ai-icon">🤖</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">Búsqueda Proactiva</h3>
+                <p class="feature-desc">Nuestros bots escanean continuamente foros, redes y comunidades para identificar personas con necesidades específicas.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3 class="feature-title">Análisis de Intención</h3>
+                <p class="feature-desc">IA avanzada detecta el nivel de urgencia e interés para priorizar leads de alto valor.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">Interacción Autónoma</h3>
+                <p class="feature-desc">Los bots inician conversaciones relevantes y humanizadas para generar confianza.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3 class="feature-title">Conversión Automatizada</h3>
+                <p class="feature-desc">Sistema de nutrición que guía a los leads hacia tu oferta sin intervención manual.</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Sistema SuperPatch IA © 2023 - Revolucionando la captación de clientes con inteligencia artificial</p>
+    </footer>
+
+    <!-- Chatbot IA integrado directamente en el HTML -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <span>Asistente IA SuperPatch</span>
+            <span id="close-chat" style="cursor:pointer;">✕</span>
+        </div>
+        <div id="chat-messages"></div>
+        <input id="user-input" type="text" placeholder="¿Qué problema necesitas resolver hoy?">
+    </div>
+    <button id="chat-toggle">💬</button>
+
+    <!-- Script para todo el sistema -->
+    <script>
+        // Simular inicialización del sistema IA
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('ai-loading');
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transition = 'opacity 1s ease-out';
+            
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                // Inicializar el chatbot después de ocultar loading
+                initChatbot();
+                startProactiveSystem();
+            }, 1000);
+        }, 3000);
+
+        // Inicializar contadores
+        const leadsCount = document.getElementById('leads-count');
+        const opportunitiesCount = document.getElementById('opportunities-count');
+        const conversionCount = document.getElementById('conversion-count');
+        
+        let leads = 0;
+        let opportunities = 0;
+        let conversion = 0;
+        
+        // Función para animar contadores
+        function animateCounter(element, target, duration = 2000) {
+            const start = parseInt(element.textContent) || 0;
+            const increment = target > start ? 1 : -1;
+            let current = start;
+            
+            const interval = setInterval(() => {
+                current += increment;
+                element.textContent = current + (element === conversionCount ? '%' : '');
+                
+                if ((increment > 0 && current >= target) || 
+                    (increment < 0 && current <= target)) {
+                    element.textContent = target + (element === conversionCount ? '%' : '');
+                    clearInterval(interval);
+                }
+            }, duration / Math.abs(target - start));
+        }
+        
+        // Función para inicializar el chatbot
+        function initChatbot() {
+            const keywords = {
+                ventas: ['dolor', 'sueño', 'descanso', 'paz', 'equilibrio', 'enfoque', 'concentración', 'fuerza', 'energía', 'ansiedad', 'estrés'],
+                emprender: ['emprender', 'negocio', 'startup', 'emprendedor', 'inversión', 'franquicia', 'oportunidad', 'empresa', 'proyecto']
+            };
+
+            const toggleBtn = document.getElementById('chat-toggle');
+            const chatContainer = document.getElementById('chat-container');
+            const closeChat = document.getElementById('close-chat');
+
+            toggleBtn.addEventListener('click', () => {
+                chatContainer.style.display = chatContainer.style.display === 'block' ? 'none' : 'block';
+                document.getElementById('user-input').focus();
+            });
+            
+            closeChat.addEventListener('click', () => {
+                chatContainer.style.display = 'none';
+            });
+
+            document.getElementById('user-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const userMessage = e.target.value.trim();
+                    if (userMessage) {
+                        addMessage(userMessage, 'user');
+                        processQuery(userMessage);
+                        e.target.value = '';
+                    }
+                }
+            });
+
+            function addMessage(text, sender) {
+                const messagesDiv = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = text;
+                messageDiv.classList.add('chat-message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                
+                messagesDiv.appendChild(messageDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            function processQuery(query) {
+                const lowerQuery = query.toLowerCase();
+                let detected = false;
+
+                // Detectar palabras clave
+                if (keywords.ventas.some(keyword => lowerQuery.includes(keyword))) {
+                    addMessage("¡Entendido! Nuestros parches de bienestar pueden ayudarte. Te redirigimos a la tienda...", 'bot');
+                    setTimeout(() => {
+                        window.location.href = "https://111236288.superpatch.com/es";
+                    }, 2500);
+                    detected = true;
+                }
+
+                if (keywords.emprender.some(keyword => lowerQuery.includes(keyword))) {
+                    addMessage("¡Excelente decisión! Contacta a nuestro equipo de emprendimiento directamente por WhatsApp.", 'bot');
+                    setTimeout(() => {
+                        window.open("https://wa.me/34654669289", "_blank");
+                    }, 2500);
+                    detected = true;
+                }
+
+                if (!detected) {
+                    const responses = [
+                        "¿Buscas mejorar tu bienestar o iniciar un negocio?",
+                        "Cuéntame qué necesitas: ¿bienestar físico/mental o oportunidades de negocio?",
+                        "Puedo ayudarte con: dolor, sueño, enfoque o emprendimiento. ¿En qué área necesitas ayuda?"
+                    ];
+                    addMessage(responses[Math.floor(Math.random() * responses.length)], 'bot');
+                }
+            }
+
+            // Mensaje de bienvenida automático después de 5 segundos
+            setTimeout(() => {
+                addMessage("¡Hola! Soy el asistente IA de SuperPatch. ¿Puedo ayudarte con bienestar físico/mental o con oportunidades de negocio?", 'bot');
+                
+                // Botón para activar búsqueda proactiva
+                setTimeout(() => {
+                    const messagesDiv = document.getElementById('chat-messages');
+                    const button = document.createElement('button');
+                    button.innerHTML = '🚀 Activar Búsqueda Proactiva';
+                    button.classList.add('strategy-btn');
+                    
+                    button.addEventListener('click', () => {
+                        addMessage("Activando sistema de búsqueda proactiva...", 'bot');
+                        setTimeout(() => {
+                            addMessage("✅ Sistema activado. Nuestros bots están buscando oportunidades en tiempo real...", 'bot');
+                            simulateProactiveSearch();
+                        }, 1500);
+                    });
+                    
+                    messagesDiv.appendChild(button);
+                }, 2000);
+            }, 3000);
+        }
+        
+        // Función para simular búsqueda proactiva
+        function simulateProactiveSearch() {
+            const searchResults = [
+                "🔍 Detectado: Usuario buscando 'aliviar dolor de espalda' en foro de salud",
+                "💼 Oportunidad: 'Quiero emprender en bienestar' en grupo de Facebook",
+                "📈 Tendencias: +42% búsquedas de 'problemas para dormir' este mes",
+                "🤖 Interacción: Bots iniciaron conversación con 5 leads potenciales",
+                "✅ Resultado: 2 leads calificados añadidos al sistema"
+            ];
+            
+            const messagesDiv = document.getElementById('chat-messages');
+            
+            searchResults.forEach((result, index) => {
+                setTimeout(() => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.textContent = result;
+                    resultDiv.classList.add('chat-message', 'bot-message');
+                    resultDiv.style.animationDelay = `${index * 0.1}s`;
+                    messagesDiv.appendChild(resultDiv);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    
+                    // Actualizar contadores
+                    if (result.includes("leads calificados")) {
+                        leads += 2;
+                        opportunities += 5;
+                        conversion = Math.min(100, Math.floor((leads / opportunities) * 100));
+                        
+                        animateCounter(leadsCount, leads);
+                        animateCounter(opportunitiesCount, opportunities);
+                        animateCounter(conversionCount, conversion);
+                    }
+                }, (index + 1) * 1500);
+            });
+        }
+        
+        // Iniciar sistema proactivo automáticamente
+        function startProactiveSystem() {
+            setInterval(() => {
+                opportunities += Math.floor(Math.random() * 3) + 1;
+                leads += Math.floor(Math.random() * 2);
+                conversion = Math.min(100, Math.floor((leads / opportunities) * 100));
+                
+                animateCounter(leadsCount, leads, 1000);
+                animateCounter(opportunitiesCount, opportunities, 1000);
+                animateCounter(conversionCount, conversion, 1000);
+            }, 8000);
+        }
+    </script>
+</body>
+</html>
