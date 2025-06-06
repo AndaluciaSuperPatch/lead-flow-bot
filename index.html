@@ -3,27 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maximizador de Ventas Online - Tu Solución Definitiva</title>
+    <title>Dashboard de Analítica en Tiempo Real</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-97HNRT97F9"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-97HNRT97F9', {
-            'user_id': 'USUARIO_PREMIUM',
-            'send_page_view': true,
-            'anonymize_ip': true,
-            'custom_map': {
-                'dimension1': 'customer_status',
-                'dimension2': 'conversion_score'
-            }
-        });
-    </script>
-    
     <style>
         :root {
             --primary: #2563eb;
@@ -46,50 +28,31 @@
         }
         
         body {
-            background: var(--darker);
-            color: var(--light);
+            background: #f5f7fa;
+            color: #333;
             line-height: 1.6;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
+            background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
         }
         
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateX(200%);
-            transition: transform 0.5s ease;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
         
         header {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            margin-bottom: 30px;
         }
         
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 20px;
         }
         
         .logo {
@@ -98,303 +61,648 @@
             gap: 10px;
             font-size: 1.5rem;
             font-weight: 700;
-            color: white;
+            color: var(--dark);
         }
         
         .logo i {
             color: var(--accent);
         }
         
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .time-selector {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
         }
         
-        .nav-links a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            position: relative;
-        }
-        
-        .nav-links a:hover {
-            color: var(--secondary);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient);
-            transition: width 0.3s;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        .hero {
+        .dashboard-title {
             text-align: center;
-            padding: 6rem 2rem;
-            background: radial-gradient(circle at top right, #7c3aed, transparent 40%);
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 30px;
         }
         
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 Q50,10 100,0 L100,100 Q50,90 0,100 Z" fill="rgba(15, 23, 42, 0.5)"/></svg>');
-            background-size: cover;
-            z-index: -1;
-        }
-        
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(90deg, #60a5fa, #c084fc);
+        .dashboard-title h1 {
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            line-height: 1.2;
         }
         
-        .hero p {
-            font-size: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            color: #cbd5e1;
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background: var(--gradient);
-            color: white;
-            padding: 1.2rem 3rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 1.5rem;
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.5);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #c084fc, #60a5fa);
-            transition: width 0.5s ease;
-            z-index: -1;
-        }
-        
-        .cta-button:hover::before {
-            width: 100%;
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.7);
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 3rem;
-            flex-wrap: wrap;
-        }
-        
-        .stat-box {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1.5rem 2rem;
-            text-align: center;
-            min-width: 200px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .stat-box .number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        
-        .container {
-            max-width: 1200px;
+        .dashboard-title p {
+            color: #64748b;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 4rem 2rem;
         }
         
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-            position: relative;
-        }
-        
-        .section-title h2 {
-            font-size: 2.5rem;
-            display: inline-block;
-            background: linear-gradient(90deg, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-        
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 4px;
-            background: var(--gradient);
-            margin: 0.5rem auto 0;
-            border-radius: 2px;
-        }
-        
-        .features {
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin-bottom: 5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
-        .feature-card {
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 20px;
-            padding: 2.5rem 2rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s ease;
-            text-align: center;
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
-        .feature-card:hover {
-            transform: translateY(-15px);
-            border-color: var(--accent);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         }
         
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .stat-card h3 {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: white;
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
         }
         
-        .feature-card p {
-            color: #cbd5e1;
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: var(--success);
         }
         
-        .dashboard {
-            background: rgba(15, 23, 42, 0.9);
-            border-radius: 25px;
-            padding: 3rem;
-            margin: 4rem 0;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
+        .stat-trend.down {
+            color: var(--danger);
         }
         
-        .chart-container {
+        .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
         }
         
         .chart-box {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 15px;
-            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         
-        .sms-section {
-            background: linear-gradient(45deg, #1e3a8a, #0c4a6e);
-            border-radius: 20px;
-            padding: 3rem;
-            margin: 5rem 0;
-            position: relative;
-            overflow: hidden;
+        .chart-box h3 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .sms-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,30 Q50,0 100,30 L100,100 Q50,100 0,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
-            background-size: cover;
-            z-index: 0;
+        .chart-placeholder {
+            background: #f8fafc;
+            border-radius: 8px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            border: 1px dashed #cbd5e1;
         }
         
-        .sms-content {
-            position: relative;
-            z-index: 1;
+        .chart-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #cbd5e1;
         }
         
-        .form-group {
-            margin-bottom: 1.5rem;
+        .data-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
         }
         
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+        .data-section h2 {
+            font-size: 1.3rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        input, textarea, select {
+        .data-table {
             width: 100%;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            border-radius: 10px;
-            border: none;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 1rem;
-            border: 1px solid rgba(255,255,255,0.2);
+            border-collapse: collapse;
         }
         
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--secondary);
-            background: rgba(255,255,255,0.15);
+        .data-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
         }
         
-        button {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 10px;
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+        
+        .debug-section {
+            background: #fffbeb;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .debug-section h3 {
+            font-size: 1.2rem;
+            color: #b45309;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .debug-list {
+            list-style-type: none;
+        }
+        
+        .debug-list li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .debug-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--warning);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
             transition: all 0.3s ease;
-            font-size: 1rem;
-            box-shadow: 0 5px 
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 30px;
+        }
+        
+        .ga-id {
+            background: #f1f5f9;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        
+        .status-inactive {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--success);
+            width: 65%;
+        }
+        
+        .refresh-info {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .data-refresh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics Dashboard</span>
+            </div>
+            <div class="time-selector">
+                <i class="fas fa-clock"></i> Últimos 30 minutos
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard-title">
+            <h1>Resumen en Tiempo Real</h1>
+            <p>Monitoreo de usuarios activos y comportamiento durante los últimos 30 minutos</p>
+            <div class="data-refresh" id="refreshButton">
+                <i class="fas fa-sync-alt"></i>
+                <span>Actualizar datos</span>
+                <span class="ga-id">ID: G-97HNRT97F9 <span class="status-badge status-active">ACTIVO</span></span>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3><i class="fas fa-users"></i> Usuarios activos</h3>
+                <div class="stat-value">42</div>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i> 12% desde la última hora
+                </div>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="refresh-info">
+                    <span>Actualizado hace 2 min</span>
+                    <span>Máx: 68</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3><i class="fas fa-mobile-alt"></i> Dispositivos</h3>
+                <div style="display: flex; gap: 15px; margin-top: 15px;">
+                    <div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: var(--dark);">65%</div>
+                        <div style="font-size: 0.9rem; color: #64748b;">Móvil</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: var(--dark);">28%</div>
+                        <div style="font-size: 0.9rem; color: #64748b;">Desktop</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: var(--dark);">7%</div>
+                        <div style="font-size: 0.9rem; color: #64748b;">Tablet</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3><i class="fas fa-globe-americas"></i> Ubicación</h3>
+                <div style="margin-top: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>España</span>
+                        <span style="font-weight: 600;">32%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>México</span>
+                        <span style="font-weight: 600;">24%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Colombia</span>
+                        <span style="font-weight: 600;">18%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-container">
+            <div class="chart-box">
+                <h3><i class="fas fa-chart-bar"></i> Usuarios por minuto</h3>
+                <canvas id="minuteChart" height="250"></canvas>
+            </div>
+            
+            <div class="chart-box">
+                <h3><i class="fas fa-laptop"></i> Usuarios por dispositivo</h3>
+                <canvas id="deviceChart" height="250"></canvas>
+            </div>
+        </div>
+        
+        <div class="data-section">
+            <h2><i class="fas fa-globe"></i> Usuarios activos por país</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>País</th>
+                        <th>Usuarios</th>
+                        <th>Porcentaje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>España</td>
+                        <td>14</td>
+                        <td>32%</td>
+                    </tr>
+                    <tr>
+                        <td>México</td>
+                        <td>11</td>
+                        <td>24%</td>
+                    </tr>
+                    <tr>
+                        <td>Colombia</td>
+                        <td>8</td>
+                        <td>18%</td>
+                    </tr>
+                    <tr>
+                        <td>Argentina</td>
+                        <td>5</td>
+                        <td>12%</td>
+                    </tr>
+                    <tr>
+                        <td>Perú</td>
+                        <td>4</td>
+                        <td>9%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="data-section">
+            <h2><i class="fas fa-file-alt"></i> Páginas más visitadas</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Página</th>
+                        <th>Vistas</th>
+                        <th>Tiempo promedio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Página de inicio</td>
+                        <td>28</td>
+                        <td>2:15 min</td>
+                    </tr>
+                    <tr>
+                        <td>Catálogo de productos</td>
+                        <td>19</td>
+                        <td>3:42 min</td>
+                    </tr>
+                    <tr>
+                        <td>Ofertas especiales</td>
+                        <td>14</td>
+                        <td>1:56 min</td>
+                    </tr>
+                    <tr>
+                        <td>Carrito de compra</td>
+                        <td>8</td>
+                        <td>1:18 min</td>
+                    </tr>
+                    <tr>
+                        <td>Página de contacto</td>
+                        <td>5</td>
+                        <td>4:22 min</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="debug-section">
+            <h3><i class="fas fa-bug"></i> Solución de problemas</h3>
+            <p>Si no ves datos en tu panel de Analytics, sigue estos pasos:</p>
+            <ul class="debug-list">
+                <li>Verifica que el código de seguimiento esté correctamente instalado en todas las páginas</li>
+                <li>Asegúrate de que tu propiedad de Google Analytics esté configurada para recopilar datos</li>
+                <li>Comprueba que no haya filtros que bloqueen tu tráfico</li>
+                <li>Espera 24-48 horas después de configurar Analytics para ver datos iniciales</li>
+                <li>Usa la herramienta "Tag Assistant" de Google para verificar la implementación</li>
+            </ul>
+            <div class="action-buttons">
+                <button class="btn btn-primary">
+                    <i class="fas fa-wrench"></i> Verificar implementación
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-book"></i> Documentación
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Sistema de monitoreo en tiempo real | Google Analytics ID: <span class="ga-id">G-97HNRT97F9</span></p>
+            <p>Última actualización: <span id="current-time"></span></p>
+        </div>
+    </footer>
+    
+    <script>
+        // Actualizar la hora actual
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Datos simulados para gráficos
+        const minuteData = {
+            labels: ['Hace 5 min', 'Hace 4 min', 'Hace 3 min', 'Hace 2 min', 'Hace 1 min', 'Ahora'],
+            datasets: [{
+                label: 'Usuarios activos',
+                data: [8, 12, 10, 14, 11, 15],
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        };
+        
+        const deviceData = {
+            labels: ['Móvil', 'Desktop', 'Tablet'],
+            datasets: [{
+                data: [65, 28, 7],
+                backgroundColor: [
+                    'rgba(139, 92, 246, 0.7)',
+                    'rgba(59, 130, 246, 0.7)',
+                    'rgba(16, 185, 129, 0.7)'
+                ],
+                borderWidth: 0
+            }]
+        };
+        
+        // Inicializar gráficos
+        window.addEventListener('load', function() {
+            // Gráfico de usuarios por minuto
+            const minuteCtx = document.getElementById('minuteChart').getContext('2d');
+            const minuteChart = new Chart(minuteCtx, {
+                type: 'line',
+                data: minuteData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de dispositivos
+            const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+            const deviceChart = new Chart(deviceCtx, {
+                type: 'doughnut',
+                data: deviceData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+            
+            // Botón de actualizar
+            document.getElementById('refreshButton').addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                
+                // Simular actualización
+                setTimeout(() => {
+                    icon.classList.remove('fa-spin');
+                    
+                    // Actualizar datos
+                    minuteData.datasets[0].data = minuteData.datasets[0].data.map(val => {
+                        const change = Math.floor(Math.random() * 5) - 2;
+                        return Math.max(1, val + change);
+                    });
+                    
+                    deviceData.datasets[0].data = [
+                        60 + Math.floor(Math.random() * 10),
+                        25 + Math.floor(Math.random() * 10),
+                        100 - (60 + Math.floor(Math.random() * 10) - (25 + Math.floor(Math.random() * 10))
+                    ];
+                    
+                    minuteChart.update();
+                    deviceChart.update();
+                    
+                    // Actualizar usuarios activos
+                    const userCount = Math.floor(Math.random() * 10) + 35;
+                    document.querySelector('.stat-value').textContent = userCount;
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
