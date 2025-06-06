@@ -3,743 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperPatch IA | Sistema Autónomo de Captación Proactiva</title>
-    <meta name="description" content="Sistema de IA superinteligente que busca proactivamente clientes con necesidades específicas y los convierte en leads calificados">
-    <meta name="author" content="SuperPatch IA System">
-    <link rel="icon" type="image/png" href="https://lovable.dev/favicon.png">
+    <title>Potencia Máxima de Ventas Online</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-97HNRT97F9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-97HNRT97F9', {
+            'user_id': 'USUARIO_PREMIUM',
+            'send_page_view': true,
+            'anonymize_ip': true,
+            'custom_map': {
+                'dimension1': 'customer_status',
+                'dimension2': 'conversion_score'
+            }
+        });
+    </script>
+    
+    <!-- Twilio SMS Integration -->
+    <script>
+        function enviarSMS() {
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+            
+            fetch('https://api.twilio.com/2010-04-01/Accounts/AC_YOUR_ACCOUNT_SID/Messages.json', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + btoa('AC_YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN'),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'To': phone,
+                    'From': '+14155238886',
+                    'Body': message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error_code) {
+                    gtag('event', 'sms_failure', {
+                        'error_code': data.code
+                    });
+                    alert("Error: " + data.message);
+                } else {
+                    gtag('event', 'sms_sent', {
+                        'message_length': message.length,
+                        'target_number': phone
+                    });
+                    alert("¡Mensaje enviado con éxito!");
+                }
+            })
+            .catch(error => {
+                gtag('event', 'sms_error', {
+                    'error_message': error.message
+                });
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    
+    <!-- Conversion Tracking -->
+    <script>
+        function trackConversion(valor) {
+            gtag('event', 'conversion', {
+                'send_to': 'G-97HNRT97F9/ConvercionOnline',
+                'value': valor,
+                'currency': 'USD',
+                'transaction_id': 'TX_' + Date.now()
+            });
+        }
+    </script>
+    
+    <!-- SEO Optimizado -->
+    <meta name="description" content="Solución todo-en-uno para ventas online con seguimiento avanzado y automatización de comunicaciones">
+    <meta name="keywords" content="ventas online, marketing digital, analytics, twilio, conversiones">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://tudominio.com/">
     
     <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            background: linear-gradient(135deg, #0f172a, #1e40af);
+            color: var(--light);
+            line-height: 1.6;
         }
         
-        body::before {
-            content: "";
-            position: absolute;
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 20%);
-            z-index: -1;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 2rem;
         }
         
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
-            margin-bottom: 40px;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo-icon {
-            font-size: 2.5rem;
-            color: #667eea;
-        }
-        
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .hero-text {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
+        .hero {
+            text-align: center;
+            padding: 5rem 1rem;
+            background: radial-gradient(circle at top right, #7c3aed, transparent 40%);
         }
         
         h1 {
-            font-size: 3.2rem;
-            line-height: 1.2;
-            background: linear-gradient(to right, #fff 0%, #a5b4fc 100%);
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
-        .subtitle {
-            font-size: 1.4rem;
-            color: #cbd5e1;
-            max-width: 90%;
-            line-height: 1.6;
-        }
-        
-        .highlight {
-            color: #667eea;
-            font-weight: 600;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .btn {
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
         }
         
-        .btn-secondary {
+        .cta-button:hover {
             background: transparent;
-            color: #94a3b8;
-            border: 2px solid #4a5568;
-        }
-        
-        .btn:hover {
+            border-color: var(--accent);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-        
-        .hero-image {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .ai-core {
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 
-                0 0 50px rgba(102, 126, 234, 0.7),
-                inset 0 0 30px rgba(255, 255, 255, 0.2);
-            position: relative;
-            animation: pulse 3s infinite;
-        }
-        
-        .ai-core::before {
-            content: "";
-            position: absolute;
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            animation: rotate 20s linear infinite;
-        }
-        
-        .ai-core::after {
-            content: "";
-            position: absolute;
-            width: 240px;
-            height: 240px;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.08);
-            animation: rotate 15s linear infinite reverse;
-        }
-        
-        .ai-inner {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: rgba(26, 26, 46, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .ai-icon {
-            font-size: 4rem;
-            color: #a5b4fc;
-            animation: pulse-icon 2s infinite alternate;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 50px rgba(102, 126, 234, 0.7); }
-            50% { transform: scale(1.02); box-shadow: 0 0 70px rgba(102, 126, 234, 0.9); }
-            100% { transform: scale(1); box-shadow: 0 0 50px rgba(102, 126, 234, 0.7); }
-        }
-        
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes pulse-icon {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
         }
         
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 60px 0;
+            gap: 2rem;
+            margin: 5rem 0;
         }
         
         .feature-card {
             background: rgba(30, 41, 59, 0.7);
             border-radius: 15px;
-            padding: 30px;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 2rem;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
         }
         
         .feature-card:hover {
             transform: translateY(-10px);
-            border-color: rgba(102, 126, 234, 0.5);
+            border-color: var(--accent);
         }
         
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #667eea;
-        }
-        
-        .feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #e2e8f0;
-        }
-        
-        .feature-desc {
-            color: #94a3b8;
-            line-height: 1.6;
-        }
-        
-        /* Estilos para el chatbot */
-        #chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            background: rgba(30, 41, 59, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            backdrop-filter: blur(5px);
-            overflow: hidden;
-        }
-
-        #chat-header {
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px 15px 0 0;
-            font-weight: bold;
-            cursor: move;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #chat-messages {
-            height: 300px;
-            overflow-y: auto;
-            padding: 15px;
-            background: rgba(15, 23, 42, 0.7);
-        }
-
-        #user-input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-top: 1px solid rgba(102, 126, 234, 0.3);
-            background: rgba(30, 41, 59, 0.9);
-            color: white;
-            border-radius: 0 0 15px 15px;
-        }
-
-        #user-input::placeholder {
-            color: #94a3b8;
-        }
-
-        #chat-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        #chat-toggle:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.7);
-        }
-
-        .chat-message {
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: 18px;
-            max-width: 80%;
-            word-break: break-word;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .user-message {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-
-        .bot-message {
-            background: rgba(30, 41, 59, 0.9);
-            margin-right: auto;
-            border-bottom-left-radius: 5px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-        
-        .strategy-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            padding: 8px 15px;
+        .dashboard {
+            background: rgba(15, 23, 42, 0.9);
             border-radius: 20px;
-            margin-top: 10px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: inline-block;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         
-        .strategy-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .system-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-        
-        .stat-card {
-            background: rgba(30, 41, 59, 0.7);
+        .sms-section {
+            background: linear-gradient(45deg, #1e3a8a, #0c4a6e);
             border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 2.5rem;
+            margin: 3rem 0;
         }
         
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 10px 0;
+        input, textarea {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0 1.5rem;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
         }
         
-        .stat-label {
-            color: #94a3b8;
-            font-size: 1.1rem;
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #0284c7;
         }
         
         footer {
             text-align: center;
-            padding: 30px 0;
-            margin-top: 50px;
-            border-top: 1px solid rgba(102, 126, 234, 0.3);
-            color: #94a3b8;
+            padding: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 4rem;
         }
         
-        .ai-pulse {
-            width: 80px;
-            height: 80px;
-            border: 3px solid rgba(102, 126, 234, 0.3);
-            border-radius: 50%;
-            border-top: 3px solid #667eea;
-            animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
-            margin: 20px auto;
-        }
-        
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            font-size: 1.2rem;
-            text-align: center;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero {
+                padding: 3rem 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Pantalla de carga del sistema IA -->
-    <div class="loading-screen" id="ai-loading">
-        <div class="ai-pulse"></div>
-        <h2>🧠 SISTEMA IA SUPERINTELIGENTE</h2>
-        <p>Inicializando módulos avanzados...</p>
-        <div class="system-status">
-            <p>✅ ChatGPT Integration</p>
-            <p>✅ Sistema de Captación Proactiva</p>
-            <p>✅ Motor de Búsqueda Autónomo</p>
-            <p>✅ Análisis de Intención en Tiempo Real</p>
+    <header>
+        <div class="container">
+            <h2>MaximizaTusVentas.com</h2>
         </div>
-    </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Potencia Tus Ventas Online al Máximo</h1>
+            <p>Solución todo-en-uno con Analítica Avanzada y Comunicación Automatizada</p>
+            <a href="#conversion" class="cta-button" onclick="trackConversion(49.99)">¡Empieza Hoy!</a>
+        </div>
+    </section>
 
     <div class="container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon">🧠</div>
-                <div class="logo-text">SuperPatch IA</div>
-            </div>
-            <nav>
-                <button class="btn btn-secondary">Panel de Control</button>
-            </nav>
-        </header>
-        
-        <div class="main-content">
-            <div class="hero-text">
-                <h1>Sistema Autónomo de <span class="highlight">Captación Proactiva</span> con IA</h1>
-                <p class="subtitle">Nuestros ejércitos de bots inteligentes buscan automáticamente en Internet personas con problemas específicos (dolor, falta de sueño, estrés) o interés en emprender, y los convierten en leads calificados.</p>
-                
-                <div class="cta-buttons">
-                    <button class="btn btn-primary">Ver Demostración</button>
-                    <button class="btn btn-secondary">Solicitar Acceso</button>
-                </div>
-                
-                <div class="system-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="leads-count">0</div>
-                        <div class="stat-label">Leads Captados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="opportunities-count">0</div>
-                        <div class="stat-label">Oportunidades Detectadas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="conversion-count">0%</div>
-                        <div class="stat-label">Tasa de Conversión</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="hero-image">
-                <div class="ai-core">
-                    <div class="ai-inner">
-                        <div class="ai-icon">🤖</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="features">
+        <section class="features">
             <div class="feature-card">
-                <div class="feature-icon">🔍</div>
-                <h3 class="feature-title">Búsqueda Proactiva</h3>
-                <p class="feature-desc">Nuestros bots escanean continuamente foros, redes y comunidades para identificar personas con necesidades específicas.</p>
+                <h3>📈 Tracking Avanzado</h3>
+                <p>Google Analytics configurado para rastrear conversiones, eventos y comportamiento de usuarios con precisión milimétrica.</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">🧠</div>
-                <h3 class="feature-title">Análisis de Intención</h3>
-                <p class="feature-desc">IA avanzada detecta el nivel de urgencia e interés para priorizar leads de alto valor.</p>
+                <h3>💬 Comunicación Twilio</h3>
+                <p>Envío de SMS/WhatsApp automatizados para seguimiento de leads y confirmación de ventas.</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">🤖</div>
-                <h3 class="feature-title">Interacción Autónoma</h3>
-                <p class="feature-desc">Los bots inician conversaciones relevantes y humanizadas para generar confianza.</p>
+                <h3>🚀 Conversión Máxima</h3>
+                <p>Técnicas probadas para aumentar tu tasa de conversión optimizando cada punto de contacto.</p>
             </div>
+        </section>
+
+        <section class="dashboard">
+            <h2>Dashboard de Rendimiento</h2>
+            <p>Monitorea en tiempo real el impacto de tus estrategias:</p>
+            <div id="analytics-data">
+                <!-- Los datos de GA se inyectarían via API -->
+                <p>Usuarios activos: <strong>1,248</strong></p>
+                <p>Tasa de conversión: <strong>8.7%</strong></p>
+                <p>Ventas hoy: <strong>$24,860</strong></p>
+            </div>
+        </section>
+
+        <section class="sms-section">
+            <h2>🚀 Potenciador de Ventas via SMS</h2>
+            <p>Envía mensajes directamente a tus clientes:</p>
             
-            <div class="feature-card">
-                <div class="feature-icon">📈</div>
-                <h3 class="feature-title">Conversión Automatizada</h3>
-                <p class="feature-desc">Sistema de nutrición que guía a los leads hacia tu oferta sin intervención manual.</p>
-            </div>
-        </div>
+            <label for="phone">Número de Teléfono:</label>
+            <input type="tel" id="phone" placeholder="+1234567890" required>
+            
+            <label for="message">Mensaje:</label>
+            <textarea id="message" rows="4" placeholder="Escribe tu mensaje de venta aquí...">🚀 Oferta Especial! Solo hoy 50% de descuento en todos nuestros productos. ¡No te lo pierdas! 👉 https://tudominio.com/oferta</textarea>
+            
+            <button onclick="enviarSMS()">Enviar SMS de Venta</button>
+        </section>
+
+        <section id="conversion">
+            <h2>Conversión Directa</h2>
+            <p>¡Actúa ahora y obtén resultados inmediatos!</p>
+            <button class="cta-button" onclick="trackConversion(99.99)">Quiero Vender Más</button>
+        </section>
     </div>
-    
+
     <footer>
-        <p>Sistema SuperPatch IA © 2023 - Revolucionando la captación de clientes con inteligencia artificial</p>
+        <div class="container">
+            <p>© 2023 Potencia Máxima de Ventas Online - Solución completa para crecimiento exponencial</p>
+            <p>Google Analytics ID: G-97HNRT97F9 | Twilio: +14155238886</p>
+        </div>
     </footer>
 
-    <!-- Chatbot IA integrado directamente en el HTML -->
-    <div id="chat-container">
-        <div id="chat-header">
-            <span>Asistente IA SuperPatch</span>
-            <span id="close-chat" style="cursor:pointer;">✕</span>
-        </div>
-        <div id="chat-messages"></div>
-        <input id="user-input" type="text" placeholder="¿Qué problema necesitas resolver hoy?">
-    </div>
-    <button id="chat-toggle">💬</button>
-
-    <!-- Script para todo el sistema -->
+    <!-- Event Tracking -->
     <script>
-        // Simular inicialización del sistema IA
-        setTimeout(() => {
-            const loadingScreen = document.getElementById('ai-loading');
-            loadingScreen.style.opacity = '0';
-            loadingScreen.style.transition = 'opacity 1s ease-out';
-            
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                // Inicializar el chatbot después de ocultar loading
-                initChatbot();
-                startProactiveSystem();
-            }, 1000);
-        }, 3000);
-
-        // Inicializar contadores
-        const leadsCount = document.getElementById('leads-count');
-        const opportunitiesCount = document.getElementById('opportunities-count');
-        const conversionCount = document.getElementById('conversion-count');
-        
-        let leads = 0;
-        let opportunities = 0;
-        let conversion = 0;
-        
-        // Función para animar contadores
-        function animateCounter(element, target, duration = 2000) {
-            const start = parseInt(element.textContent) || 0;
-            const increment = target > start ? 1 : -1;
-            let current = start;
-            
-            const interval = setInterval(() => {
-                current += increment;
-                element.textContent = current + (element === conversionCount ? '%' : '');
-                
-                if ((increment > 0 && current >= target) || 
-                    (increment < 0 && current <= target)) {
-                    element.textContent = target + (element === conversionCount ? '%' : '');
-                    clearInterval(interval);
-                }
-            }, duration / Math.abs(target - start));
-        }
-        
-        // Función para inicializar el chatbot
-        function initChatbot() {
-            const keywords = {
-                ventas: ['dolor', 'sueño', 'descanso', 'paz', 'equilibrio', 'enfoque', 'concentración', 'fuerza', 'energía', 'ansiedad', 'estrés'],
-                emprender: ['emprender', 'negocio', 'startup', 'emprendedor', 'inversión', 'franquicia', 'oportunidad', 'empresa', 'proyecto']
-            };
-
-            const toggleBtn = document.getElementById('chat-toggle');
-            const chatContainer = document.getElementById('chat-container');
-            const closeChat = document.getElementById('close-chat');
-
-            toggleBtn.addEventListener('click', () => {
-                chatContainer.style.display = chatContainer.style.display === 'block' ? 'none' : 'block';
-                document.getElementById('user-input').focus();
+        // Track key interactions
+        document.querySelectorAll('a, button').forEach(element => {
+            element.addEventListener('click', function() {
+                gtag('event', 'engagement', {
+                    'event_category': 'Interaction',
+                    'event_label': this.innerText.substring(0, 40)
+                });
             });
-            
-            closeChat.addEventListener('click', () => {
-                chatContainer.style.display = 'none';
-            });
-
-            document.getElementById('user-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const userMessage = e.target.value.trim();
-                    if (userMessage) {
-                        addMessage(userMessage, 'user');
-                        processQuery(userMessage);
-                        e.target.value = '';
-                    }
-                }
-            });
-
-            function addMessage(text, sender) {
-                const messagesDiv = document.getElementById('chat-messages');
-                const messageDiv = document.createElement('div');
-                messageDiv.textContent = text;
-                messageDiv.classList.add('chat-message');
-                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                
-                messagesDiv.appendChild(messageDiv);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+        
+        // Scroll depth tracking
+        window.addEventListener('scroll', function() {
+            const scrollPercent = Math.floor((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            if(scrollPercent > 25 && scrollPercent < 30) {
+                gtag('event', 'scroll_25', { nonInteraction: true });
             }
-
-            function processQuery(query) {
-                const lowerQuery = query.toLowerCase();
-                let detected = false;
-
-                // Detectar palabras clave
-                if (keywords.ventas.some(keyword => lowerQuery.includes(keyword))) {
-                    addMessage("¡Entendido! Nuestros parches de bienestar pueden ayudarte. Te redirigimos a la tienda...", 'bot');
-                    setTimeout(() => {
-                        window.location.href = "https://111236288.superpatch.com/es";
-                    }, 2500);
-                    detected = true;
-                }
-
-                if (keywords.emprender.some(keyword => lowerQuery.includes(keyword))) {
-                    addMessage("¡Excelente decisión! Contacta a nuestro equipo de emprendimiento directamente por WhatsApp.", 'bot');
-                    setTimeout(() => {
-                        window.open("https://wa.me/34654669289", "_blank");
-                    }, 2500);
-                    detected = true;
-                }
-
-                if (!detected) {
-                    const responses = [
-                        "¿Buscas mejorar tu bienestar o iniciar un negocio?",
-                        "Cuéntame qué necesitas: ¿bienestar físico/mental o oportunidades de negocio?",
-                        "Puedo ayudarte con: dolor, sueño, enfoque o emprendimiento. ¿En qué área necesitas ayuda?"
-                    ];
-                    addMessage(responses[Math.floor(Math.random() * responses.length)], 'bot');
-                }
+            if(scrollPercent > 70 && scrollPercent < 75) {
+                gtag('event', 'scroll_70', { nonInteraction: true });
             }
-
-            // Mensaje de bienvenida automático después de 5 segundos
-            setTimeout(() => {
-                addMessage("¡Hola! Soy el asistente IA de SuperPatch. ¿Puedo ayudarte con bienestar físico/mental o con oportunidades de negocio?", 'bot');
-                
-                // Botón para activar búsqueda proactiva
-                setTimeout(() => {
-                    const messagesDiv = document.getElementById('chat-messages');
-                    const button = document.createElement('button');
-                    button.innerHTML = '🚀 Activar Búsqueda Proactiva';
-                    button.classList.add('strategy-btn');
-                    
-                    button.addEventListener('click', () => {
-                        addMessage("Activando sistema de búsqueda proactiva...", 'bot');
-                        setTimeout(() => {
-                            addMessage("✅ Sistema activado. Nuestros bots están buscando oportunidades en tiempo real...", 'bot');
-                            simulateProactiveSearch();
-                        }, 1500);
-                    });
-                    
-                    messagesDiv.appendChild(button);
-                }, 2000);
-            }, 3000);
-        }
-        
-        // Función para simular búsqueda proactiva
-        function simulateProactiveSearch() {
-            const searchResults = [
-                "🔍 Detectado: Usuario buscando 'aliviar dolor de espalda' en foro de salud",
-                "💼 Oportunidad: 'Quiero emprender en bienestar' en grupo de Facebook",
-                "📈 Tendencias: +42% búsquedas de 'problemas para dormir' este mes",
-                "🤖 Interacción: Bots iniciaron conversación con 5 leads potenciales",
-                "✅ Resultado: 2 leads calificados añadidos al sistema"
-            ];
-            
-            const messagesDiv = document.getElementById('chat-messages');
-            
-            searchResults.forEach((result, index) => {
-                setTimeout(() => {
-                    const resultDiv = document.createElement('div');
-                    resultDiv.textContent = result;
-                    resultDiv.classList.add('chat-message', 'bot-message');
-                    resultDiv.style.animationDelay = `${index * 0.1}s`;
-                    messagesDiv.appendChild(resultDiv);
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                    
-                    // Actualizar contadores
-                    if (result.includes("leads calificados")) {
-                        leads += 2;
-                        opportunities += 5;
-                        conversion = Math.min(100, Math.floor((leads / opportunities) * 100));
-                        
-                        animateCounter(leadsCount, leads);
-                        animateCounter(opportunitiesCount, opportunities);
-                        animateCounter(conversionCount, conversion);
-                    }
-                }, (index + 1) * 1500);
-            });
-        }
-        
-        // Iniciar sistema proactivo automáticamente
-        function startProactiveSystem() {
-            setInterval(() => {
-                opportunities += Math.floor(Math.random() * 3) + 1;
-                leads += Math.floor(Math.random() * 2);
-                conversion = Math.min(100, Math.floor((leads / opportunities) * 100));
-                
-                animateCounter(leadsCount, leads, 1000);
-                animateCounter(opportunitiesCount, opportunities, 1000);
-                animateCounter(conversionCount, conversion, 1000);
-            }, 8000);
-        }
+        });
     </script>
 </body>
 </html>
