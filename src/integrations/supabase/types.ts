@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      api_credentials: {
+        Row: {
+          app_id: string | null
+          created_at: string | null
+          id: number
+          platform: string
+          secret_key: string | null
+          token: string | null
+        }
+        Insert: {
+          app_id?: string | null
+          created_at?: string | null
+          id?: number
+          platform: string
+          secret_key?: string | null
+          token?: string | null
+        }
+        Update: {
+          app_id?: string | null
+          created_at?: string | null
+          id?: number
+          platform?: string
+          secret_key?: string | null
+          token?: string | null
+        }
+        Relationships: []
+      }
+      app_secrets: {
+        Row: {
+          name: string
+          value: string
+        }
+        Insert: {
+          name: string
+          value: string
+        }
+        Update: {
+          name?: string
+          value?: string
+        }
+        Relationships: []
+      }
       leads_premium: {
         Row: {
           created_at: string
@@ -68,7 +110,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      change_master_key: {
+        Args: { new_key: string }
+        Returns: undefined
+      }
+      decrypt_data: {
+        Args: { encrypted_data: string }
+        Returns: string
+      }
+      encrypt_data: {
+        Args: { data: string }
+        Returns: string
+      }
+      get_credential_for_platform: {
+        Args: { platform_name: string }
+        Returns: {
+          app_id: string
+          secret_key: string
+          token: string
+        }[]
+      }
+      upsert_credential: {
+        Args: {
+          platform_name: string
+          app_id_val?: string
+          secret_key_val?: string
+          token_val?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

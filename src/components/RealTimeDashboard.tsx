@@ -6,6 +6,13 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { TrendingUp, DollarSign, Users, Target, Bot, Activity } from 'lucide-react';
 
+interface SocialMetrics {
+  followers: number;
+  engagement: number;
+  reach: number;
+  impressions: number;
+}
+
 const RealTimeDashboard = () => {
   const [realMetrics, setRealMetrics] = useState({
     totalLeads: 0,
@@ -14,7 +21,7 @@ const RealTimeDashboard = () => {
     hotLeads: 0
   });
 
-  const [socialMetrics, setSocialMetrics] = useState({
+  const [socialMetrics, setSocialMetrics] = useState<SocialMetrics>({
     followers: 0,
     engagement: 0,
     reach: 0,
@@ -59,13 +66,18 @@ const RealTimeDashboard = () => {
         .limit(1);
 
       if (!socialError && social && social.length > 0) {
-        const metrics = social[0].metrics;
-        setSocialMetrics({
-          followers: metrics.followers || 0,
-          engagement: metrics.engagement || 0,
-          reach: metrics.reach || 0,
-          impressions: metrics.impressions || 0
-        });
+        const rawMetrics = social[0].metrics;
+        
+        // Verificar que rawMetrics es un objeto y extraer valores de forma segura
+        if (typeof rawMetrics === 'object' && rawMetrics !== null) {
+          const metricsObj = rawMetrics as Record<string, any>;
+          setSocialMetrics({
+            followers: Number(metricsObj.followers) || 0,
+            engagement: Number(metricsObj.engagement) || 0,
+            reach: Number(metricsObj.reach) || 0,
+            impressions: Number(metricsObj.impressions) || 0
+          });
+        }
       }
 
       console.log('✅ Métricas reales actualizadas desde Supabase');
