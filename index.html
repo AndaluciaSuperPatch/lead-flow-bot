@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Potencia Máxima de Ventas Online</title>
+    <title>Maximizador de Ventas Online - Tu Solución Definitiva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-97HNRT97F9"></script>
@@ -22,73 +24,18 @@
         });
     </script>
     
-    <!-- Twilio SMS Integration -->
-    <script>
-        function enviarSMS() {
-            const phone = document.getElementById('phone').value;
-            const message = document.getElementById('message').value;
-            
-            fetch('https://api.twilio.com/2010-04-01/Accounts/AC_YOUR_ACCOUNT_SID/Messages.json', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Basic ' + btoa('AC_YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN'),
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    'To': phone,
-                    'From': '+14155238886',
-                    'Body': message
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.error_code) {
-                    gtag('event', 'sms_failure', {
-                        'error_code': data.code
-                    });
-                    alert("Error: " + data.message);
-                } else {
-                    gtag('event', 'sms_sent', {
-                        'message_length': message.length,
-                        'target_number': phone
-                    });
-                    alert("¡Mensaje enviado con éxito!");
-                }
-            })
-            .catch(error => {
-                gtag('event', 'sms_error', {
-                    'error_message': error.message
-                });
-                console.error('Error:', error);
-            });
-        }
-    </script>
-    
-    <!-- Conversion Tracking -->
-    <script>
-        function trackConversion(valor) {
-            gtag('event', 'conversion', {
-                'send_to': 'G-97HNRT97F9/ConvercionOnline',
-                'value': valor,
-                'currency': 'USD',
-                'transaction_id': 'TX_' + Date.now()
-            });
-        }
-    </script>
-    
-    <!-- SEO Optimizado -->
-    <meta name="description" content="Solución todo-en-uno para ventas online con seguimiento avanzado y automatización de comunicaciones">
-    <meta name="keywords" content="ventas online, marketing digital, analytics, twilio, conversiones">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://tudominio.com/">
-    
     <style>
         :root {
             --primary: #2563eb;
             --secondary: #0ea5e9;
             --accent: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
             --dark: #1e293b;
+            --darker: #0f172a;
             --light: #f1f5f9;
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
         }
         
         * {
@@ -99,233 +46,355 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0f172a, #1e40af);
+            background: var(--darker);
             color: var(--light);
             line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.5s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
         }
         
         header {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
-            padding: 1.5rem;
+            padding: 1rem 2rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: radial-gradient(circle at top right, #7c3aed, transparent 40%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 Q50,10 100,0 L100,100 Q50,90 0,100 Z" fill="rgba(15, 23, 42, 0.5)"/></svg>');
+            background-size: cover;
+            z-index: -1;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: #cbd5e1;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.5);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #c084fc, #60a5fa);
+            transition: width 0.5s ease;
+            z-index: -1;
+        }
+        
+        .cta-button:hover::before {
+            width: 100%;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.7);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            min-width: 200px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-box .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 4rem 2rem;
         }
         
-        .hero {
+        .section-title {
             text-align: center;
-            padding: 5rem 1rem;
-            background: radial-gradient(circle at top right, #7c3aed, transparent 40%);
+            margin-bottom: 4rem;
+            position: relative;
         }
         
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
+        .section-title h2 {
+            font-size: 2.5rem;
+            display: inline-block;
             background: linear-gradient(90deg, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
         }
         
-        .cta-button {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 2rem;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-        }
-        
-        .cta-button:hover {
-            background: transparent;
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--gradient);
+            margin: 0.5rem auto 0;
+            border-radius: 2px;
         }
         
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 5rem 0;
+            gap: 2.5rem;
+            margin-bottom: 5rem;
         }
         
         .feature-card {
             background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
-            padding: 2rem;
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s ease;
+            transition: all 0.4s ease;
+            text-align: center;
         }
         
         .feature-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-15px);
             border-color: var(--accent);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .feature-card p {
+            color: #cbd5e1;
         }
         
         .dashboard {
             background: rgba(15, 23, 42, 0.9);
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 3rem;
             margin: 4rem 0;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .chart-box {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+            padding: 1.5rem;
         }
         
         .sms-section {
             background: linear-gradient(45deg, #1e3a8a, #0c4a6e);
-            border-radius: 15px;
-            padding: 2.5rem;
-            margin: 3rem 0;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 5rem 0;
+            position: relative;
+            overflow: hidden;
         }
         
-        input, textarea {
+        .sms-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,30 Q50,0 100,30 L100,100 Q50,100 0,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+            z-index: 0;
+        }
+        
+        .sms-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
             width: 100%;
             padding: 1rem;
-            margin: 0.5rem 0 1.5rem;
+            margin: 0.5rem 0;
             border-radius: 10px;
             border: none;
             background: rgba(255,255,255,0.1);
             color: white;
             font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: rgba(255,255,255,0.15);
         }
         
         button {
-            background: var(--secondary);
+            background: var(--gradient);
             color: white;
             border: none;
-            padding: 1rem 2rem;
+            padding: 1rem 2.5rem;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        button:hover {
-            background: #0284c7;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 3rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: 4rem;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero {
-                padding: 3rem 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h2>MaximizaTusVentas.com</h2>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="container">
-            <h1>Potencia Tus Ventas Online al Máximo</h1>
-            <p>Solución todo-en-uno con Analítica Avanzada y Comunicación Automatizada</p>
-            <a href="#conversion" class="cta-button" onclick="trackConversion(49.99)">¡Empieza Hoy!</a>
-        </div>
-    </section>
-
-    <div class="container">
-        <section class="features">
-            <div class="feature-card">
-                <h3>📈 Tracking Avanzado</h3>
-                <p>Google Analytics configurado para rastrear conversiones, eventos y comportamiento de usuarios con precisión milimétrica.</p>
-            </div>
-            <div class="feature-card">
-                <h3>💬 Comunicación Twilio</h3>
-                <p>Envío de SMS/WhatsApp automatizados para seguimiento de leads y confirmación de ventas.</p>
-            </div>
-            <div class="feature-card">
-                <h3>🚀 Conversión Máxima</h3>
-                <p>Técnicas probadas para aumentar tu tasa de conversión optimizando cada punto de contacto.</p>
-            </div>
-        </section>
-
-        <section class="dashboard">
-            <h2>Dashboard de Rendimiento</h2>
-            <p>Monitorea en tiempo real el impacto de tus estrategias:</p>
-            <div id="analytics-data">
-                <!-- Los datos de GA se inyectarían via API -->
-                <p>Usuarios activos: <strong>1,248</strong></p>
-                <p>Tasa de conversión: <strong>8.7%</strong></p>
-                <p>Ventas hoy: <strong>$24,860</strong></p>
-            </div>
-        </section>
-
-        <section class="sms-section">
-            <h2>🚀 Potenciador de Ventas via SMS</h2>
-            <p>Envía mensajes directamente a tus clientes:</p>
-            
-            <label for="phone">Número de Teléfono:</label>
-            <input type="tel" id="phone" placeholder="+1234567890" required>
-            
-            <label for="message">Mensaje:</label>
-            <textarea id="message" rows="4" placeholder="Escribe tu mensaje de venta aquí...">🚀 Oferta Especial! Solo hoy 50% de descuento en todos nuestros productos. ¡No te lo pierdas! 👉 https://tudominio.com/oferta</textarea>
-            
-            <button onclick="enviarSMS()">Enviar SMS de Venta</button>
-        </section>
-
-        <section id="conversion">
-            <h2>Conversión Directa</h2>
-            <p>¡Actúa ahora y obtén resultados inmediatos!</p>
-            <button class="cta-button" onclick="trackConversion(99.99)">Quiero Vender Más</button>
-        </section>
-    </div>
-
-    <footer>
-        <div class="container">
-            <p>© 2023 Potencia Máxima de Ventas Online - Solución completa para crecimiento exponencial</p>
-            <p>Google Analytics ID: G-97HNRT97F9 | Twilio: +14155238886</p>
-        </div>
-    </footer>
-
-    <!-- Event Tracking -->
-    <script>
-        // Track key interactions
-        document.querySelectorAll('a, button').forEach(element => {
-            element.addEventListener('click', function() {
-                gtag('event', 'engagement', {
-                    'event_category': 'Interaction',
-                    'event_label': this.innerText.substring(0, 40)
-                });
-            });
-        });
-        
-        // Scroll depth tracking
-        window.addEventListener('scroll', function() {
-            const scrollPercent = Math.floor((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-            if(scrollPercent > 25 && scrollPercent < 30) {
-                gtag('event', 'scroll_25', { nonInteraction: true });
-            }
-            if(scrollPercent > 70 && scrollPercent < 75) {
-                gtag('event', 'scroll_70', { nonInteraction: true });
-            }
-        });
-    </script>
-</body>
-</html>
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 5px 
