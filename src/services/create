@@ -1,0 +1,5 @@
+# Crear carpetas nuevas
+mkdir -p src/core src/integrations src/utils
+
+# Hacer backup de lo existente
+cp -r src/services/core ~/backup_core_services
