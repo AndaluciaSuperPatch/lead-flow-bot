@@ -1,13 +1,9 @@
-// src/App.tsx
-import React from 'react';
-import Dashboard from './views/Dashboard';
+import FlowBuilder from './views/FlowBuilder';
 
 function App() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
-      <Dashboard />
+      <FlowBuilder />
     </main>
   );
 }
-
-export default App;
