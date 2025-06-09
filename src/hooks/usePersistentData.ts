@@ -1,62 +1,61 @@
-
 import { useState, useEffect } from 'react';
 
+/**
+ * Hook personalizado para gestionar datos persistentes en localStorage.
+ *
+ * @param key Clave del localStorage
+ * @param initialValue Valor inicial si no hay nada guardado
+ * @returns [data, updateData] - Estado y función para actualizarlo
+ */
 export const usePersistentData = <T>(key: string, initialValue: T) => {
-  // Inicializar con datos del localStorage o valor inicial
   const [data, setData] = useState<T>(() => {
     try {
-      const savedData = localStorage.getItem(key);
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        console.log(`✅ Datos cargados para ${key}:`, parsed);
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const parsed = JSON.parse(saved) as T;
+        console.log(`✅ ${key} cargado:`, parsed);
         return parsed;
       }
-    } catch (error) {
-      console.error(`❌ Error cargando datos para ${key}:`, error);
+    } catch (err) {
+      console.error(`❌ Error cargando ${key}:`, err);
     }
-    console.log(`🆕 Usando valor inicial para ${key}:`, initialValue);
+    console.log(`🆕 Valor inicial usado para ${key}:`, initialValue);
     return initialValue;
   });
 
-  // Función para actualizar datos y guardar automáticamente
   const updateData = (newData: T | ((prev: T) => T)) => {
-    setData(prevData => {
-      const updatedData = typeof newData === 'function' 
-        ? (newData as (prev: T) => T)(prevData) 
-        : newData;
-      
+    setData(prev => {
+      const next = typeof newData === 'function' ? (newData as (prev: T) => T)(prev) : newData;
       try {
-        localStorage.setItem(key, JSON.stringify(updatedData));
-        console.log(`💾 Datos guardados exitosamente para ${key}:`, updatedData);
-      } catch (error) {
-        console.error(`❌ Error guardando datos para ${key}:`, error);
+        localStorage.setItem(key, JSON.stringify(next));
+        console.log(`💾 ${key} guardado:`, next);
+      } catch (err) {
+        console.error(`❌ Error guardando ${key}:`, err);
       }
-      
-      return updatedData;
+      return next;
     });
   };
 
-  // Guardar inmediatamente cuando cambian los datos
+  // Guardado automático inmediato al cambiar
   useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
-      console.log(`🔄 Auto-guardado inmediato para ${key}`);
-    } catch (error) {
-      console.error(`❌ Error en auto-guardado inmediato para ${key}:`, error);
+      console.log(`📦 Auto-guardado inmediato de ${key}`);
+    } catch (err) {
+      console.error(`❌ Error en auto-guardado de ${key}:`, err);
     }
   }, [key, data]);
 
-  // Forzar persistencia cada 5 segundos para mayor seguridad
+  // Refuerzo del guardado cada 5 segundos
   useEffect(() => {
     const interval = setInterval(() => {
       try {
         localStorage.setItem(key, JSON.stringify(data));
-        console.log(`🔄 Auto-guardado para ${key}`);
-      } catch (error) {
-        console.error(`❌ Error en auto-guardado para ${key}:`, error);
+        console.log(`🔁 Auto-backup de ${key}`);
+      } catch (err) {
+        console.error(`❌ Error en backup de ${key}:`, err);
       }
     }, 5000);
-
     return () => clearInterval(interval);
   }, [key, data]);
 
