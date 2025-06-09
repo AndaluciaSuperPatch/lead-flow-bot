@@ -1,261 +1,128 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+import { supabase } from "@/integrations/supabase/client";
+import type {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "@/integrations/supabase/types";
 
-export type Database = {
-  public: {
-    Tables: {
-      api_credentials: {
-        Row: {
-          app_id: string | null
-          created_at: string | null
-          id: number
-          platform: string
-          secret_key: string | null
-          token: string | null
-        }
-        Insert: {
-          app_id?: string | null
-          created_at?: string | null
-          id?: number
-          platform: string
-          secret_key?: string | null
-          token?: string | null
-        }
-        Update: {
-          app_id?: string | null
-          created_at?: string | null
-          id?: number
-          platform?: string
-          secret_key?: string | null
-          token?: string | null
-        }
-        Relationships: []
-      }
-      app_secrets: {
-        Row: {
-          name: string
-          value: string
-        }
-        Insert: {
-          name: string
-          value: string
-        }
-        Update: {
-          name?: string
-          value?: string
-        }
-        Relationships: []
-      }
-      leads_premium: {
-        Row: {
-          created_at: string
-          form_url: string | null
-          id: string
-          profile: Json | null
-          source: string
-          status: string
-          type: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          form_url?: string | null
-          id?: string
-          profile?: Json | null
-          source?: string
-          status?: string
-          type: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          form_url?: string | null
-          id?: string
-          profile?: Json | null
-          source?: string
-          status?: string
-          type?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      social_metrics: {
-        Row: {
-          created_at: string
-          id: string
-          metrics: Json
-          platform: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          metrics: Json
-          platform: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          metrics?: Json
-          platform?: string
-        }
-        Relationships: []
-      }
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      change_master_key: {
-        Args: { new_key: string }
-        Returns: undefined
-      }
-      decrypt_data: {
-        Args: { encrypted_data: string }
-        Returns: string
-      }
-      encrypt_data: {
-        Args: { data: string }
-        Returns: string
-      }
-      get_credential_for_platform: {
-        Args: { platform_name: string }
-        Returns: {
-          app_id: string
-          secret_key: string
-          token: string
-        }[]
-      }
-      upsert_credential: {
-        Args: {
-          platform_name: string
-          app_id_val?: string
-          secret_key_val?: string
-          token_val?: string
-        }
-        Returns: undefined
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+// ========== LEADS PREMIUM ==========
+export const getLeads = async (): Promise<Tables<"leads_premium">[]> => {
+  const { data, error } = await supabase.from("leads_premium").select("*");
+  if (error) throw error;
+  return data;
+};
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+export const insertLead = async (lead: TablesInsert<"leads_premium">) => {
+  const { data, error } = await supabase.from("leads_premium").insert(lead).select().single();
+  if (error) throw error;
+  return data;
+};
 
-export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
-    }
-    ? R
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
-    : never
+export const updateLead = async (id: string, update: TablesUpdate<"leads_premium">) => {
+  const { data, error } = await supabase
+    .from("leads_premium")
+    .update(update)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
 
-export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
-    : never
+// ========== API CREDENTIALS ==========
+export const getAllApiCredentials = async (): Promise<Tables<"api_credentials">[]> => {
+  const { data, error } = await supabase.from("api_credentials").select("*");
+  if (error) throw error;
+  return data;
+};
 
-export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
-    ? U
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
+export const upsertApiCredential = async (cred: TablesInsert<"api_credentials">) => {
+  const { data, error } = await supabase
+    .from("api_credentials")
+    .upsert(cred)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
 
-export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+// ========== APP SECRETS ==========
+export const getSecret = async (name: string) => {
+  const { data, error } = await supabase
+    .from("app_secrets")
+    .select("*")
+    .eq("name", name)
+    .single();
+  if (error) throw error;
+  return data;
+};
 
-export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+export const setSecret = async (secret: TablesInsert<"app_secrets">) => {
+  const { data, error } = await supabase
+    .from("app_secrets")
+    .upsert(secret)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
 
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
+// ========== SOCIAL METRICS ==========
+export const insertSocialMetric = async (metric: TablesInsert<"social_metrics">) => {
+  const { data, error } = await supabase
+    .from("social_metrics")
+    .insert(metric)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const getMetricsByPlatform = async (platform: string) => {
+  const { data, error } = await supabase
+    .from("social_metrics")
+    .select("*")
+    .eq("platform", platform);
+  if (error) throw error;
+  return data;
+};
+
+// ========== FUNCTIONS (RPC) ==========
+export const upsertCredentialFunction = async (platform_name: string, values: {
+  app_id_val?: string;
+  secret_key_val?: string;
+  token_val?: string;
+}) => {
+  const { error } = await supabase.rpc("upsert_credential", {
+    platform_name,
+    ...values,
+  });
+  if (error) throw error;
+  return true;
+};
+
+export const getCredentialForPlatform = async (platform_name: string) => {
+  const { data, error } = await supabase.rpc("get_credential_for_platform", {
+    platform_name,
+  });
+  if (error) throw error;
+  return data;
+};
+
+export const encryptData = async (data: string): Promise<string> => {
+  const { data: encrypted, error } = await supabase.rpc("encrypt_data", { data });
+  if (error) throw error;
+  return encrypted;
+};
+
+export const decryptData = async (encrypted_data: string): Promise<string> => {
+  const { data: decrypted, error } = await supabase.rpc("decrypt_data", { encrypted_data });
+  if (error) throw error;
+  return decrypted;
+};
+
+export const changeMasterKey = async (new_key: string) => {
+  const { error } = await supabase.rpc("change_master_key", { new_key });
+  if (error) throw error;
+  return true;
+};
