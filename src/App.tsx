@@ -21,3 +21,8 @@ function App() {
 }
 
 export default App;
+import LinkedInIntegration from './components/LinkedInIntegration';
+
+// Dentro de tus rutas
+<Route path="/linkedin" element={<LinkedInIntegration />} />
+<Route path="/auth/linkedin/callback" element={<LinkedInIntegration />} />
