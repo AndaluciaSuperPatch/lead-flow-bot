@@ -1,18 +1,26 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { PatchBotCRM } from '@/services/core/PatchBotCRM';
 
+type CRMStatus = {
+  initialized: boolean;
+  leads: number;
+  activeBots: number;
+  aiReady: boolean;
+  connectedPlatforms: string[];
+};
+
 export const usePatchBotCRM = () => {
-  const [crmStatus, setCrmStatus] = useState({
+  const [crmStatus, setCrmStatus] = useState<CRMStatus>({
     initialized: false,
     leads: 0,
     activeBots: 0,
     aiReady: false,
-    connectedPlatforms: []
+    connectedPlatforms: [],
   });
-  
-  const [metrics, setMetrics] = useState(null);
+
+  const [metrics, setMetrics] = useState<Record<string, any> | null>(null);
   const crmRef = useRef<PatchBotCRM | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const initializeCRM = async () => {
@@ -20,37 +28,31 @@ export const usePatchBotCRM = () => {
         console.log('🚀 Inicializando PatchBot CRM...');
         crmRef.current = new PatchBotCRM();
         await crmRef.current.init();
-        
-        // Actualizar estado inicial
+
         const status = crmRef.current.getStatus();
         setCrmStatus(status);
-        
-        // Configurar actualizaciones periódicas
-        const interval = setInterval(() => {
+
+        intervalRef.current = setInterval(() => {
           if (crmRef.current) {
-            const newStatus = crmRef.current.getStatus();
-            setCrmStatus(newStatus);
+            const updatedStatus = crmRef.current.getStatus();
+            setCrmStatus(updatedStatus);
           }
         }, 5000);
-
-        return () => clearInterval(interval);
       } catch (error) {
         console.error('❌ Error inicializando CRM:', error);
       }
     };
 
     initializeCRM();
-    
+
     return () => {
-      // Cleanup si es necesario
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
 
   const processLead = async (leadData: any) => {
-    if (crmRef.current) {
-      return await crmRef.current.processLead(leadData);
-    }
-    return null;
+    if (!crmRef.current) return null;
+    return await crmRef.current.processLead(leadData);
   };
 
   const getCRMInstance = () => crmRef.current;
@@ -60,6 +62,6 @@ export const usePatchBotCRM = () => {
     metrics,
     processLead,
     getCRMInstance,
-    isReady: crmStatus.initialized
+    isReady: crmStatus.initialized,
   };
 };
