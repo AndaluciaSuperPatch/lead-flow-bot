@@ -1,0 +1,3 @@
+REACT_APP_LINKEDIN_CLIENT_ID=tu_nuevo_client_id
+REACT_APP_LINKEDIN_CLIENT_SECRET=tu_nueva_client_secret
+REACT_APP_LINKEDIN_REDIRECT_URI=https://111236288.superpatch.com/auth/linkedin/callback
