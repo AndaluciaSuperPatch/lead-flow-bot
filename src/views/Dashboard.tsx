@@ -1,0 +1,3 @@
+src/
+└── views/
+    └── Dashboard.tsx
