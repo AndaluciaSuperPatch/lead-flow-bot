@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, XCircle, Loader, Zap, AlertTriangle } from 'lucide-react';
+
+const AIRSHARE_FIXED_TOKEN = "25E4B7E8-DD5C4CA6-BFB4C3AD-F33C75B5";
 
 const ApiTokenTester = () => {
   const { toast } = useToast();
@@ -155,6 +156,28 @@ const ApiTokenTester = () => {
             placeholder="Introduce el token API..."
             className="mt-2 font-mono text-sm"
           />
+
+          {/* Token fijo de Ayrshare */}
+          <div className="mt-3 flex items-center gap-2 bg-green-50 border border-green-200 rounded p-2">
+            <span className="text-green-800 font-semibold text-sm">Token Ayrshare oficial:</span>
+            <code className="bg-white px-2 py-1 rounded text-xs select-all">{AIRSHARE_FIXED_TOKEN}</code>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs px-2 py-1"
+              onClick={() => {
+                navigator.clipboard.writeText(AIRSHARE_FIXED_TOKEN);
+                toast({
+                  title: "Token copiado",
+                  description: "El token fijo de Ayrshare fue copiado al portapapeles.",
+                  duration: 1800,
+                });
+              }}
+              type="button"
+            >
+              Copiar
+            </Button>
+          </div>
         </div>
 
         {/* Botones de Prueba */}
