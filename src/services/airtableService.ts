@@ -7,8 +7,8 @@
  */
 
 const AIRTABLE_API_URL = "https://api.airtable.com/v0";
-// TODO: Cambia este valor por tu Base ID real
-const BASE_ID = "TU_BASE_ID"; // <-- Pide tu Base ID en https://airtable.com/api
+// Base ID real de Airtable
+const BASE_ID = "351d782a-915b-4dad-a945-bbdbc9449e40"; // <-- Ahora usa tu Base ID correcto
 
 const AIRTABLE_TOKEN = "pat08ew11RWERcNc5"; // ¡MUY IMPORTANTE! Mejor usa Supabase Secrets.
 
