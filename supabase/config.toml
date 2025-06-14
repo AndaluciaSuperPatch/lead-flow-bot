@@ -3,3 +3,6 @@ project_id = "fiymplhjhxgoyuubqevu"
 
 [functions.deepseek-avatar-chat]
 verify_jwt = false
+
+[functions.gemini-avatar-chat]
+verify_jwt = false

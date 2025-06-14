@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -54,40 +53,24 @@ const BotAvatarChat: React.FC = () => {
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
-  // Solo GEMINI (no Perplexity)
+  // Ahora llamamos a la Edge Function de Supabase que actúa como backend seguro
   const askGemini = async (input: string, prompt: string) => {
-    const url =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" +
-      geminiKey;
     try {
-      const res = await fetch(url, {
+      const response = await fetch("https://fiymplhjhxgoyuubqevu.functions.supabase.co/gemini-avatar-chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: prompt }, { text: input }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.2,
-            topP: 0.9,
-            maxOutputTokens: 600,
-          },
-        }),
+        body: JSON.stringify({ input, prompt }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        throw new Error(
-          data.error?.message ?? "Respuesta de Gemini no válida."
-        );
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || "Respuesta de Gemini no válida.");
       }
-      return data.candidates[0].content.parts[0].text;
+      return data.text;
     } catch (e: any) {
-      throw new Error(e?.message || "Error llamando a Gemini.");
+      throw new Error(e?.message || "Error llamando a Gemini vía función Edge.");
     }
   };
 
@@ -215,4 +198,3 @@ const BotAvatarChat: React.FC = () => {
 };
 
 export default BotAvatarChat;
-
