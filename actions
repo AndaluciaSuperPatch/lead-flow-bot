@@ -1,0 +1,30 @@
+name: Sync Facebook Data
+
+on:
+  workflow_dispatch: # Permite ejecución manual
+  schedule:
+    - cron: '0 */6 * * *' # Cada 6 horas (sintaxis cron)
+
+jobs:
+  sync-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate fb-config.json
+        env:
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
+          FB_REDIRECT_URI: ${{ secrets.FB_REDIRECT_URI }}
+        run: |
+          echo '{
+            "appId": "$FB_APP_ID",
+            "redirectUri": "$FB_REDIRECT_URI"
+          }' > fb-config.json
+
+      - name: Push changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git add fb-config.json
+          git commit -m "Update FB config"
+          git push
