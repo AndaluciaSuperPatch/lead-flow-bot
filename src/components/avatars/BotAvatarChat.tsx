@@ -53,7 +53,7 @@ const BotAvatarChat: React.FC = () => {
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
-  // Ahora llamamos a la Edge Function de Supabase que actúa como backend seguro
+  // Ahora llamamos a la Edge Function de Supabase que actúa como backend seguro, gestión profesional de errores
   const askGemini = async (input: string, prompt: string) => {
     try {
       const response = await fetch("https://fiymplhjhxgoyuubqevu.functions.supabase.co/gemini-avatar-chat", {
@@ -65,11 +65,15 @@ const BotAvatarChat: React.FC = () => {
       });
 
       const data = await response.json();
+
+      // Gestión explícita de errores según código de error devuelto por el backend
       if (!response.ok) {
+        // Muestra el mensaje recibido, personalizado para UX profesional
         throw new Error(data?.error || "Respuesta de Gemini no válida.");
       }
       return data.text;
     } catch (e: any) {
+      // Bubble-up para gestión de error en sendMessage
       throw new Error(e?.message || "Error llamando a Gemini vía función Edge.");
     }
   };
@@ -109,17 +113,41 @@ const BotAvatarChat: React.FC = () => {
         { sender: "avatar", text: response },
       ]);
     } catch (e: any) {
+      // Decora respuesta de error según el caso
+      let errorUserMsg = "⚠️ Error desconocido al consultar Gemini. ";
+      const errText = (e?.message || "").toLowerCase();
+
+      if (errText.includes("clave gemini es incorrecta")) {
+        errorUserMsg = "❌ Tu clave API Gemini es inválida, ha expirado o tiene restricciones. Revisa y cámbiala en Google AI Studio. Más info: https://aistudio.google.com/app/apikey";
+      } else if (errText.includes("referer")) {
+        errorUserMsg = "❌ Tu clave Gemini tiene restricciones de 'referer' (Google AI). Debes generar una clave nueva SIN RESTRICCIONES aquí: https://aistudio.google.com/app/apikey";
+      } else if (errText.includes("clave gemini del servidor es inválida")) {
+        errorUserMsg = "❌ El backend no tiene bien la clave Gemini. Revisa configuración en panel Supabase.";
+      } else if (errText.includes("no existe clave gemini configurada")) {
+        errorUserMsg = "❌ No hay clave API Gemini configurada en el servidor.";
+      } else if (errText.includes("input y prompt requeridos")) {
+        errorUserMsg = "Introduce algún mensaje antes de enviar 🤔";
+      } else if (errText.includes("el mensaje a gemini no puede estar vacío")) {
+        errorUserMsg = "No puedes enviar mensajes vacíos. ¡Escribe algo para tu avatar! 📝";
+      } else if (errText.includes("json inválido")) {
+        errorUserMsg = "Ocurrió un problema técnico con tu mensaje. Prueba de nuevo.";
+      } else if (errText.includes("no se pudo interpretar la respuesta")) {
+        errorUserMsg = "El servidor de Google Gemini devolvió una respuesta inesperada. Prueba de nuevo más tarde.";
+      } else if (errText.includes("gemini no ha respondido correctamente")) {
+        errorUserMsg = "Hubo un problema con la IA de Google Gemini. Intenta de nuevo en unos segundos.";
+      }
+
       setChat((old) => [
         ...old,
         {
           sender: "avatar",
-          text: `⚠️ Error: ${e.message}\n\n${DEMO_RESPONSES[selected]}`,
+          text: errorUserMsg + "\n\n" + DEMO_RESPONSES[selected],
           isError: true,
         },
       ]);
       toast({
         title: `Error en asistente AI (Gemini)`,
-        description: e?.message || "No se pudo consultar la AI.",
+        description: errorUserMsg,
         variant: "destructive",
       });
     } finally {
