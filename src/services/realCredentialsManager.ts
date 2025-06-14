@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase";
 
 /**
@@ -33,6 +34,20 @@ export const realCredentialsManager = {
       }
     }
 
+    // Token fijo para Ayrshare
+    out["Ayrshare"] = {
+      app_id: null,
+      secret_key: null,
+      token: "25E4B7E8-DD5C4CA6-BFB4C3AD-F33C75B5"
+    };
+
+    // Token fijo para Ngrok
+    out["Ngrok"] = {
+      app_id: null,
+      secret_key: null,
+      token: "2yRVEEfPNfTJgbMERdrEF39UTLF_2DRKcK54dQ2zZpSzddAxH"
+    };
+
     return out;
   },
 
@@ -41,6 +56,14 @@ export const realCredentialsManager = {
    * @param platform El nombre de la plataforma (ej: 'Facebook', 'Instagram', etc)
    */
   async getPlatformToken(platform: string) {
+    // Tokens fijos para plataformas específicas
+    if (platform === "Ayrshare") {
+      return "25E4B7E8-DD5C4CA6-BFB4C3AD-F33C75B5";
+    }
+    if (platform === "Ngrok") {
+      return "2yRVEEfPNfTJgbMERdrEF39UTLF_2DRKcK54dQ2zZpSzddAxH";
+    }
+
     const { data, error } = await supabase
       .rpc("get_credential_for_platform", { platform_name: platform });
     if (!error && data && Array.isArray(data) && data[0]) {
