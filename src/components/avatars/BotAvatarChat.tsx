@@ -47,24 +47,23 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 const BotAvatarChat: React.FC = () => {
   const [chat, setChat] = useState<BotMessage[]>([]);
   const [selected, setSelected] = useState(avatars[0].key);
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  // Ya no necesitamos mostrar ni actualizar input de clave
+  // const [showApiKeyInput, setShowApiKeyInput] = useState(false);
 
-  const { key: geminiKey, setKey: setGeminiKey } = useGeminiKey();
+  const { key: geminiKey } = useGeminiKey();
   const { toast } = useToast();
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
-  // Hook reusable con toda la lógica de llamada/remoto Gemini y mensajes UX
   const { loading, sendMessage } = useGeminiChat({
     geminiKey,
     selected,
     DEMO_RESPONSES,
     SYSTEM_PROMPTS,
     toast,
-    setShowApiKeyInput,
+    setShowApiKeyInput: () => {}, // dummy para cumplir con la API, nunca se llama.
   });
 
-  // input y lógica de entrada se delegan a ChatInput ahora:
   const handleSend = (msg: string) => {
     sendMessage({
       input: msg,
@@ -78,7 +77,8 @@ const BotAvatarChat: React.FC = () => {
       {/* Selector de avatar */}
       <AvatarSelector avatars={avatars} selected={selected} setSelected={setSelected} />
 
-      {/* Advertencia si no hay clave */}
+      {/* NUNCA mostrar advertencia de clave ni botones */}
+      {/* 
       {!geminiKey && (
         <div className="mb-2 flex flex-col items-center">
           <div className="text-orange-500 text-center font-semibold pb-2">
@@ -89,33 +89,28 @@ const BotAvatarChat: React.FC = () => {
           </Button>
         </div>
       )}
+      */}
 
       <ChatMessages chat={chat} />
 
       <ChatInput loading={loading} onSend={handleSend} avatarName={currentAvatar?.name ?? "el avatar"} />
 
+      {/* NUNCA mostrar boton cambiar clave */}
       <div className="mt-2">
         <small className="text-gray-400">
-          Para respuestas AI reales, <b>añade tu clave Gemini</b>. Puedes actualizarla en cualquier momento.
+          Para respuestas AI reales, este asistente ya tiene la clave integrada. {/* Explicación clara */}
         </small>
-        {geminiKey && (
-          <Button
-            variant="link"
-            size="sm"
-            className="ml-2"
-            onClick={() => setShowApiKeyInput(true)}
-          >
-            Cambiar clave
-          </Button>
-        )}
       </div>
 
+      {/* Eliminar el modal de clave */}
+      {/* 
       <ApiKeyModal
         open={showApiKeyInput}
         onClose={() => setShowApiKeyInput(false)}
         apiKey={geminiKey}
         setApiKey={setGeminiKey}
       />
+      */}
     </div>
   );
 };

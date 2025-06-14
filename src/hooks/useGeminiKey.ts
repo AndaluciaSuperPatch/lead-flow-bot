@@ -1,17 +1,16 @@
 
-import { useState } from "react";
+/**
+ * useGeminiKey custom hook for PATCHBOT, VERSION FIJA
+ * SIEMPRE retorna la clave pública proporcionada.
+ * El setKey no hace nada.
+ */
 
+// No se importa useState porque no se usa realmente.
 export function useGeminiKey() {
-  const [key, setKeyState] = useState(() => localStorage.getItem("gemini_api_key") || "");
+  // Clave FIJA proporcionada por el usuario
+  const key = "AIzaSyDHyiSD0JEX8DesotD-fjGsQ4FQGF_PhXo";
+  // Función dummy para mantener el API, no hace nada
+  const setKey = () => {};
 
-  const setKey = (newKey: string) => {
-    setKeyState(newKey);
-    if (newKey) {
-      localStorage.setItem("gemini_api_key", newKey);
-    } else {
-      localStorage.removeItem("gemini_api_key");
-    }
-  };
-
-  return { key, setKey };
+  return { key, setKey } as const;
 }
