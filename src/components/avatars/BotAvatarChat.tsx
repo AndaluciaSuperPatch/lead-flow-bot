@@ -56,6 +56,9 @@ const BotAvatarChat: React.FC = () => {
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
+  // --- Nuevo: Mejor cálculo de IA disponible ---
+  const hasAnyApiKey = !!perplexityKey || !!geminiKey;
+
   // Función para preguntar a Perplexity
   const askPerplexity = async (input: string, prompt: string) => {
     const url = "https://api.perplexity.ai/chat/completions";
@@ -200,6 +203,7 @@ const BotAvatarChat: React.FC = () => {
     ...(geminiKey ? [AI_ENGINES[1]] : [])
   ];
 
+  // --- Quitar advertencia de Perplexity si tienes la de Gemini ---
   return (
     <div className="w-full bg-white border rounded-xl shadow-md mx-auto max-w-xl px-4 py-5 mt-2">
       {/* Selector de motor AI */}
@@ -219,36 +223,18 @@ const BotAvatarChat: React.FC = () => {
               </Button>
             )
           ) : (
-            <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 text-xs">{availableEngines[0]?.name || "No hay IA configurada"}</span>
+            <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 text-xs">
+              {availableEngines[0]?.name || "No hay IA configurada"}
+            </span>
           )
         }
       </div>
-      <div className="flex space-x-3 mb-2 justify-center">
-        {avatars.map((a) => (
-          <button
-            key={a.key}
-            type="button"
-            onClick={() => setSelected(a.key)}
-            className={`px-4 py-2 rounded-lg border font-semibold transition-all 
-              ${
-                selected === a.key
-                  ? "ring-2 ring-indigo-400 scale-105 shadow"
-                  : "opacity-70"
-              }`}
-            style={
-              selected === a.key
-                ? { ...{ background: a.style } }
-                : {}
-            }
-            aria-label={`Seleccionar ${a.name}`}
-          >
-            {a.name}
-          </button>
-        ))}
-      </div>
-      {!perplexityKey && (
+      {/* Solo mostrar la advertencia si NO hay ninguna clave */}
+      {!hasAnyApiKey && (
         <div className="mb-2 flex flex-col items-center">
-          <div className="text-orange-500 text-center font-semibold pb-2">Debes ingresar tu clave de Perplexity AI para recibir respuestas reales.</div>
+          <div className="text-orange-500 text-center font-semibold pb-2">
+            Debes ingresar tu clave de Perplexity AI o Gemini para recibir respuestas reales.
+          </div>
           <Button variant="secondary" size="sm" onClick={() => setShowApiKeyInput(true)}>Ingresar clave API</Button>
         </div>
       )}
@@ -303,9 +289,9 @@ const BotAvatarChat: React.FC = () => {
       </div>
       <div className="mt-2">
         <small className="text-gray-400">
-          Para respuestas AI reales, <b>añade tu clave Perplexity AI</b>. Puedes actualizarla en cualquier momento.
+          Para respuestas AI reales, <b>añade tu clave Perplexity AI o Gemini</b>. Puedes actualizarla en cualquier momento.
         </small>
-        {perplexityKey && (
+        {hasAnyApiKey && (
           <Button
             variant="link"
             size="sm"
@@ -321,7 +307,7 @@ const BotAvatarChat: React.FC = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
           <div className="bg-white px-6 py-4 rounded-xl shadow-lg w-[90vw] max-w-md">
             <h2 className="text-lg font-bold mb-2">Introduce tu API Key</h2>
-            {/* Mostrar solo campos relevantes */}
+            {/* Mostrar solo campo relevante */}
             {engine === "perplexity" && (
               <input
                 autoFocus
@@ -354,7 +340,9 @@ const BotAvatarChat: React.FC = () => {
                 variant="default"
                 size="sm"
                 onClick={() => setShowApiKeyInput(false)}
-                disabled={engine === "perplexity" ? !perplexityKey : !geminiKey}
+                disabled={
+                  (engine === "perplexity" ? !perplexityKey : !geminiKey)
+                }
               >
                 Guardar clave
               </Button>
