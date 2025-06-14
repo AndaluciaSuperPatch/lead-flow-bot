@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { realCredentialsManager } from "@/services/realCredentialsManager";
 
-const LINKEDIN_REDIRECT_URI = "https://superpatch-crm.lovable.app/auth/linkedin/callback";
+const LINKEDIN_REDIRECT_URI = "https://superpatch-crm.lovable.app/auth/LinkedIn/callback";
 
 const LinkedInCredentialsForm: React.FC = () => {
   const [appId, setAppId] = useState("");
