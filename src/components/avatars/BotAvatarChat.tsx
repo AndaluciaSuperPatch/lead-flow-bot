@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,8 @@ const avatars: AvatarType[] = [
   },
 ];
 
-type Message = {
+// Rename local type to BotMessage to avoid collision with imported Message
+type BotMessage = {
   sender: "user" | "avatar";
   text: string;
   isError?: boolean;
@@ -43,7 +45,7 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 
 const BotAvatarChat: React.FC = () => {
   const [input, setInput] = useState("");
-  const [chat, setChat] = useState<Message[]>([]);
+  const [chat, setChat] = useState<BotMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(avatars[0].key);
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
@@ -160,6 +162,7 @@ const BotAvatarChat: React.FC = () => {
         </div>
       )}
 
+      {/* Pass as Message[] since structure matches */}
       <ChatMessages chat={chat} />
 
       <div className="flex gap-2">
@@ -212,3 +215,4 @@ const BotAvatarChat: React.FC = () => {
 };
 
 export default BotAvatarChat;
+
