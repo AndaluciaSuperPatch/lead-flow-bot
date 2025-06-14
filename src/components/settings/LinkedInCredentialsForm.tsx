@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { realCredentialsManager } from "@/services/realCredentialsManager";
 
+const LINKEDIN_REDIRECT_URI = "https://superpatch-crm.lovable.app/auth/linkedin/callback";
+
 const LinkedInCredentialsForm: React.FC = () => {
   const [appId, setAppId] = useState("");
   const [secretKey, setSecretKey] = useState("");
@@ -73,6 +75,18 @@ const LinkedInCredentialsForm: React.FC = () => {
               className="mt-1 font-mono"
             />
           </div>
+          <div>
+            <label className="font-semibold" htmlFor="linkedin-redirect-uri">Redirect URI</label>
+            <Input
+              id="linkedin-redirect-uri"
+              type="text"
+              value={LINKEDIN_REDIRECT_URI}
+              readOnly
+              className="mt-1 font-mono bg-gray-100 cursor-not-allowed"
+              tabIndex={-1}
+            />
+            <span className="text-xs text-gray-600">Utiliza esta URI exacta al registrar tu app en LinkedIn Developers.</span>
+          </div>
           <Button type="submit" className="w-full bg-blue-700 hover:bg-blue-800" disabled={isLoading}>
             {isLoading ? "Guardando..." : "Guardar Credenciales"}
           </Button>
@@ -83,3 +97,4 @@ const LinkedInCredentialsForm: React.FC = () => {
 };
 
 export default LinkedInCredentialsForm;
+
