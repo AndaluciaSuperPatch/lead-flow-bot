@@ -21,12 +21,29 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
   try {
+    let log: Record<string, unknown> = { step: "init" };
+    // Log entrada request
     const { question, avatar } = await req.json();
-    if (!question || !avatar)
+    log.step = "parsed_body";
+    log.question = question;
+    log.avatar = avatar;
+
+    if (!DEEPSEEK_API_KEY) {
+      log.error = "DEEPSEEK_API_KEY no configurada";
+      console.error(log);
+      return new Response(JSON.stringify({ error: "API Key de DeepSeek no configurada en servidor." }), { headers: corsHeaders, status: 500 });
+    }
+
+    if (!question || !avatar) {
+      log.error = "Faltan datos question/avatar";
+      console.error(log);
       return new Response(JSON.stringify({ error: "Faltan datos." }), { headers: corsHeaders, status: 400 });
+    }
 
     const systemPrompt = AVATAR_PROMPTS[avatar] || AVATAR_PROMPTS.pelirroja;
 
+    // Log datos para DeepSeek
+    log.step = "fetching_deepseek";
     const apiRes = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -45,25 +62,38 @@ serve(async (req) => {
       }),
     });
 
+    log.deepseek_status = apiRes.status;
+
     if (!apiRes.ok) {
       const text = await apiRes.text();
-      return new Response(JSON.stringify({ error: text }), {
+      log.error = "Respuesta DeepSeek NO OK";
+      log.deepseek_response = text;
+      console.error(log);
+      return new Response(JSON.stringify({ error: "Error DeepSeek: " + text }), {
         headers: corsHeaders,
         status: 500,
       });
     }
 
     const resp = await apiRes.json();
+    log.step = "deepseek_response_parsed";
+    log.deepseek_response = resp;
+
     const answer =
       resp.choices?.[0]?.message?.content ||
       "No he podido generar una respuesta ahora mismo.";
+
+    log.result = answer;
+    console.log(log);
 
     return new Response(JSON.stringify({ answer }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
+    let log: Record<string, unknown> = { step: "catch", error: e?.message || e?.toString() };
+    console.error(log);
     return new Response(
-      JSON.stringify({ error: "Error interno de función." }),
+      JSON.stringify({ error: "Error interno de función: " + (e?.message || e?.toString()) }),
       { headers: corsHeaders, status: 500 },
     );
   }
