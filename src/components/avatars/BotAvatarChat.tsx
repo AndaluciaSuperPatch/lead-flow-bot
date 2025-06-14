@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -49,10 +49,30 @@ const BotAvatarChat: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(avatars[0].key);
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
-  const [engine, setEngine] = useState("perplexity");
-  const { toast } = useToast();
+
+  // Inicialización automática según la key disponible
   const { key: perplexityKey, setKey: setPerplexityKey } = usePerplexityKey();
   const { key: geminiKey, setKey: setGeminiKey } = useGeminiKey();
+
+  // Determinar motor por defecto
+  const defaultEngine = !!perplexityKey
+    ? "perplexity"
+    : !!geminiKey
+    ? "gemini"
+    : "perplexity";
+  const [engine, setEngine] = useState(defaultEngine);
+
+  // Si cambia la key, sincronizar el motor con la key disponible
+  React.useEffect(() => {
+    if (!perplexityKey && geminiKey) {
+      setEngine("gemini");
+    } else if (perplexityKey && !geminiKey) {
+      setEngine("perplexity");
+    } else if (!perplexityKey && !geminiKey) {
+      setEngine("perplexity");
+    }
+    // Si ambas, no cambiar (usuario puede elegir)
+  }, [perplexityKey, geminiKey]);
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
