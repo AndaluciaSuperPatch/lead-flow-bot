@@ -12,6 +12,8 @@ const LINKEDIN_REDIRECT_URI = "https://superpatch-crm.lovable.app/auth/LinkedIn/
 const LinkedInCredentialsForm: React.FC = () => {
   const [appId, setAppId] = useState("");
   const [secretKey, setSecretKey] = useState("");
+  // Nuevo estado para la Redirect URI (vacío por defecto)
+  const [redirectUri, setRedirectUri] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -23,24 +25,27 @@ const LinkedInCredentialsForm: React.FC = () => {
     e.preventDefault();
     const cleanAppId = appId.trim();
     const cleanSecretKey = secretKey.trim();
+    const cleanRedirectUri = redirectUri.trim();
 
-    if (!cleanAppId || !cleanSecretKey) {
+    if (!cleanAppId || !cleanSecretKey || !cleanRedirectUri) {
       toast({
         title: "❌ Faltan datos",
-        description: "Por favor, completa ambos campos.",
+        description: "Por favor, completa todos los campos.",
         variant: "destructive",
       });
       return;
     }
     setIsLoading(true);
     try {
+      // Aquí podrías guardar también la redirectUri si hace falta en tu lógica
       await realCredentialsManager.upsertLinkedInCredentials(cleanAppId, cleanSecretKey);
       toast({
         title: "✅ Credenciales guardadas",
-        description: "LinkedIn Client ID y Secret Key guardados exitosamente.",
+        description: "LinkedIn Client ID, Secret Key y Redirect URI guardados exitosamente.",
       });
       setAppId("");
       setSecretKey("");
+      setRedirectUri("");
     } catch (err: any) {
       toast({
         title: "❌ Error al guardar",
@@ -70,10 +75,10 @@ const LinkedInCredentialsForm: React.FC = () => {
               autoComplete="off"
               className={[
                 "mt-1 font-mono",
-                hasAppIdWhitespace ? "border-red-500 bg-red-100" : ""
+                appId !== appId.trim() ? "border-red-500 bg-red-100" : ""
               ].join(" ")}
             />
-            {hasAppIdWhitespace && (
+            {appId !== appId.trim() && (
               <span className="text-xs text-red-500">
                 ⚠️ No incluyas espacios al inicio o final.
               </span>
@@ -90,10 +95,10 @@ const LinkedInCredentialsForm: React.FC = () => {
               autoComplete="off"
               className={[
                 "mt-1 font-mono",
-                hasSecretKeyWhitespace ? "border-red-500 bg-red-100" : ""
+                secretKey !== secretKey.trim() ? "border-red-500 bg-red-100" : ""
               ].join(" ")}
             />
-            {hasSecretKeyWhitespace && (
+            {secretKey !== secretKey.trim() && (
               <span className="text-xs text-red-500">
                 ⚠️ No incluyas espacios al inicio o final.
               </span>
@@ -104,13 +109,14 @@ const LinkedInCredentialsForm: React.FC = () => {
             <Input
               id="linkedin-redirect-uri"
               type="text"
-              value={LINKEDIN_REDIRECT_URI}
-              readOnly
-              className="mt-1 font-mono bg-gray-100 cursor-not-allowed"
-              tabIndex={-1}
+              placeholder="Escribe aquí la Redirect URI que tienes en LinkedIn"
+              value={redirectUri}
+              onChange={e => setRedirectUri(e.target.value)}
+              autoComplete="off"
+              className="mt-1 font-mono"
             />
             <span className="text-xs text-gray-600">
-              Utiliza esta URI exacta al registrar tu app en LinkedIn Developers.
+              Escribe la URI exacta tal como aparece en LinkedIn Developers.
             </span>
           </div>
           <Button type="submit" className="w-full bg-blue-700 hover:bg-blue-800" disabled={isLoading}>
