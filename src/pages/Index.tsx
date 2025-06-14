@@ -15,6 +15,7 @@ import CoreSystemStatus from "@/components/core/CoreSystemStatus";
 import ApiTokenTester from "@/components/ApiTokenTester";
 import TikTokAuthManager from "@/components/TikTokAuthManager";
 import UnifiedSocialAuthManager from "@/components/social/UnifiedSocialAuthManager";
+import BotAvatars3D from "@/components/avatars/BotAvatars3D";
 
 const Index = () => {
   const [leads, setLeads] = usePersistentData('patchbot-leads', []);
@@ -23,6 +24,15 @@ const Index = () => {
   return (
     <div className="p-4 grid gap-4 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold text-center">PatchBot CRM - Sistema de Crecimiento Agresivo 24/7</h1>
+
+      {/* AVATARS REVOLUCIÓN */}
+      <div>
+        <h2 className="text-xl font-bold text-center mt-2 text-indigo-700">🤖 Avatares SuperPatch AI</h2>
+        <p className="text-center text-gray-600 mb-1">
+          Conoce y habla con tus nuevos asistentes virtuales 3D: ¡una deportista pelirroja y un ejecutivo moreno formal!
+        </p>
+        <BotAvatars3D />
+      </div>
 
       {/* Estado del Sistema Core */}
       <CoreSystemStatus />
