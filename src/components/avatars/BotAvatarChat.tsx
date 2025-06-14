@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { useToast, toast } from "@/hooks/use-toast";
 import { usePerplexityKey } from "@/hooks/usePerplexityKey";
 import { useGeminiKey } from "@/hooks/useGeminiKey";
 
