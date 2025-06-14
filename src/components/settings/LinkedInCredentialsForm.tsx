@@ -9,17 +9,27 @@ import { realCredentialsManager } from "@/services/realCredentialsManager";
 // ESTA ES LA REDIRECT URI EXACTA QUE TIENES EN LINKEDIN
 const LINKEDIN_REDIRECT_URI = "https://superpatch-crm.lovable.app/auth/LinkedIn/callback";
 
+function isLikelyValidUrl(url: string) {
+  // Validación básica, puedes reemplazar por una mejor si quieres
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" || u.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 const LinkedInCredentialsForm: React.FC = () => {
   const [appId, setAppId] = useState("");
   const [secretKey, setSecretKey] = useState("");
-  // Nuevo estado para la Redirect URI (vacío por defecto)
   const [redirectUri, setRedirectUri] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Detectar espacios extra
   const hasAppIdWhitespace = appId !== appId.trim();
   const hasSecretKeyWhitespace = secretKey !== secretKey.trim();
+  const hasRedirectUriWhitespace = redirectUri !== redirectUri.trim();
+  const redirectUriIsValid = !redirectUri || isLikelyValidUrl(redirectUri);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,9 +45,18 @@ const LinkedInCredentialsForm: React.FC = () => {
       });
       return;
     }
+
+    if (!isLikelyValidUrl(cleanRedirectUri)) {
+      toast({
+        title: "❌ Redirect URI no válida",
+        description: "La Redirect URI no tiene formato de URL válida. Ejemplo: " + LINKEDIN_REDIRECT_URI,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Aquí podrías guardar también la redirectUri si hace falta en tu lógica
       await realCredentialsManager.upsertLinkedInCredentials(cleanAppId, cleanSecretKey);
       toast({
         title: "✅ Credenciales guardadas",
@@ -113,8 +132,21 @@ const LinkedInCredentialsForm: React.FC = () => {
               value={redirectUri}
               onChange={e => setRedirectUri(e.target.value)}
               autoComplete="off"
-              className="mt-1 font-mono"
+              className={[
+                "mt-1 font-mono",
+                !redirectUriIsValid && redirectUri ? "border-red-500 bg-red-100" : ""
+              ].join(" ")}
             />
+            {redirectUri !== "" && hasRedirectUriWhitespace && (
+              <span className="text-xs text-red-500">
+                ⚠️ No incluyas espacios al inicio o final en la Redirect URI.
+              </span>
+            )}
+            {!redirectUriIsValid && redirectUri !== "" && (
+              <span className="text-xs text-red-500">
+                ⚠️ La Redirect URI no parece una URL válida (ejemplo: {LINKEDIN_REDIRECT_URI})
+              </span>
+            )}
             <span className="text-xs text-gray-600">
               Escribe la URI exacta tal como aparece en LinkedIn Developers.
             </span>
