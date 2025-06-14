@@ -22,6 +22,12 @@ const avatars = [
 type Message = {
   sender: "user" | "avatar";
   text: string;
+  isError?: boolean;
+};
+
+const DEMO_RESPONSES: Record<string, string> = {
+  pelirroja: "¡Hola! Soy tu demo pelirroja 🤸‍♀️, responde el backend primero por favor 😅.",
+  ejecutivo: "¡Buenas! Soy tu demo ejecutivo 🤵🏻, parece que el backend no está disponible ahora mismo.",
 };
 
 const BotAvatarChat: React.FC = () => {
@@ -38,6 +44,7 @@ const BotAvatarChat: React.FC = () => {
     setLoading(true);
 
     setChat((old) => [...old, { sender: "user", text: input }]);
+    let demoReplied = false;
     try {
       const res = await fetch(
         "/functions/v1/deepseek-avatar-chat",
@@ -50,25 +57,54 @@ const BotAvatarChat: React.FC = () => {
           }),
         }
       );
-      const data = await res.json();
-      if (data.answer) {
+      let data: any;
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+
+      if (res.ok && data.answer) {
         setChat((old) => [
           ...old,
           { sender: "avatar", text: data.answer },
         ]);
       } else {
+        // Mostrar error exacto
+        const msg =
+          data.error ||
+          "El asistente no está disponible ahora mismo. Activando MODO DEMO.";
+        setChat((old) => [
+          ...old,
+          {
+            sender: "avatar",
+            text: `⚠️ Error: ${msg}\n\n${DEMO_RESPONSES[selected]}`,
+            isError: true,
+          },
+        ]);
         toast({
-          title: "Error",
-          description: "No se recibió respuesta del avatar.",
+          title: "Error en asistente AI",
+          description: msg,
           variant: "destructive",
         });
+        demoReplied = true;
       }
-    } catch (e) {
+    } catch (e: any) {
+      // Error de red o conexión, MODO DEMO
+      setChat((old) => [
+        ...old,
+        {
+          sender: "avatar",
+          text: `⚠️ Error de conexión con el asistente.\n${DEMO_RESPONSES[selected]}`,
+          isError: true,
+        },
+      ]);
       toast({
-        title: "Error",
-        description: "No se pudo conectar al asistente.",
+        title: "Error de conexión",
+        description: "No se pudo conectar al backend de AI.",
         variant: "destructive",
       });
+      demoReplied = true;
     } finally {
       setLoading(false);
       setInput("");
@@ -114,9 +150,11 @@ const BotAvatarChat: React.FC = () => {
             }`}
           >
             <div
-              className={`max-w-xs px-3 py-2 rounded-lg ${
+              className={`max-w-xs px-3 py-2 rounded-lg whitespace-pre-line ${
                 msg.sender === "user"
                   ? "bg-indigo-100 text-indigo-700"
+                  : msg.isError
+                  ? "bg-red-200 text-red-800 border border-red-400"
                   : "bg-indigo-500 text-white"
               }`}
             >
@@ -147,8 +185,14 @@ const BotAvatarChat: React.FC = () => {
           {loading ? "Enviando..." : "Enviar"}
         </Button>
       </div>
+      <div className="mt-2">
+        <small className="text-gray-400">
+          Si ves un mensaje de error, revisa la clave DeepSeek o contacta con soporte.
+        </small>
+      </div>
     </div>
   );
 };
 
 export default BotAvatarChat;
+
