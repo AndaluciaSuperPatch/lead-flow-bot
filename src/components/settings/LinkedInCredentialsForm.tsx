@@ -13,9 +13,16 @@ const LinkedInCredentialsForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // Detectar espacios extra
+  const hasAppIdWhitespace = appId !== appId.trim();
+  const hasSecretKeyWhitespace = secretKey !== secretKey.trim();
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!appId.trim() || !secretKey.trim()) {
+    const cleanAppId = appId.trim();
+    const cleanSecretKey = secretKey.trim();
+
+    if (!cleanAppId || !cleanSecretKey) {
       toast({
         title: "❌ Faltan datos",
         description: "Por favor, completa ambos campos.",
@@ -25,7 +32,7 @@ const LinkedInCredentialsForm: React.FC = () => {
     }
     setIsLoading(true);
     try {
-      await realCredentialsManager.upsertLinkedInCredentials(appId.trim(), secretKey.trim());
+      await realCredentialsManager.upsertLinkedInCredentials(cleanAppId, cleanSecretKey);
       toast({
         title: "✅ Credenciales guardadas",
         description: "LinkedIn Client ID y Secret Key guardados exitosamente.",
@@ -59,8 +66,16 @@ const LinkedInCredentialsForm: React.FC = () => {
               value={appId}
               onChange={e => setAppId(e.target.value)}
               autoComplete="off"
-              className="mt-1 font-mono"
+              className={[
+                "mt-1 font-mono",
+                hasAppIdWhitespace ? "border-red-500 bg-red-100" : ""
+              ].join(" ")}
             />
+            {hasAppIdWhitespace && (
+              <span className="text-xs text-red-500">
+                ⚠️ No incluyas espacios al inicio o final.
+              </span>
+            )}
           </div>
           <div>
             <label className="font-semibold" htmlFor="linkedin-secret-key">Secret Key</label>
@@ -71,8 +86,16 @@ const LinkedInCredentialsForm: React.FC = () => {
               value={secretKey}
               onChange={e => setSecretKey(e.target.value)}
               autoComplete="off"
-              className="mt-1 font-mono"
+              className={[
+                "mt-1 font-mono",
+                hasSecretKeyWhitespace ? "border-red-500 bg-red-100" : ""
+              ].join(" ")}
             />
+            {hasSecretKeyWhitespace && (
+              <span className="text-xs text-red-500">
+                ⚠️ No incluyas espacios al inicio o final.
+              </span>
+            )}
           </div>
           <div>
             <label className="font-semibold" htmlFor="linkedin-redirect-uri">Redirect URI</label>
@@ -84,7 +107,9 @@ const LinkedInCredentialsForm: React.FC = () => {
               className="mt-1 font-mono bg-gray-100 cursor-not-allowed"
               tabIndex={-1}
             />
-            <span className="text-xs text-gray-600">Utiliza esta URI exacta al registrar tu app en LinkedIn Developers.</span>
+            <span className="text-xs text-gray-600">
+              Utiliza esta URI exacta al registrar tu app en LinkedIn Developers.
+            </span>
           </div>
           <Button type="submit" className="w-full bg-blue-700 hover:bg-blue-800" disabled={isLoading}>
             {isLoading ? "Guardando..." : "Guardar Credenciales"}
