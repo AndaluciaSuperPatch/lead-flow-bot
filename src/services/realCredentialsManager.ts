@@ -1,4 +1,5 @@
-import { supabase } from "../../integrations/supabase/client";
+
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Este gestor obtiene todas las credenciales de las plataformas conectadas desde Supabase.
