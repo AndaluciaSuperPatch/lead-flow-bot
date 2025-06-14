@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { usePerplexityKey } from "@/hooks/usePerplexityKey";
+import { useGeminiKey } from "@/hooks/useGeminiKey";
 
 const avatars = [
   {
@@ -38,14 +38,21 @@ const SYSTEM_PROMPTS: Record<string, string> = {
     "Responde siempre como un ejecutivo joven, moreno, formal y optimista. Sé educado, directo y profesional, pero cercano. Si puedes, usa algún emoji amistoso.",
 };
 
+const AI_ENGINES = [
+  { key: "perplexity", name: "Perplexity" },
+  { key: "gemini", name: "Gemini (Google)" }
+];
+
 const BotAvatarChat: React.FC = () => {
   const [input, setInput] = useState("");
   const [chat, setChat] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(avatars[0].key);
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [engine, setEngine] = useState("perplexity");
   const { toast } = useToast();
-  const { key: perplexityKey, setKey } = usePerplexityKey();
+  const { key: perplexityKey, setKey: setPerplexityKey } = usePerplexityKey();
+  const { key: geminiKey, setKey: setGeminiKey } = useGeminiKey();
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
@@ -80,12 +87,61 @@ const BotAvatarChat: React.FC = () => {
     }
   };
 
+  // --- NUEVO: Preguntar a Gemini ---
+  const askGemini = async (input: string, prompt: string) => {
+    /**
+     * Puedes ver la doc oficial aquí:
+     * https://ai.google.dev/gemini-api/docs
+     */
+    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + geminiKey;
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [
+                { text: prompt }, // system prompt
+                { text: input }   // user question
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            topP: 0.9,
+            maxOutputTokens: 600
+          }
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error(data.error?.message ?? "Respuesta de Gemini no válida.");
+      }
+      return data.candidates[0].content.parts[0].text;
+    } catch (e: any) {
+      throw new Error(e?.message || "Error llamando a Gemini.");
+    }
+  };
+
+  // Adaptamos enviar mensaje para que use Perplexity o Gemini
   async function sendMessage() {
     if (!input.trim()) return;
     setLoading(true);
     setChat((old) => [...old, { sender: "user", text: input }]);
     try {
-      if (!perplexityKey) {
+      // Selección de motor
+      let response, apiKeySet = false;
+      if (engine === "perplexity") {
+        apiKeySet = !!perplexityKey;
+      } else if (engine === "gemini") {
+        apiKeySet = !!geminiKey;
+      }
+
+      if (!apiKeySet) {
         setChat((old) => [
           ...old,
           {
@@ -95,10 +151,10 @@ const BotAvatarChat: React.FC = () => {
           },
         ]);
         toast({
-          title: "Requiere API Key de Perplexity",
+          title: `Requiere API Key de ${engine === "perplexity" ? "Perplexity" : "Gemini"}`,
           description: (
             <span>
-              Por favor, ingresa tu Perplexity API Key para activar el asistente.&nbsp;
+              Por favor, ingresa tu clave API para activar el asistente.&nbsp;
               <Button size="sm" variant="outline" onClick={() => setShowApiKeyInput(true)}>Poner clave</Button>
             </span>
           ),
@@ -108,12 +164,15 @@ const BotAvatarChat: React.FC = () => {
         setInput("");
         return;
       }
-      // Preguntar a Perplexity
       const systemPrompt = SYSTEM_PROMPTS[selected];
-      const answer = await askPerplexity(input, systemPrompt);
+      if (engine === "perplexity") {
+        response = await askPerplexity(input, systemPrompt);
+      } else if (engine === "gemini") {
+        response = await askGemini(input, systemPrompt);
+      }
       setChat((old) => [
         ...old,
-        { sender: "avatar", text: answer },
+        { sender: "avatar", text: response },
       ]);
     } catch (e: any) {
       setChat((old) => [
@@ -125,8 +184,8 @@ const BotAvatarChat: React.FC = () => {
         },
       ]);
       toast({
-        title: "Error en asistente AI",
-        description: e?.message || "No se pudo consultar a Perplexity.",
+        title: `Error en asistente AI (${engine})`,
+        description: e?.message || "No se pudo consultar la AI.",
         variant: "destructive",
       });
     } finally {
@@ -135,8 +194,35 @@ const BotAvatarChat: React.FC = () => {
     }
   }
 
+  // Nuevo: mostrar selector de motor si ambas claves existen, o mostrar cuál se está usando
+  const availableEngines = [
+    ...(perplexityKey ? [AI_ENGINES[0]] : []),
+    ...(geminiKey ? [AI_ENGINES[1]] : [])
+  ];
+
   return (
     <div className="w-full bg-white border rounded-xl shadow-md mx-auto max-w-xl px-4 py-5 mt-2">
+      {/* Selector de motor AI */}
+      <div className="flex flex-wrap items-center justify-center mb-3 gap-2">
+        <span className="text-xs text-gray-500 mr-2">IA:</span>
+        {
+          availableEngines.length > 1 ? (
+            availableEngines.map(e =>
+              <Button
+                key={e.key}
+                size="sm"
+                variant={engine === e.key ? "secondary" : "outline"}
+                className={`px-3 py-1 rounded-lg text-xs ${engine === e.key ? 'font-semibold' : ''}`}
+                onClick={() => setEngine(e.key)}
+              >
+                {e.name}
+              </Button>
+            )
+          ) : (
+            <span className="px-3 py-1 rounded-lg bg-indigo-100 text-indigo-700 text-xs">{availableEngines[0]?.name || "No hay IA configurada"}</span>
+          )
+        }
+      </div>
       <div className="flex space-x-3 mb-2 justify-center">
         {avatars.map((a) => (
           <button
@@ -234,15 +320,28 @@ const BotAvatarChat: React.FC = () => {
       {showApiKeyInput && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
           <div className="bg-white px-6 py-4 rounded-xl shadow-lg w-[90vw] max-w-md">
-            <h2 className="text-lg font-bold mb-2">Introduce tu Perplexity API Key</h2>
-            <input
-              autoFocus
-              type="text"
-              placeholder="pk-..."
-              value={perplexityKey}
-              onChange={e => setKey(e.target.value)}
-              className="w-full px-3 py-2 border rounded mb-2"
-            />
+            <h2 className="text-lg font-bold mb-2">Introduce tu API Key</h2>
+            {/* Mostrar solo campos relevantes */}
+            {engine === "perplexity" && (
+              <input
+                autoFocus
+                type="text"
+                placeholder="pk-perplexity..."
+                value={perplexityKey}
+                onChange={e => setPerplexityKey(e.target.value)}
+                className="w-full px-3 py-2 border rounded mb-2"
+              />
+            )}
+            {engine === "gemini" && (
+              <input
+                autoFocus
+                type="text"
+                placeholder="AIza..."
+                value={geminiKey}
+                onChange={e => setGeminiKey(e.target.value)}
+                className="w-full px-3 py-2 border rounded mb-2"
+              />
+            )}
             <div className="flex gap-2 justify-end">
               <Button
                 variant="outline"
@@ -255,13 +354,22 @@ const BotAvatarChat: React.FC = () => {
                 variant="default"
                 size="sm"
                 onClick={() => setShowApiKeyInput(false)}
-                disabled={!perplexityKey}
+                disabled={engine === "perplexity" ? !perplexityKey : !geminiKey}
               >
                 Guardar clave
               </Button>
             </div>
             <div className="text-xs text-gray-500 mt-2">
-              Genera una clave gratis en <a href="https://www.perplexity.ai/developer" target="_blank" className="underline">perplexity.ai/developer</a>
+              {engine === "perplexity" && (
+                <span>
+                  Genera una clave gratis en <a href="https://www.perplexity.ai/developer" target="_blank" className="underline">perplexity.ai/developer</a>
+                </span>
+              )}
+              {engine === "gemini" && (
+                <span>
+                  Genera una clave gratis en <a href="https://aistudio.google.com/app/apikey" target="_blank" className="underline">aistudio.google.com/app/apikey</a>
+                </span>
+              )}
             </div>
           </div>
         </div>
