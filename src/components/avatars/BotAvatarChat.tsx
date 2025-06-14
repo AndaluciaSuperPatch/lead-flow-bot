@@ -222,7 +222,7 @@ const BotAvatarChat: React.FC = () => {
         {perplexityKey && (
           <Button
             variant="link"
-            size="xs"
+            size="sm"
             className="ml-2"
             onClick={() => setShowApiKeyInput(true)}
           >
