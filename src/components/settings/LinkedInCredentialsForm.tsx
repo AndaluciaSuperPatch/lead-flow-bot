@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { realCredentialsManager } from "@/services/realCredentialsManager";
 
+// ESTA ES LA REDIRECT URI EXACTA QUE TIENES EN LINKEDIN
 const LINKEDIN_REDIRECT_URI = "https://superpatch-crm.lovable.app/auth/LinkedIn/callback";
 
 const LinkedInCredentialsForm: React.FC = () => {
@@ -121,3 +123,4 @@ const LinkedInCredentialsForm: React.FC = () => {
 };
 
 export default LinkedInCredentialsForm;
+
