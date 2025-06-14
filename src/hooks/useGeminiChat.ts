@@ -20,7 +20,8 @@ export function useGeminiChat({
 }: UseGeminiChatOptions) {
   const [loading, setLoading] = useState(false);
 
-  const askGemini = async (input: string, prompt: string) => {
+  // Servicio de llamada a la función edge de Supabase para Gemini (backend seguro)
+  const askGemini = async (input: string, prompt: string): Promise<string> => {
     try {
       const response = await fetch("https://fiymplhjhxgoyuubqevu.functions.supabase.co/gemini-avatar-chat", {
         method: "POST",
@@ -41,6 +42,7 @@ export function useGeminiChat({
     }
   };
 
+  // Lógica de chat: añade mensaje usuario, valida clave, recibe y añade respuesta de Gemini (o demo/error)
   async function sendMessage({
     input,
     geminiKey,
@@ -83,7 +85,7 @@ export function useGeminiChat({
         { sender: "avatar", text: response },
       ]);
     } catch (e: any) {
-      let errorUserMsg = "⚠️ Error desconocido al consultar Gemini. ";
+      let errorUserMsg = "⚠️ Error desconocido al consultar Gemini.";
       const errText = (e?.message || "").toLowerCase();
 
       if (errText.includes("clave gemini es incorrecta")) {
@@ -126,3 +128,4 @@ export function useGeminiChat({
 
   return { loading, sendMessage };
 }
+
