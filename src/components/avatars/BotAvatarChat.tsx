@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button";
 import { useToast, toast } from "@/hooks/use-toast";
 import { useGeminiKey } from "@/hooks/useGeminiKey";
 
+// Update: Avatar styles are now objects, not CSS strings!
 const avatars = [
   {
     key: "pelirroja",
     name: "🤸‍♀️ Pelirroja deportista",
-    style: "background: linear-gradient(120deg,#fed6e3,#dbdbff); color: #a62265;",
+    style: { background: "linear-gradient(120deg,#fed6e3,#dbdbff)", color: "#a62265" },
   },
   {
     key: "ejecutivo",
     name: "🤵🏻 Moreno formal",
-    style: "background: linear-gradient(120deg,#dde7fa,#e8eafe); color: #234f96;",
+    style: { background: "linear-gradient(120deg,#dde7fa,#e8eafe)", color: "#234f96" },
   },
 ];
 
@@ -49,7 +50,7 @@ const BotAvatarChat: React.FC = () => {
 
   const currentAvatar = avatars.find((a) => a.key === selected);
 
-  // Función para preguntar a Gemini
+  // Solo GEMINI (no Perplexity)
   const askGemini = async (input: string, prompt: string) => {
     const url =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" +
@@ -152,7 +153,7 @@ const BotAvatarChat: React.FC = () => {
             variant={selected === a.key ? "secondary" : "outline"}
             className={`px-3 py-1 rounded-lg text-xs ${selected === a.key ? "font-semibold" : ""}`}
             onClick={() => setSelected(a.key)}
-            style={selected === a.key ? { ...a.style } : {}}
+            style={selected === a.key ? a.style : undefined}
           >
             {a.name}
           </Button>
@@ -282,4 +283,3 @@ const BotAvatarChat: React.FC = () => {
 };
 
 export default BotAvatarChat;
-
