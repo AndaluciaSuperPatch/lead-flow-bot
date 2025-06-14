@@ -1,12 +1,14 @@
-
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast, toast } from "@/hooks/use-toast";
 import { useGeminiKey } from "@/hooks/useGeminiKey";
+import AvatarSelector, { AvatarType } from "./AvatarSelector";
+import ChatMessages, { Message } from "./ChatMessages";
+import ApiKeyModal from "./ApiKeyModal";
 
 // Update: Avatar styles are now objects, not CSS strings!
-const avatars = [
+const avatars: AvatarType[] = [
   {
     key: "pelirroja",
     name: "🤸‍♀️ Pelirroja deportista",
@@ -144,57 +146,22 @@ const BotAvatarChat: React.FC = () => {
   return (
     <div className="w-full bg-white border rounded-xl shadow-md mx-auto max-w-xl px-4 py-5 mt-2">
       {/* Selector de avatar */}
-      <div className="flex flex-wrap items-center justify-center mb-3 gap-2">
-        <span className="text-xs text-gray-500 mr-2">Avatar:</span>
-        {avatars.map((a) => (
-          <Button
-            key={a.key}
-            size="sm"
-            variant={selected === a.key ? "secondary" : "outline"}
-            className={`px-3 py-1 rounded-lg text-xs ${selected === a.key ? "font-semibold" : ""}`}
-            onClick={() => setSelected(a.key)}
-            style={selected === a.key ? a.style : undefined}
-          >
-            {a.name}
-          </Button>
-        ))}
-      </div>
+      <AvatarSelector avatars={avatars} selected={selected} setSelected={setSelected} />
+
       {/* Advertencia si no hay clave */}
       {!geminiKey && (
         <div className="mb-2 flex flex-col items-center">
           <div className="text-orange-500 text-center font-semibold pb-2">
             Debes ingresar tu clave de Gemini para recibir respuestas reales.
           </div>
-          <Button variant="secondary" size="sm" onClick={() => setShowApiKeyInput(true)}>Ingresar clave API</Button>
+          <Button variant="secondary" size="sm" onClick={() => setShowApiKeyInput(true)}>
+            Ingresar clave API
+          </Button>
         </div>
       )}
-      <div className="h-52 overflow-y-auto bg-slate-50 rounded p-3 mb-2 text-sm">
-        {chat.length === 0 && (
-          <div className="text-gray-400 italic text-center">
-            Escribe tu mensaje para hablar con el avatar seleccionado.
-          </div>
-        )}
-        {chat.map((msg, i) => (
-          <div
-            key={i}
-            className={`mb-2 flex ${
-              msg.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-xs px-3 py-2 rounded-lg whitespace-pre-line ${
-                msg.sender === "user"
-                  ? "bg-indigo-100 text-indigo-700"
-                  : msg.isError
-                  ? "bg-red-200 text-red-800 border border-red-400"
-                  : "bg-indigo-500 text-white"
-              }`}
-            >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-      </div>
+
+      <ChatMessages chat={chat} />
+
       <div className="flex gap-2">
         <Textarea
           placeholder={`Pregunta para ${currentAvatar?.name ?? "el avatar"}...`}
@@ -232,52 +199,14 @@ const BotAvatarChat: React.FC = () => {
           </Button>
         )}
       </div>
+
       {/* Modal para poner la API Key */}
-      {showApiKeyInput && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-          <div className="bg-white px-6 py-4 rounded-xl shadow-lg w-[90vw] max-w-md">
-            <h2 className="text-lg font-bold mb-2">Introduce tu API Key</h2>
-            <input
-              autoFocus
-              type="text"
-              placeholder="AIza..."
-              value={geminiKey}
-              onChange={e => setGeminiKey(e.target.value)}
-              className="w-full px-3 py-2 border rounded mb-2"
-            />
-            <div className="flex gap-2 justify-end">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowApiKeyInput(false)}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setShowApiKeyInput(false)}
-                disabled={!geminiKey}
-              >
-                Guardar clave
-              </Button>
-            </div>
-            <div className="text-xs text-gray-500 mt-2">
-              <span>
-                Genera una clave gratis en{" "}
-                <a
-                  href="https://aistudio.google.com/app/apikey"
-                  target="_blank"
-                  className="underline"
-                  rel="noopener noreferrer"
-                >
-                  aistudio.google.com/app/apikey
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+      <ApiKeyModal
+        open={showApiKeyInput}
+        onClose={() => setShowApiKeyInput(false)}
+        apiKey={geminiKey}
+        setApiKey={setGeminiKey}
+      />
     </div>
   );
 };
