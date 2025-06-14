@@ -21,7 +21,7 @@ export interface AyrshareResponse {
 
 export class AyrshareService {
   private static readonly API_BASE = 'https://api.ayrshare.com/api';
-  private static readonly API_TOKEN = '36D66CD2-2F59447B-AC564C88-47F75E41';
+  private static readonly API_TOKEN = '25E4B7E8-DD5C4CA6-BFB4C3AD-F33C75B5';
 
   static async publishPost(request: AyrsharePostRequest): Promise<AyrshareResponse> {
     console.log('🚀 PUBLICANDO CON AYRSHARE:', request);
