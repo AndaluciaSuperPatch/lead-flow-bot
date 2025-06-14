@@ -47,5 +47,24 @@ export const realCredentialsManager = {
       return data[0].token;
     }
     return null;
+  },
+
+  /**
+   * Guarda/actualiza credenciales para la plataforma LinkedIn.
+   * @param appId El Client ID (App ID) de LinkedIn
+   * @param secretKey El Secret Key de LinkedIn
+   * @param token (opcional) Token de acceso de LinkedIn
+   */
+  async upsertLinkedInCredentials(appId: string, secretKey: string, token?: string) {
+    const { error } = await supabase.rpc("upsert_credential", {
+      platform_name: "LinkedIn",
+      app_id_val: appId,
+      secret_key_val: secretKey,
+      token_val: token ?? null,
+    });
+    if (error) {
+      throw new Error("Error guardando credenciales LinkedIn: " + error.message);
+    }
+    return true;
   }
 };
