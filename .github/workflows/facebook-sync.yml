@@ -1,25 +1,9 @@
-name: Facebook Data Sync
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 */6 * * *'
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Get FB Data
-        env:
-          FB_TOKEN: ${{ secrets.FB_CLIENT_TOKEN }}
-        run: |
-          curl -s "https://graph.facebook.com/v18.0/me?fields=id,name&access_token=$FB_TOKEN" > data.json
-          
-      - name: Push Data
-        run: |
-          git config --global user.name "FB Sync Bot"
-          git add data.json
-          git commit -m "Update FB data"
-          git push
+- name: Push changes
+  run: |
+    git config --global user.name "FB Sync Bot"
+    git config --global user.email "fbsync@bot.com"
+    git add data.json
+    git commit -m "Update FB data"
+    git push
+  env:
+    GITHUB_TOKEN: ${{ secrets.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 }}  # Token automático de GitHub
