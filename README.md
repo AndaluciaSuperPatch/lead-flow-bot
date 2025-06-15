@@ -71,3 +71,23 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# Lead Flow Bot Validator 🤖
+
+Bot de validación y sincronización de leads entre GitHub y Lovable.
+
+## 🔗 Integración con Lovable
+1. **Token de API**:  
+   - Genera un token en Lovable con permisos `write_leads`.  
+   - Añádelo como secret en GitHub:  
+     `Settings > Secrets > LOVABLE_TOKEN`.  
+
+2. **Webhooks**:  
+   - Configura en Lovable un webhook que apunte a:  
+     `https://api.github.com/repos/AndaluciaSuperPatch/lead-flow-bot-valid/dispatches`.  
+
+## 🚀 Cómo Ejecutar Localmente
+```bash
+git clone https://github.com/AndaluciaSuperPatch/lead-flow-bot-valid.git
+cd lead-flow-bot-valid
+npm install  # o pip install -r requirements.txt (según el lenguaje)
+cp .env.example .env  # Configura tus variables (LOVABLE_TOKEN, etc.)
