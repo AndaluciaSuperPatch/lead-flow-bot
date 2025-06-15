@@ -1,1 +1,1 @@
-https://github.com/AndaluciaSuperPatch/lead-flow-bot-valid/blob/main/scripts/validate.py
+https://github.com/AndaluciaSuperPatch/lead-flow-bot-valid/blob/main/scripts/python-m py_compile validate.py
